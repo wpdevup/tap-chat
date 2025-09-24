@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Chatly 0.1.6\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+#: includes/admin/class-chatly-admin.php:19
+msgid "Chatly"
+msgstr ""
+
+#: includes/admin/class-chatly-admin.php:35
+msgid "General Settings"
+msgstr ""
+
+#: includes/admin/class-chatly-admin.php:58
+msgid "Show floating button site-wide"
+msgstr ""
+
+#: includes/class-chatly.php:49
+msgid "Chat with us"
+msgstr ""
+
+#: includes/admin/class-chatly-admin.php:92
+msgid "Hide label on screens < 480px"
+msgstr ""
+
+#: includes/admin/class-chatly-admin.php:101
+msgid "Append current page title & URL to message"
+msgstr ""

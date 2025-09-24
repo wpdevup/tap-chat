@@ -1,0 +1,30 @@
+:root {
+  --tapchat-size: 56px;
+  --tapchat-color: #25D366;
+}
+
+.tapchat-fab {
+  position: fixed;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--tapchat-color);
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0,0,0,.2);
+  z-index: 99999;
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+  flex-direction: row;
+}
+[dir="rtl"] .tapchat-fab { flex-direction: row-reverse; }
+.tapchat-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,.25); }
+.tapchat-pos-right { right: 18px; }
+.tapchat-pos-left { left: 18px; }
+.tapchat-icon { width: var(--tapchat-size); height: var(--tapchat-size); display: inline-block; fill: #fff; }
+.tapchat-label { white-space: nowrap; }
+@media (max-width: 480px) { .tapchat-hide-label-mobile .tapchat-label { display: none; } }
+.tapchat-inline { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; border-bottom: 2px solid currentColor; }

@@ -8,6 +8,25 @@ class Admin {
     public function __construct() {
         add_action( 'admin_menu', [ $this, 'menu' ] );
         add_action( 'admin_init', [ $this, 'settings' ] );
+        add_action( 'admin_enqueue_scripts', [ $this, 'admin_scripts' ] );
+    }
+
+    public function admin_scripts( $hook ) {
+        // Only load scripts on plugin settings page
+        if ( 'settings_page_tap-chat' !== $hook ) {
+            return;
+        }
+        
+        // WordPress Color Picker scripts
+        wp_enqueue_style( 'wp-color-picker' );
+        wp_enqueue_script( 'wp-color-picker' );
+        
+        // Custom script to activate Color Picker
+        wp_add_inline_script( 'wp-color-picker', '
+            jQuery(document).ready(function($) {
+                $(".tap-chat-color-picker").wpColorPicker();
+            });
+        ' );
     }
 
     public function menu() {
@@ -31,8 +50,10 @@ class Admin {
                 'label' => __( 'Chat with us', 'tap-chat' ),
                 'position' => 'right',
                 'size' => 56,
+                'mobile_size' => 56,
                 'color' => '#25D366',
                 'hide_label_mobile' => 'yes',
+                'hide_label_desktop' => 'no',
                 'append_page_context' => 'no',
             ]
         ] );
@@ -45,9 +66,11 @@ class Admin {
             'message' => __( 'Default Message', 'tap-chat' ),
             'label'   => __( 'Button Label', 'tap-chat' ),
             'position'=> __( 'Floating Position', 'tap-chat' ),
-            'size'    => __( 'Button Size (px)', 'tap-chat' ),
-            'color'   => __( 'Button Color (hex)', 'tap-chat' ),
+            'size'    => __( 'Desktop Button Size (px)', 'tap-chat' ),
+            'mobile_size' => __( 'Mobile Button Size (px)', 'tap-chat' ),
+            'color'   => __( 'Button Color', 'tap-chat' ),
             'hide_label_mobile' => __( 'Hide Label on Mobile', 'tap-chat' ),
+            'hide_label_desktop' => __( 'Hide Label on Desktop', 'tap-chat' ),
             'append_page_context' => __( 'Append Page Title & URL to Message', 'tap-chat' ),
         ];
 
@@ -64,8 +87,10 @@ class Admin {
         $out['label']   = isset( $input['label'] ) ? sanitize_text_field( $input['label'] ) : '';
         $out['position']= ( isset( $input['position'] ) && in_array( $input['position'], [ 'left','right' ], true ) ) ? $input['position'] : 'right';
         $out['size']    = isset( $input['size'] ) ? absint( $input['size'] ) : 56;
+        $out['mobile_size'] = isset( $input['mobile_size'] ) ? absint( $input['mobile_size'] ) : 56;
         $out['color']   = isset( $input['color'] ) ? sanitize_hex_color( $input['color'] ) : '#25D366';
         $out['hide_label_mobile'] = ( isset( $input['hide_label_mobile'] ) && $input['hide_label_mobile'] === 'yes' ) ? 'yes' : 'no';
+        $out['hide_label_desktop'] = ( isset( $input['hide_label_desktop'] ) && $input['hide_label_desktop'] === 'yes' ) ? 'yes' : 'no';
         $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
         return $out;
     }
@@ -134,14 +159,23 @@ class Admin {
 
     public function field_size() {
         printf(
-            '<input type="number" min="40" max="96" name="tap_chat_settings[size]" value="%d" />',
-            absint( $this->get( 'size', 56 ) )
+            '<input type="number" min="40" max="96" name="tap_chat_settings[size]" value="%d" /> <small>%s</small>',
+            absint( $this->get( 'size', 56 ) ),
+            esc_html__( 'Size for desktop screens', 'tap-chat' )
+        );
+    }
+
+    public function field_mobile_size() {
+        printf(
+            '<input type="number" min="40" max="96" name="tap_chat_settings[mobile_size]" value="%d" /> <small>%s</small>',
+            absint( $this->get( 'mobile_size', 56 ) ),
+            esc_html__( 'Size for mobile screens (≤ 480px)', 'tap-chat' )
         );
     }
 
     public function field_color() {
         printf(
-            '<input type="text" class="regular-text" name="tap_chat_settings[color]" value="%s" placeholder="#25D366" />',
+            '<input type="text" class="tap-chat-color-picker" name="tap_chat_settings[color]" value="%s" data-default-color="#25D366" />',
             esc_attr( $this->get( 'color', '#25D366' ) )
         );
     }
@@ -150,7 +184,15 @@ class Admin {
         $val = $this->get( 'hide_label_mobile', 'yes' );
         ?>
         <input type="hidden" name="tap_chat_settings[hide_label_mobile]" value="no" />
-        <label><input type="checkbox" name="tap_chat_settings[hide_label_mobile]" value="yes" <?php checked( $val, 'yes' ); ?> /> <?php esc_html_e( 'Hide label on screens < 480px', 'tap-chat' ); ?></label>
+        <label><input type="checkbox" name="tap_chat_settings[hide_label_mobile]" value="yes" <?php checked( $val, 'yes' ); ?> /> <?php esc_html_e( 'Hide label on screens ≤ 480px (show only icon)', 'tap-chat' ); ?></label>
+        <?php
+    }
+
+    public function field_hide_label_desktop() {
+        $val = $this->get( 'hide_label_desktop', 'no' );
+        ?>
+        <input type="hidden" name="tap_chat_settings[hide_label_desktop]" value="no" />
+        <label><input type="checkbox" name="tap_chat_settings[hide_label_desktop]" value="yes" <?php checked( $val, 'yes' ); ?> /> <?php esc_html_e( 'Hide label on screens > 480px (show only icon)', 'tap-chat' ); ?></label>
         <?php
     }
 

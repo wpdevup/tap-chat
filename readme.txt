@@ -4,26 +4,33 @@ Tags: whatsapp, chat, click to chat, support, customer support
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.6.1
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Lightweight click-to-chat button for WhatsApp. Floating action button + shortcode. GDPR-friendly, no tracking.
+
 == Description ==
-Tap Chat adds a beautiful floating button that opens WhatsApp chat in one click. It’s intentionally simple and performance-first: tiny CSS/JS (≈3 KB), no external requests, no trackers, and no database bloat—so it won’t slow your site. Use the global floating button or insert a button anywhere with the `[tapchat]` shortcode.
+Tap Chat adds a beautiful floating button that opens WhatsApp chat in one click. It's intentionally simple and performance-first: tiny CSS/JS (≈3 KB), no external requests, no trackers, and no database bloat—so it won't slow your site. Use the global floating button or insert a button anywhere with the `[tapchat]` shortcode.
 
 **Features:**
 - Floating button site-wide (position left/right).
 - Custom phone (international format), default message, label, size, and color.
 - Shortcode: `[tapchat phone="49123456789" message="Hello" label="Chat now"]`
+- WordPress Color Picker for easy color selection
+- Separate size controls for desktop and mobile devices
+- Hide label options for icon-only display on desktop and/or mobile
+- Perfectly round button when label is hidden
 
-**New in 0.1.2**
-- RTL-aware layout (icon/label order)
-- Option: hide label on mobile (<480px)
-- Option: append current page title & URL to the default message
+**New in 0.7.0**
+- WordPress Color Picker integration for button color
+- Separate mobile button size control
+- Hide label on desktop option for cleaner design
+- Improved button shape (perfectly round when label hidden)
+- Better responsive design controls
 
 == Installation ==
-1. Upload `chatly` to `/wp-content/plugins/`.
+1. Upload `tap-chat` to `/wp-content/plugins/`.
 2. Activate the plugin via *Plugins → Installed Plugins*.
 3. Go to *Settings → Tap Chat* and set your phone number.
 
@@ -38,9 +45,22 @@ No. The plugin only renders a link to WhatsApp.
 = Will it slow down my site? =
 It loads a tiny CSS/JS (~3KB).
 
+= Can I have different button sizes for mobile and desktop? =
+Yes! Version 0.7.0 introduces separate size controls for desktop and mobile devices.
+
+= Can I hide the button label and show only the icon? =
+Yes! You can hide the label on mobile, desktop, or both for a cleaner icon-only appearance.
+
 == Changelog ==
+= 0.7.0 =
+- feat: WordPress Color Picker for button color selection
+- feat: Separate mobile button size control
+- feat: Hide label on desktop option (icon-only mode)
+- improvement: Perfectly round button shape when label is hidden
+- improvement: Better responsive design controls
+
 = 0.6.1 =
-- i18n/compat: Text Domain set to `chatly`, removed `load_plugin_textdomain()` per WP 4.6+, update "Tested up to" to 6.8
+- i18n/compat: Text Domain set to `tap-chat`, removed `load_plugin_textdomain()` per WP 4.6+, update "Tested up to" to 6.8
 
 = 0.1.5 =
 - fix: set Text Domain to plugin slug, remove `load_plugin_textdomain()` (per WP 4.6+ rules), update "Tested up to" to 6.8
@@ -64,8 +84,11 @@ It loads a tiny CSS/JS (~3KB).
 - First public MVP.
 
 == Upgrade Notice ==
-0.6.1 – i18n header & compatibility updates.
+= 0.7.0 =
+New features: WordPress Color Picker, separate mobile/desktop controls, and improved button design.
 
+= 0.6.1 =
+i18n header & compatibility updates.
 
 == Author ==
 - Author: iruserwp9

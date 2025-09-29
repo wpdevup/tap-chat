@@ -1,5 +1,6 @@
 :root {
   --tapchat-size: 56px;
+  --tapchat-mobile-size: 56px;
   --tapchat-color: #25D366;
 }
 
@@ -26,5 +27,60 @@
 .tapchat-pos-left { left: 18px; }
 .tapchat-icon { width: var(--tapchat-size); height: var(--tapchat-size); display: inline-block; fill: #fff; }
 .tapchat-label { white-space: nowrap; }
-@media (max-width: 480px) { .tapchat-hide-label-mobile .tapchat-label { display: none; } }
+
+/* Desktop - Perfectly round button when label is hidden */
+@media (min-width: 481px) {
+  .tapchat-hide-label-desktop .tapchat-label { 
+    display: none; 
+  }
+  
+  .tapchat-hide-label-desktop.tapchat-fab {
+    padding: 0;
+    width: calc(var(--tapchat-size) + 20px);
+    height: calc(var(--tapchat-size) + 20px);
+    min-width: calc(var(--tapchat-size) + 20px);
+    min-height: calc(var(--tapchat-size) + 20px);
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .tapchat-hide-label-desktop.tapchat-fab .tapchat-icon {
+    width: calc(var(--tapchat-size) - 8px);
+    height: calc(var(--tapchat-size) - 8px);
+  }
+}
+
+/* Mobile - Separate size and round button */
+@media (max-width: 480px) { 
+  /* Use mobile size */
+  .tapchat-icon { 
+    width: var(--tapchat-mobile-size); 
+    height: var(--tapchat-mobile-size); 
+  }
+  
+  .tapchat-hide-label-mobile .tapchat-label { 
+    display: none; 
+  }
+  
+  /* When label is hidden, button should be perfectly round */
+  .tapchat-hide-label-mobile.tapchat-fab {
+    padding: 0;
+    width: calc(var(--tapchat-mobile-size) + 20px);
+    height: calc(var(--tapchat-mobile-size) + 20px);
+    min-width: calc(var(--tapchat-mobile-size) + 20px);
+    min-height: calc(var(--tapchat-mobile-size) + 20px);
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .tapchat-hide-label-mobile.tapchat-fab .tapchat-icon {
+    width: calc(var(--tapchat-mobile-size) - 8px);
+    height: calc(var(--tapchat-mobile-size) - 8px);
+  }
+}
+
 .tapchat-inline { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; border-bottom: 2px solid currentColor; }

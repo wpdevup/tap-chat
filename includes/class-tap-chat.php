@@ -37,21 +37,104 @@ class Plugin {
         return isset( $opts[ $key ] ) ? $opts[ $key ] : $default;
     }
 
-    private function build_whatsapp_url( $phone, $message = '' ) {
+    private function get_full_phone_number() {
+        $country_code = $this->get_option( 'country_code', '49' );
+        $phone = $this->get_option( 'phone', '' );
+        
+        // Remove any non-digit characters from phone
         $phone = preg_replace('/\D+/', '', $phone);
+        
+        // Remove leading zeros
+        $phone = ltrim($phone, '0');
+        
+        if ( empty( $phone ) ) {
+            return '';
+        }
+        
+        // Combine country code with phone number
+        return $country_code . $phone;
+    }
+
+    private function build_whatsapp_url( $phone, $message = '' ) {
+        // If phone doesn't contain country code prefix, use get_full_phone_number
+        if ( strpos( $phone, '+' ) === false && ! preg_match('/^\d{10,15}$/', $phone ) ) {
+            $phone = $this->get_full_phone_number();
+        } else {
+            $phone = preg_replace('/\D+/', '', $phone);
+        }
+        
+        if ( empty( $phone ) ) {
+            return '';
+        }
+        
         $url = 'https://wa.me/' . $phone;
         if ( ! empty( $message ) ) {
             $url .= '?text=' . rawurlencode( $message );
         }
         return esc_url( $url );
     }
+    
+    private function should_show_button() {
+        $enable_show_on = $this->get_option( 'enable_show_on', 'no' );
+        $enable_hide_on = $this->get_option( 'enable_hide_on', 'no' );
+        
+        // If both are disabled, show everywhere
+        if ( $enable_show_on === 'no' && $enable_hide_on === 'no' ) {
+            return true;
+        }
+        
+        // Get current page ID (works for posts, pages, and WooCommerce shop page)
+        $current_id = get_queried_object_id();
+        
+        // For WooCommerce shop page
+        if ( function_exists( 'is_shop' ) && is_shop() ) {
+            $current_id = wc_get_page_id( 'shop' );
+        }
+        
+        // If no ID found, use default behavior
+        if ( ! $current_id ) {
+            // If "show only" is enabled, don't show when we can't identify the page
+            if ( $enable_show_on === 'yes' ) {
+                return false;
+            }
+            // Otherwise show
+            return true;
+        }
+        
+        $show_on_pages = $this->get_option( 'show_on_pages', array() );
+        $hide_on_pages = $this->get_option( 'hide_on_pages', array() );
+        
+        // If "show only" is enabled, check if current page is in the list
+        if ( $enable_show_on === 'yes' ) {
+            $in_show_list = in_array( $current_id, (array) $show_on_pages );
+            
+            // If also "hide on" is enabled, check hide list too
+            if ( $enable_hide_on === 'yes' && $in_show_list ) {
+                $in_hide_list = in_array( $current_id, (array) $hide_on_pages );
+                return $in_show_list && ! $in_hide_list;
+            }
+            
+            return $in_show_list;
+        }
+        
+        // If only "hide on" is enabled
+        if ( $enable_hide_on === 'yes' ) {
+            $in_hide_list = in_array( $current_id, (array) $hide_on_pages );
+            return ! $in_hide_list;
+        }
+        
+        return true;
+    }
 
     public function render_floating_button() {
         $enabled = $this->get_option( 'enable_floating', 'yes' );
         if ( 'yes' !== $enabled ) { return; }
 
-        $phone   = $this->get_option( 'phone', '' );
-        if ( empty( $phone ) ) { return; }
+        // Check visibility settings
+        if ( ! $this->should_show_button() ) { return; }
+
+        $full_phone = $this->get_full_phone_number();
+        if ( empty( $full_phone ) ) { return; }
 
         $message = $this->get_option( 'message', '' );
         $label   = $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) );
@@ -63,7 +146,7 @@ class Plugin {
         $hide_dt = $this->get_option( 'hide_label_desktop', 'no' );
         $append  = $this->get_option( 'append_page_context', 'no' );
 
-        $href = $this->build_whatsapp_url( $phone, $message );
+        $href = $this->build_whatsapp_url( $full_phone, $message );
 
         $classes = 'tapchat-fab tapchat-pos-' . esc_attr( $pos );
         if ( 'yes' === $hide_mb ) {
@@ -88,10 +171,15 @@ class Plugin {
 
     public function shortcode( $atts ) {
         $atts = shortcode_atts( [
-            'phone'   => $this->get_option( 'phone', '' ),
+            'phone'   => '',
             'message' => $this->get_option( 'message', '' ),
             'label'   => $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) ),
         ], $atts, 'tapchat' );
+
+        // If no phone provided in shortcode, use settings
+        if ( empty( $atts['phone'] ) ) {
+            $atts['phone'] = $this->get_full_phone_number();
+        }
 
         if ( empty( $atts['phone'] ) ) { return ''; }
 

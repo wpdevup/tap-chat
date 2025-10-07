@@ -4,6 +4,13 @@ A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add 
 
 ## ✨ Features
 
+### 🕐 Working Hours Management
+- **Business Hours Scheduler** - Set different hours for each day of the week
+- **Timezone Support** - Choose your business timezone
+- **Offline Mode** - Show custom message or hide button outside working hours
+- **Day-Specific Control** - Enable/disable specific days independently
+- **Flexible Scheduling** - Perfect for customer support teams
+
 ### 🌍 Smart Country Selector
 - **150+ countries** with flag emojis
 - **Real-time search** - find your country instantly
@@ -66,6 +73,20 @@ git clone https://github.com/yourusername/tap-chat.git
 4. Customize appearance (color, size, label)
 5. Save changes
 
+### Working Hours Setup
+1. Navigate to **Settings → Tap Chat → Working Hours**
+2. Enable **Working Hours** checkbox
+3. Select your business timezone
+4. Set hours for each day of the week
+5. Disable days you're closed (weekends, holidays)
+6. Optionally add an offline message
+7. Save changes
+
+**Working Hours Options:**
+- **Show button only during business hours** - Button appears during set times
+- **Hide button completely when offline** - Leave offline message empty
+- **Show offline message** - Display custom message when closed
+
 ### Advanced Visibility
 1. Navigate to **Settings → Tap Chat → Visibility Settings**
 2. Choose your visibility mode:
@@ -94,24 +115,50 @@ The button appears automatically on all pages after configuration.
 [tapchat phone="4915012345678" message="Hello!" label="Contact Support"]
 ```
 
+### Working Hours Examples
+
+#### Customer Support (Mon-Fri, 9-5)
+```
+Monday-Friday: 09:00 - 17:00 (Enabled)
+Saturday-Sunday: Closed (Disabled)
+Offline Message: "Our support team is available Monday-Friday, 9 AM - 5 PM"
+```
+
+#### Retail Store (7 Days, Different Hours)
+```
+Monday-Friday: 10:00 - 20:00
+Saturday: 10:00 - 18:00
+Sunday: 12:00 - 17:00
+Timezone: Europe/Berlin
+```
+
+#### E-commerce with 24/7 Chat
+```
+All days: 00:00 - 23:59
+OR disable working hours completely
+```
+
 ### Use Cases
 
 #### E-commerce Store
 ```
 ✓ Show on: Product pages, Shop page
 ✗ Hide on: Checkout, Thank you page, Cart
+⏰ Hours: Mon-Sat 9 AM - 6 PM
 ```
 
 #### Service Business
 ```
 ✓ Show on: Services page, Contact page, Homepage
 ✗ Hide on: Privacy Policy, Terms of Service
+⏰ Hours: Mon-Fri 8 AM - 5 PM
 ```
 
 #### Landing Page
 ```
 ✓ Show ONLY on: Specific landing page
 ✗ Hide on: (not needed)
+⏰ Hours: Always available
 ```
 
 ## 🎯 Visibility Control Logic
@@ -122,8 +169,21 @@ The button appears automatically on all pages after configuration.
 | Show Only | Only on selected pages |
 | Hide On | Everywhere except selected pages |
 | Both enabled | Show only on selected pages, excluding hide list |
+| Working Hours | Show only during business hours |
 
 ## 🔄 Changelog
+
+### Version 1.0.0
+#### 🎉 New Features
+- **Working Hours Management** - Set business hours for each day
+- **Timezone Support** - Choose your business timezone
+- **Offline Mode** - Custom message or hide button when closed
+- **Day-Specific Scheduling** - Enable/disable individual days
+
+#### 🎨 Improvements
+- Better admin UI organization
+- Enhanced settings structure
+- Improved documentation
 
 ### Version 0.9.0
 #### 🎉 New Features
@@ -134,28 +194,6 @@ The button appears automatically on all pages after configuration.
 - Automatic leading zero removal from phone numbers
 - WooCommerce shop page support
 - Page/post search in visibility selector
-
-#### 🎨 Improvements
-- Better UX with checkbox-based visibility controls
-- Clear descriptions and visual indicators
-- Improved admin interface organization
-- Better mobile responsiveness
-- Enhanced error handling
-
-#### 🐛 Bug Fixes
-- Fixed shop page visibility detection
-- Fixed country selection state persistence
-- Improved phone number formatting
-
-### Version 0.8.0
-- Added country picker with flags
-- Auto-detection from WordPress language
-- Migration system for existing users
-
-### Version 0.7.0
-- WordPress Color Picker integration
-- Separate mobile/desktop controls
-- Icon-only mode support
 
 [View Full Changelog](https://wordpress.org/plugins/tap-chat/#developers)
 
@@ -231,35 +269,28 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 - WordPress community for continuous inspiration
 - All contributors and users who provide feedback
 
-## 📊 Stats
-
-- **Active Installations:** Check [WordPress.org](https://wordpress.org/plugins/tap-chat/)
-- **Rating:** ⭐⭐⭐⭐⭐
-- **Support Threads Resolved:** High response rate
-- **Last Updated:** Regular updates
-
-## 🔗 Links
-
-- [WordPress.org Plugin Page](https://wordpress.org/plugins/tap-chat/)
-- [Support Forum](https://wordpress.org/support/plugin/tap-chat/)
-- [Changelog](https://wordpress.org/plugins/tap-chat/#developers)
-- [FAQ](https://wordpress.org/plugins/tap-chat/#faq)
-
 ## 💡 Pro Tips
 
 ### For Best Results
-1. **Use descriptive labels** - "Chat with Sales" is better than "Chat"
-2. **Set up visibility rules** - Don't show on checkout/cart pages
-3. **Test on mobile** - Most WhatsApp chats happen on mobile
-4. **Keep messages short** - Pre-filled messages work better when concise
+1. **Set realistic working hours** - Match your actual availability
+2. **Use timezone correctly** - Ensure it matches your business location
+3. **Test offline message** - Make sure it's helpful and professional
+4. **Combine with visibility rules** - Hide on irrelevant pages
 5. **Update phone number** - Make sure it's active and monitored
 
 ### Common Use Cases
-- **E-commerce Support** - Quick customer service
-- **Appointment Booking** - Instant scheduling
-- **Sales Inquiries** - Direct communication
-- **Technical Support** - Real-time help
-- **Lead Generation** - Convert visitors to conversations
+- **E-commerce Support** - Quick customer service during business hours
+- **Appointment Booking** - Instant scheduling within working hours
+- **Sales Inquiries** - Direct communication when team is available
+- **Technical Support** - Real-time help during support hours
+- **Lead Generation** - Convert visitors during peak hours
+
+### Working Hours Best Practices
+- **Set buffer time** - End 15 minutes before actual closing
+- **Consider time zones** - Use customer's timezone for global businesses
+- **Holiday schedules** - Temporarily disable on holidays
+- **Lunch breaks** - Consider splitting into morning/afternoon shifts
+- **Auto-responders** - Use offline message to set expectations
 
 ---
 

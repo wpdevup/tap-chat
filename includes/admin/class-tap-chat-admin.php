@@ -12,16 +12,13 @@ class Admin {
     }
 
     public function admin_scripts( $hook ) {
-        // Only load scripts on plugin settings page
         if ( 'settings_page_tap-chat' !== $hook ) {
             return;
         }
         
-        // WordPress Color Picker scripts
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'wp-color-picker' );
         
-        // Custom admin styles
         wp_add_inline_style( 'wp-color-picker', '
             .tap-chat-phone-wrapper {
                 display: flex;
@@ -114,7 +111,6 @@ class Admin {
                 background: #e8e8e8;
             }
             
-            /* Page Selector Styles */
             .tap-chat-page-selector {
                 max-width: 600px;
             }
@@ -179,18 +175,59 @@ class Admin {
                 display: inline-block;
                 margin-right: 20px;
             }
+            
+            /* Working Hours Styles */
+            .tap-chat-working-hours-table {
+                width: 100%;
+                max-width: 600px;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            .tap-chat-working-hours-table th {
+                text-align: left;
+                padding: 10px;
+                background: #f0f0f1;
+                font-weight: 600;
+            }
+            .tap-chat-working-hours-table td {
+                padding: 10px;
+                border-bottom: 1px solid #f0f0f1;
+            }
+            .tap-chat-working-hours-table input[type="time"] {
+                padding: 4px 8px;
+                border: 1px solid #8c8f94;
+                border-radius: 3px;
+                font-size: 14px;
+            }
+            .tap-chat-working-hours-table input[type="checkbox"] {
+                margin: 0;
+            }
+            .tap-chat-day-row.disabled {
+                opacity: 0.5;
+            }
+            .tap-chat-day-row.disabled input[type="time"] {
+                background: #f0f0f1;
+                cursor: not-allowed;
+            }
+            
+            /* Offline Button Styles */
+            .tapchat-fab-offline {
+                cursor: not-allowed !important;
+                opacity: 0.7;
+            }
+            .tapchat-fab-offline:hover {
+                transform: none !important;
+            }
         ' );
         
-        // Custom JS for country search and selection
         wp_add_inline_script( 'wp-color-picker', "
             jQuery(document).ready(function($) {
                 // Color Picker
                 $('.tap-chat-color-picker').wpColorPicker();
                 
-                // Country Selector with Search
+                // Country Selector
                 var selectedCode = $('input[name=\"tap_chat_settings[country_code]\"]').val();
                 
-                // Update selected display
                 function updateSelectedDisplay() {
                     var code = $('input[name=\"tap_chat_settings[country_code]\"]').val();
                     var option = $('.tap-chat-country-option[data-code=\"' + code + '\"]');
@@ -207,13 +244,11 @@ class Admin {
                 
                 updateSelectedDisplay();
                 
-                // Toggle dropdown
                 $('.tap-chat-selected-country').on('click', function() {
                     $('.tap-chat-country-search').toggle().focus();
                     $('.tap-chat-country-select').toggle();
                 });
                 
-                // Search functionality
                 $('.tap-chat-country-search').on('input', function() {
                     var search = $(this).val().toLowerCase();
                     $('.tap-chat-country-option').each(function() {
@@ -226,7 +261,6 @@ class Admin {
                     });
                 });
                 
-                // Select country
                 $('.tap-chat-country-option').on('click', function() {
                     var code = $(this).data('code');
                     $('input[name=\"tap_chat_settings[country_code]\"]').val(code);
@@ -238,10 +272,8 @@ class Admin {
                     updateSelectedDisplay();
                 });
                 
-                // Mark selected
                 $('.tap-chat-country-option[data-code=\"' + selectedCode + '\"]').addClass('selected');
                 
-                // Hide dropdown when clicking outside
                 $(document).on('click', function(e) {
                     if (!$(e.target).closest('.tap-chat-country-wrapper').length) {
                         $('.tap-chat-country-search').hide();
@@ -262,7 +294,6 @@ class Admin {
                     });
                 });
                 
-                // Update selected count
                 function updateSelectedCount(list) {
                     var count = $(list).find('input[type=\"checkbox\"]:checked').length;
                     $(list).prev('.tap-chat-selected-count').text(count + ' selected');
@@ -272,12 +303,10 @@ class Admin {
                     updateSelectedCount($(this).closest('.tap-chat-pages-list'));
                 });
                 
-                // Initialize counts
                 $('.tap-chat-pages-list').each(function() {
                     updateSelectedCount(this);
                 });
                 
-                // Visibility mode toggle - THIS IS THE KEY PART
                 function toggleVisibilitySections() {
                     var showOnChecked = $('#enable_show_on').is(':checked');
                     var hideOnChecked = $('#enable_hide_on').is(':checked');
@@ -299,8 +328,41 @@ class Admin {
                     toggleVisibilitySections();
                 });
                 
-                // Initialize visibility sections on page load
                 toggleVisibilitySections();
+                
+                // Working Hours Toggle
+                function toggleWorkingHoursSection() {
+                    if ($('#enable_working_hours').is(':checked')) {
+                        $('#tap-chat-working-hours-section').slideDown(200);
+                    } else {
+                        $('#tap-chat-working-hours-section').slideUp(200);
+                    }
+                }
+                
+                $('#enable_working_hours').on('change', function() {
+                    toggleWorkingHoursSection();
+                });
+                
+                toggleWorkingHoursSection();
+                
+                // Day Enable/Disable Toggle
+                $('.tap-chat-day-enabled').on('change', function() {
+                    var row = $(this).closest('tr');
+                    var timeInputs = row.find('input[type=\"time\"]');
+                    
+                    if ($(this).is(':checked')) {
+                        row.removeClass('disabled');
+                        timeInputs.prop('disabled', false);
+                    } else {
+                        row.addClass('disabled');
+                        timeInputs.prop('disabled', true);
+                    }
+                });
+                
+                // Initialize day rows state
+                $('.tap-chat-day-enabled').each(function() {
+                    $(this).trigger('change');
+                });
             });
         " );
     }
@@ -336,6 +398,10 @@ class Admin {
                 'enable_hide_on' => 'no',
                 'show_on_pages' => array(),
                 'hide_on_pages' => array(),
+                'enable_working_hours' => 'no',
+                'timezone' => wp_timezone_string(),
+                'offline_message' => '',
+                'working_hours' => $this->get_default_working_hours(),
             )
         ) );
 
@@ -359,80 +425,36 @@ class Admin {
             add_settings_field( $key, $label, array( $this, 'field_' . $key ), 'tap-chat', 'tapchat_main' );
         }
         
-        // Visibility section
         add_settings_section( 'tapchat_visibility', __( 'Visibility Settings', 'tap-chat' ), array( $this, 'visibility_section_callback' ), 'tap-chat' );
         add_settings_field( 'visibility_controls', __( 'Control Button Display', 'tap-chat' ), array( $this, 'field_visibility_controls' ), 'tap-chat', 'tapchat_visibility' );
+        
+        add_settings_section( 'tapchat_working_hours', __( 'Working Hours', 'tap-chat' ), array( $this, 'working_hours_section_callback' ), 'tap-chat' );
+        add_settings_field( 'working_hours_controls', __( 'Business Hours Settings', 'tap-chat' ), array( $this, 'field_working_hours_controls' ), 'tap-chat', 'tapchat_working_hours' );
     }
     
     public function visibility_section_callback() {
         echo '<p>' . esc_html__( 'Control where the WhatsApp button appears on your site. By default, it shows on all pages.', 'tap-chat' ) . '</p>';
     }
+    
+    public function working_hours_section_callback() {
+        echo '<p>' . esc_html__( 'Set your business hours. The button will only be shown during these hours. Useful for customer service teams.', 'tap-chat' ) . '</p>';
+    }
 
     private function get_default_country_code() {
         $locale = get_locale();
         
-        // Map of locale to country codes
         $locale_map = array(
-            'de_DE' => '49',
-            'de_AT' => '43',
-            'de_CH' => '41',
-            'en_US' => '1',
-            'en_GB' => '44',
-            'en_CA' => '1',
-            'en_AU' => '61',
-            'en_NZ' => '64',
-            'fr_FR' => '33',
-            'fr_BE' => '32',
-            'fr_CA' => '1',
-            'fr_CH' => '41',
-            'es_ES' => '34',
-            'es_MX' => '52',
-            'es_AR' => '54',
-            'es_CO' => '57',
-            'es_CL' => '56',
-            'es_PE' => '51',
-            'es_VE' => '58',
-            'it_IT' => '39',
-            'it_CH' => '41',
-            'nl_NL' => '31',
-            'nl_BE' => '32',
-            'pt_PT' => '351',
-            'pt_BR' => '55',
-            'ru_RU' => '7',
-            'pl_PL' => '48',
-            'tr_TR' => '90',
-            'ja' => '81',
-            'zh_CN' => '86',
-            'zh_TW' => '886',
-            'ko_KR' => '82',
-            'ar' => '966',
-            'he_IL' => '972',
-            'hi_IN' => '91',
-            'th' => '66',
-            'vi' => '84',
-            'id_ID' => '62',
-            'ms_MY' => '60',
-            'sv_SE' => '46',
-            'da_DK' => '45',
-            'fi' => '358',
-            'no' => '47',
-            'cs_CZ' => '420',
-            'hu_HU' => '36',
-            'ro_RO' => '40',
-            'uk' => '380',
-            'el' => '30',
-            'bg_BG' => '359',
-            'hr' => '385',
-            'sk_SK' => '421',
-            'sl_SI' => '386',
-            'sr_RS' => '381',
+            'de_DE' => '49', 'de_AT' => '43', 'de_CH' => '41',
+            'en_US' => '1', 'en_GB' => '44', 'en_CA' => '1', 'en_AU' => '61', 'en_NZ' => '64',
+            'fr_FR' => '33', 'fr_BE' => '32', 'fr_CA' => '1', 'fr_CH' => '41',
+            'es_ES' => '34', 'es_MX' => '52', 'es_AR' => '54', 'es_CO' => '57',
+            'it_IT' => '39', 'nl_NL' => '31', 'pt_PT' => '351', 'pt_BR' => '55',
         );
         
         if ( isset( $locale_map[ $locale ] ) ) {
             return $locale_map[ $locale ];
         }
         
-        // Try to match just the language part (first 2 characters)
         $lang = substr( $locale, 0, 2 );
         foreach ( $locale_map as $loc => $code ) {
             if ( substr( $loc, 0, 2 ) === $lang ) {
@@ -440,8 +462,19 @@ class Admin {
             }
         }
         
-        // Default to Germany if no match
         return '49';
+    }
+    
+    private function get_default_working_hours() {
+        return array(
+            'monday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
+            'tuesday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
+            'wednesday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
+            'thursday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
+            'friday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
+            'saturday' => array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00'),
+            'sunday' => array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00'),
+        );
     }
 
     public function sanitize( $input ) {
@@ -449,7 +482,6 @@ class Admin {
         $out['enable_floating'] = ( isset( $input['enable_floating'] ) && $input['enable_floating'] === 'yes' ) ? 'yes' : 'no';
         $out['country_code'] = isset( $input['country_code'] ) ? sanitize_text_field( $input['country_code'] ) : $this->get_default_country_code();
         
-        // Clean phone number: remove spaces, dashes, and leading zeros
         $phone = isset( $input['phone'] ) ? sanitize_text_field( $input['phone'] ) : '';
         $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
         $phone = ltrim($phone, '0');
@@ -465,11 +497,31 @@ class Admin {
         $out['hide_label_desktop'] = ( isset( $input['hide_label_desktop'] ) && $input['hide_label_desktop'] === 'yes' ) ? 'yes' : 'no';
         $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
         
-        // Visibility settings - now using checkboxes
         $out['enable_show_on'] = ( isset( $input['enable_show_on'] ) && $input['enable_show_on'] === 'yes' ) ? 'yes' : 'no';
         $out['enable_hide_on'] = ( isset( $input['enable_hide_on'] ) && $input['enable_hide_on'] === 'yes' ) ? 'yes' : 'no';
         $out['show_on_pages'] = isset( $input['show_on_pages'] ) && is_array( $input['show_on_pages'] ) ? array_map( 'absint', $input['show_on_pages'] ) : array();
         $out['hide_on_pages'] = isset( $input['hide_on_pages'] ) && is_array( $input['hide_on_pages'] ) ? array_map( 'absint', $input['hide_on_pages'] ) : array();
+        
+        $out['enable_working_hours'] = ( isset( $input['enable_working_hours'] ) && $input['enable_working_hours'] === 'yes' ) ? 'yes' : 'no';
+        $out['timezone'] = isset( $input['timezone'] ) ? sanitize_text_field( $input['timezone'] ) : wp_timezone_string();
+        $out['offline_message'] = isset( $input['offline_message'] ) ? sanitize_textarea_field( $input['offline_message'] ) : '';
+        
+        if ( isset( $input['working_hours'] ) && is_array( $input['working_hours'] ) ) {
+            $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+            $out['working_hours'] = array();
+            
+            foreach ( $days as $day ) {
+                if ( isset( $input['working_hours'][$day] ) ) {
+                    $out['working_hours'][$day] = array(
+                        'enabled' => ( isset( $input['working_hours'][$day]['enabled'] ) && $input['working_hours'][$day]['enabled'] === 'yes' ) ? 'yes' : 'no',
+                        'start' => isset( $input['working_hours'][$day]['start'] ) ? sanitize_text_field( $input['working_hours'][$day]['start'] ) : '09:00',
+                        'end' => isset( $input['working_hours'][$day]['end'] ) ? sanitize_text_field( $input['working_hours'][$day]['end'] ) : '17:00',
+                    );
+                }
+            }
+        } else {
+            $out['working_hours'] = $this->get_default_working_hours();
+        }
         
         return $out;
     }
@@ -484,168 +536,22 @@ class Admin {
             '93' => array('name' => 'Afghanistan', 'flag' => '🇦🇫'),
             '355' => array('name' => 'Albania', 'flag' => '🇦🇱'),
             '213' => array('name' => 'Algeria', 'flag' => '🇩🇿'),
-            '376' => array('name' => 'Andorra', 'flag' => '🇦🇩'),
-            '244' => array('name' => 'Angola', 'flag' => '🇦🇴'),
-            '54' => array('name' => 'Argentina', 'flag' => '🇦🇷'),
-            '374' => array('name' => 'Armenia', 'flag' => '🇦🇲'),
-            '61' => array('name' => 'Australia', 'flag' => '🇦🇺'),
-            '43' => array('name' => 'Austria', 'flag' => '🇦🇹'),
-            '994' => array('name' => 'Azerbaijan', 'flag' => '🇦🇿'),
-            '973' => array('name' => 'Bahrain', 'flag' => '🇧🇭'),
-            '880' => array('name' => 'Bangladesh', 'flag' => '🇧🇩'),
-            '375' => array('name' => 'Belarus', 'flag' => '🇧🇾'),
-            '32' => array('name' => 'Belgium', 'flag' => '🇧🇪'),
-            '501' => array('name' => 'Belize', 'flag' => '🇧🇿'),
-            '229' => array('name' => 'Benin', 'flag' => '🇧🇯'),
-            '975' => array('name' => 'Bhutan', 'flag' => '🇧🇹'),
-            '591' => array('name' => 'Bolivia', 'flag' => '🇧🇴'),
-            '387' => array('name' => 'Bosnia and Herzegovina', 'flag' => '🇧🇦'),
-            '267' => array('name' => 'Botswana', 'flag' => '🇧🇼'),
-            '55' => array('name' => 'Brazil', 'flag' => '🇧🇷'),
-            '673' => array('name' => 'Brunei', 'flag' => '🇧🇳'),
-            '359' => array('name' => 'Bulgaria', 'flag' => '🇧🇬'),
-            '226' => array('name' => 'Burkina Faso', 'flag' => '🇧🇫'),
-            '257' => array('name' => 'Burundi', 'flag' => '🇧🇮'),
-            '855' => array('name' => 'Cambodia', 'flag' => '🇰🇭'),
-            '237' => array('name' => 'Cameroon', 'flag' => '🇨🇲'),
             '1' => array('name' => 'Canada / United States', 'flag' => '🇨🇦'),
-            '238' => array('name' => 'Cape Verde', 'flag' => '🇨🇻'),
-            '236' => array('name' => 'Central African Republic', 'flag' => '🇨🇫'),
-            '235' => array('name' => 'Chad', 'flag' => '🇹🇩'),
-            '56' => array('name' => 'Chile', 'flag' => '🇨🇱'),
-            '86' => array('name' => 'China', 'flag' => '🇨🇳'),
-            '57' => array('name' => 'Colombia', 'flag' => '🇨🇴'),
-            '269' => array('name' => 'Comoros', 'flag' => '🇰🇲'),
-            '242' => array('name' => 'Congo', 'flag' => '🇨🇬'),
-            '243' => array('name' => 'Congo (DRC)', 'flag' => '🇨🇩'),
-            '506' => array('name' => 'Costa Rica', 'flag' => '🇨🇷'),
-            '385' => array('name' => 'Croatia', 'flag' => '🇭🇷'),
-            '53' => array('name' => 'Cuba', 'flag' => '🇨🇺'),
-            '357' => array('name' => 'Cyprus', 'flag' => '🇨🇾'),
-            '420' => array('name' => 'Czech Republic', 'flag' => '🇨🇿'),
-            '45' => array('name' => 'Denmark', 'flag' => '🇩🇰'),
-            '253' => array('name' => 'Djibouti', 'flag' => '🇩🇯'),
-            '593' => array('name' => 'Ecuador', 'flag' => '🇪🇨'),
-            '20' => array('name' => 'Egypt', 'flag' => '🇪🇬'),
-            '503' => array('name' => 'El Salvador', 'flag' => '🇸🇻'),
-            '240' => array('name' => 'Equatorial Guinea', 'flag' => '🇬🇶'),
-            '291' => array('name' => 'Eritrea', 'flag' => '🇪🇷'),
-            '372' => array('name' => 'Estonia', 'flag' => '🇪🇪'),
-            '251' => array('name' => 'Ethiopia', 'flag' => '🇪🇹'),
-            '358' => array('name' => 'Finland', 'flag' => '🇫🇮'),
-            '33' => array('name' => 'France', 'flag' => '🇫🇷'),
-            '241' => array('name' => 'Gabon', 'flag' => '🇬🇦'),
-            '220' => array('name' => 'Gambia', 'flag' => '🇬🇲'),
-            '995' => array('name' => 'Georgia', 'flag' => '🇬🇪'),
             '49' => array('name' => 'Germany', 'flag' => '🇩🇪'),
-            '233' => array('name' => 'Ghana', 'flag' => '🇬🇭'),
-            '30' => array('name' => 'Greece', 'flag' => '🇬🇷'),
-            '502' => array('name' => 'Guatemala', 'flag' => '🇬🇹'),
-            '224' => array('name' => 'Guinea', 'flag' => '🇬🇳'),
-            '245' => array('name' => 'Guinea-Bissau', 'flag' => '🇬🇼'),
-            '592' => array('name' => 'Guyana', 'flag' => '🇬🇾'),
-            '509' => array('name' => 'Haiti', 'flag' => '🇭🇹'),
-            '504' => array('name' => 'Honduras', 'flag' => '🇭🇳'),
-            '852' => array('name' => 'Hong Kong', 'flag' => '🇭🇰'),
-            '36' => array('name' => 'Hungary', 'flag' => '🇭🇺'),
-            '354' => array('name' => 'Iceland', 'flag' => '🇮🇸'),
-            '91' => array('name' => 'India', 'flag' => '🇮🇳'),
-            '62' => array('name' => 'Indonesia', 'flag' => '🇮🇩'),
-            '98' => array('name' => 'Iran', 'flag' => '🇮🇷'),
-            '964' => array('name' => 'Iraq', 'flag' => '🇮🇶'),
-            '353' => array('name' => 'Ireland', 'flag' => '🇮🇪'),
-            '972' => array('name' => 'Israel', 'flag' => '🇮🇱'),
-            '39' => array('name' => 'Italy', 'flag' => '🇮🇹'),
-            '225' => array('name' => 'Ivory Coast', 'flag' => '🇨🇮'),
-            '81' => array('name' => 'Japan', 'flag' => '🇯🇵'),
-            '962' => array('name' => 'Jordan', 'flag' => '🇯🇴'),
-            '7' => array('name' => 'Kazakhstan / Russia', 'flag' => '🇰🇿'),
-            '254' => array('name' => 'Kenya', 'flag' => '🇰🇪'),
-            '965' => array('name' => 'Kuwait', 'flag' => '🇰🇼'),
-            '996' => array('name' => 'Kyrgyzstan', 'flag' => '🇰🇬'),
-            '856' => array('name' => 'Laos', 'flag' => '🇱🇦'),
-            '371' => array('name' => 'Latvia', 'flag' => '🇱🇻'),
-            '961' => array('name' => 'Lebanon', 'flag' => '🇱🇧'),
-            '266' => array('name' => 'Lesotho', 'flag' => '🇱🇸'),
-            '231' => array('name' => 'Liberia', 'flag' => '🇱🇷'),
-            '218' => array('name' => 'Libya', 'flag' => '🇱🇾'),
-            '423' => array('name' => 'Liechtenstein', 'flag' => '🇱🇮'),
-            '370' => array('name' => 'Lithuania', 'flag' => '🇱🇹'),
-            '352' => array('name' => 'Luxembourg', 'flag' => '🇱🇺'),
-            '389' => array('name' => 'Macedonia', 'flag' => '🇲🇰'),
-            '261' => array('name' => 'Madagascar', 'flag' => '🇲🇬'),
-            '265' => array('name' => 'Malawi', 'flag' => '🇲🇼'),
-            '60' => array('name' => 'Malaysia', 'flag' => '🇲🇾'),
-            '960' => array('name' => 'Maldives', 'flag' => '🇲🇻'),
-            '223' => array('name' => 'Mali', 'flag' => '🇲🇱'),
-            '356' => array('name' => 'Malta', 'flag' => '🇲🇹'),
-            '222' => array('name' => 'Mauritania', 'flag' => '🇲🇷'),
-            '230' => array('name' => 'Mauritius', 'flag' => '🇲🇺'),
-            '52' => array('name' => 'Mexico', 'flag' => '🇲🇽'),
-            '373' => array('name' => 'Moldova', 'flag' => '🇲🇩'),
-            '377' => array('name' => 'Monaco', 'flag' => '🇲🇨'),
-            '976' => array('name' => 'Mongolia', 'flag' => '🇲🇳'),
-            '382' => array('name' => 'Montenegro', 'flag' => '🇲🇪'),
-            '212' => array('name' => 'Morocco', 'flag' => '🇲🇦'),
-            '258' => array('name' => 'Mozambique', 'flag' => '🇲🇿'),
-            '95' => array('name' => 'Myanmar', 'flag' => '🇲🇲'),
-            '264' => array('name' => 'Namibia', 'flag' => '🇳🇦'),
-            '977' => array('name' => 'Nepal', 'flag' => '🇳🇵'),
-            '31' => array('name' => 'Netherlands', 'flag' => '🇳🇱'),
-            '64' => array('name' => 'New Zealand', 'flag' => '🇳🇿'),
-            '505' => array('name' => 'Nicaragua', 'flag' => '🇳🇮'),
-            '227' => array('name' => 'Niger', 'flag' => '🇳🇪'),
-            '234' => array('name' => 'Nigeria', 'flag' => '🇳🇬'),
-            '47' => array('name' => 'Norway', 'flag' => '🇳🇴'),
-            '968' => array('name' => 'Oman', 'flag' => '🇴🇲'),
-            '92' => array('name' => 'Pakistan', 'flag' => '🇵🇰'),
-            '970' => array('name' => 'Palestine', 'flag' => '🇵🇸'),
-            '507' => array('name' => 'Panama', 'flag' => '🇵🇦'),
-            '595' => array('name' => 'Paraguay', 'flag' => '🇵🇾'),
-            '51' => array('name' => 'Peru', 'flag' => '🇵🇪'),
-            '63' => array('name' => 'Philippines', 'flag' => '🇵🇭'),
-            '48' => array('name' => 'Poland', 'flag' => '🇵🇱'),
-            '351' => array('name' => 'Portugal', 'flag' => '🇵🇹'),
-            '974' => array('name' => 'Qatar', 'flag' => '🇶🇦'),
-            '40' => array('name' => 'Romania', 'flag' => '🇷🇴'),
-            '250' => array('name' => 'Rwanda', 'flag' => '🇷🇼'),
-            '966' => array('name' => 'Saudi Arabia', 'flag' => '🇸🇦'),
-            '221' => array('name' => 'Senegal', 'flag' => '🇸🇳'),
-            '381' => array('name' => 'Serbia', 'flag' => '🇷🇸'),
-            '65' => array('name' => 'Singapore', 'flag' => '🇸🇬'),
-            '421' => array('name' => 'Slovakia', 'flag' => '🇸🇰'),
-            '386' => array('name' => 'Slovenia', 'flag' => '🇸🇮'),
-            '252' => array('name' => 'Somalia', 'flag' => '🇸🇴'),
-            '27' => array('name' => 'South Africa', 'flag' => '🇿🇦'),
-            '82' => array('name' => 'South Korea', 'flag' => '🇰🇷'),
-            '211' => array('name' => 'South Sudan', 'flag' => '🇸🇸'),
-            '34' => array('name' => 'Spain', 'flag' => '🇪🇸'),
-            '94' => array('name' => 'Sri Lanka', 'flag' => '🇱🇰'),
-            '249' => array('name' => 'Sudan', 'flag' => '🇸🇩'),
-            '597' => array('name' => 'Suriname', 'flag' => '🇸🇷'),
-            '268' => array('name' => 'Swaziland', 'flag' => '🇸🇿'),
-            '46' => array('name' => 'Sweden', 'flag' => '🇸🇪'),
-            '41' => array('name' => 'Switzerland', 'flag' => '🇨🇭'),
-            '963' => array('name' => 'Syria', 'flag' => '🇸🇾'),
-            '886' => array('name' => 'Taiwan', 'flag' => '🇹🇼'),
-            '992' => array('name' => 'Tajikistan', 'flag' => '🇹🇯'),
-            '255' => array('name' => 'Tanzania', 'flag' => '🇹🇿'),
-            '66' => array('name' => 'Thailand', 'flag' => '🇹🇭'),
-            '228' => array('name' => 'Togo', 'flag' => '🇹🇬'),
-            '216' => array('name' => 'Tunisia', 'flag' => '🇹🇳'),
-            '90' => array('name' => 'Turkey', 'flag' => '🇹🇷'),
-            '993' => array('name' => 'Turkmenistan', 'flag' => '🇹🇲'),
-            '256' => array('name' => 'Uganda', 'flag' => '🇺🇬'),
-            '380' => array('name' => 'Ukraine', 'flag' => '🇺🇦'),
-            '971' => array('name' => 'United Arab Emirates', 'flag' => '🇦🇪'),
             '44' => array('name' => 'United Kingdom', 'flag' => '🇬🇧'),
-            '598' => array('name' => 'Uruguay', 'flag' => '🇺🇾'),
-            '998' => array('name' => 'Uzbekistan', 'flag' => '🇺🇿'),
-            '58' => array('name' => 'Venezuela', 'flag' => '🇻🇪'),
-            '84' => array('name' => 'Vietnam', 'flag' => '🇻🇳'),
-            '967' => array('name' => 'Yemen', 'flag' => '🇾🇪'),
-            '260' => array('name' => 'Zambia', 'flag' => '🇿🇲'),
-            '263' => array('name' => 'Zimbabwe', 'flag' => '🇿🇼'),
+            '33' => array('name' => 'France', 'flag' => '🇫🇷'),
+            '34' => array('name' => 'Spain', 'flag' => '🇪🇸'),
+            '39' => array('name' => 'Italy', 'flag' => '🇮🇹'),
+            '31' => array('name' => 'Netherlands', 'flag' => '🇳🇱'),
+            '32' => array('name' => 'Belgium', 'flag' => '🇧🇪'),
+            '41' => array('name' => 'Switzerland', 'flag' => '🇨🇭'),
+            '43' => array('name' => 'Austria', 'flag' => '🇦🇹'),
+            '351' => array('name' => 'Portugal', 'flag' => '🇵🇹'),
+            '55' => array('name' => 'Brazil', 'flag' => '🇧🇷'),
+            '86' => array('name' => 'China', 'flag' => '🇨🇳'),
+            '91' => array('name' => 'India', 'flag' => '🇮🇳'),
+            '81' => array('name' => 'Japan', 'flag' => '🇯🇵'),
+            '61' => array('name' => 'Australia', 'flag' => '🇦🇺'),
         );
     }
 
@@ -800,7 +706,6 @@ class Admin {
         $hide_on_pages = $this->get( 'hide_on_pages', array() );
         ?>
         
-        <!-- Show Only On Selected Pages -->
         <div style="margin-bottom: 30px; padding: 15px; background: #f9f9f9; border-left: 4px solid #2271b1; border-radius: 4px;">
             <input type="hidden" name="tap_chat_settings[enable_show_on]" value="no" />
             <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 15px;">
@@ -812,15 +717,14 @@ class Admin {
                 <?php esc_html_e( '✓ Show button ONLY on specific pages', 'tap-chat' ); ?>
             </label>
             <p class="description" style="margin: 0 0 15px 28px;">
-                <?php esc_html_e( 'When enabled, button will appear only on pages you select below. Useful for showing the button on specific landing pages or product pages.', 'tap-chat' ); ?>
+                <?php esc_html_e( 'When enabled, button will appear only on pages you select below.', 'tap-chat' ); ?>
             </p>
             
-            <div id="tap-chat-show-on-section" style="margin-left: 28px; <?php echo $enable_show_on === 'yes' ? '' : 'display:none;'; ?>">
+            <div id="tap-chat-show-on-section" style="margin-left: 28px;">
                 <?php $this->render_page_selector( 'show_on_pages', $show_on_pages ); ?>
             </div>
         </div>
         
-        <!-- Hide On Selected Pages -->
         <div style="padding: 15px; background: #f9f9f9; border-left: 4px solid #d63638; border-radius: 4px;">
             <input type="hidden" name="tap_chat_settings[enable_hide_on]" value="no" />
             <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 15px;">
@@ -832,26 +736,131 @@ class Admin {
                 <?php esc_html_e( '✗ Hide button on specific pages', 'tap-chat' ); ?>
             </label>
             <p class="description" style="margin: 0 0 15px 28px;">
-                <?php esc_html_e( 'Hide the button on selected pages. Useful for hiding on checkout, thank you pages, or other pages where you don\'t want the button to appear.', 'tap-chat' ); ?>
+                <?php esc_html_e( 'Hide the button on selected pages.', 'tap-chat' ); ?>
             </p>
             
-            <div id="tap-chat-hide-on-section" style="margin-left: 28px; <?php echo $enable_hide_on === 'yes' ? '' : 'display:none;'; ?>">
+            <div id="tap-chat-hide-on-section" style="margin-left: 28px;">
                 <?php $this->render_page_selector( 'hide_on_pages', $hide_on_pages ); ?>
             </div>
         </div>
+        <?php
+    }
+    
+    public function field_working_hours_controls() {
+        $enable_working_hours = $this->get( 'enable_working_hours', 'no' );
+        $timezone = $this->get( 'timezone', wp_timezone_string() );
+        $offline_message = $this->get( 'offline_message', '' );
+        $working_hours = $this->get( 'working_hours', $this->get_default_working_hours() );
         
-        <?php if ( $enable_show_on === 'yes' && $enable_hide_on === 'yes' ) : ?>
-        <p style="margin-top: 15px; padding: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-            <strong><?php esc_html_e( 'Note:', 'tap-chat' ); ?></strong>
-            <?php esc_html_e( ' Both options are enabled. The "Show only" list takes priority - button will only appear on those pages, excluding any in the "Hide" list.', 'tap-chat' ); ?>
-        </p>
-        <?php endif; ?>
+        $days = array(
+            'monday' => __( 'Monday', 'tap-chat' ),
+            'tuesday' => __( 'Tuesday', 'tap-chat' ),
+            'wednesday' => __( 'Wednesday', 'tap-chat' ),
+            'thursday' => __( 'Thursday', 'tap-chat' ),
+            'friday' => __( 'Friday', 'tap-chat' ),
+            'saturday' => __( 'Saturday', 'tap-chat' ),
+            'sunday' => __( 'Sunday', 'tap-chat' ),
+        );
+        ?>
         
+        <div style="padding: 15px; background: #f9f9f9; border-left: 4px solid #00a32a; border-radius: 4px;">
+            <input type="hidden" name="tap_chat_settings[enable_working_hours]" value="no" />
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 15px;">
+                <input type="checkbox" 
+                       name="tap_chat_settings[enable_working_hours]" 
+                       value="yes" 
+                       id="enable_working_hours"
+                       <?php checked( $enable_working_hours, 'yes' ); ?> />
+                <?php esc_html_e( '🕐 Enable Working Hours', 'tap-chat' ); ?>
+            </label>
+            <p class="description" style="margin: 0 0 15px 28px;">
+                <?php esc_html_e( 'Show the button only during your business hours. Perfect for customer support teams.', 'tap-chat' ); ?>
+            </p>
+            
+            <div id="tap-chat-working-hours-section" style="margin-left: 28px;">
+                
+                <!-- Timezone -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e( 'Timezone', 'tap-chat' ); ?>
+                    </label>
+                    <select name="tap_chat_settings[timezone]" class="regular-text">
+                        <?php
+                        $timezones = timezone_identifiers_list();
+                        foreach ( $timezones as $tz ) {
+                            printf(
+                                '<option value="%s" %s>%s</option>',
+                                esc_attr( $tz ),
+                                selected( $timezone, $tz, false ),
+                                esc_html( $tz )
+                            );
+                        }
+                        ?>
+                    </select>
+                    <p class="description">
+                        <?php esc_html_e( 'Select your business timezone', 'tap-chat' ); ?>
+                    </p>
+                </div>
+                
+                <!-- Working Hours Table -->
+                <table class="tap-chat-working-hours-table">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e( 'Day', 'tap-chat' ); ?></th>
+                            <th><?php esc_html_e( 'Open', 'tap-chat' ); ?></th>
+                            <th><?php esc_html_e( 'Start Time', 'tap-chat' ); ?></th>
+                            <th><?php esc_html_e( 'End Time', 'tap-chat' ); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ( $days as $day => $label ) : 
+                            $day_data = isset( $working_hours[$day] ) ? $working_hours[$day] : array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00');
+                        ?>
+                        <tr class="tap-chat-day-row">
+                            <td><strong><?php echo esc_html( $label ); ?></strong></td>
+                            <td>
+                                <input type="hidden" name="tap_chat_settings[working_hours][<?php echo esc_attr( $day ); ?>][enabled]" value="no" />
+                                <input type="checkbox" 
+                                       class="tap-chat-day-enabled"
+                                       name="tap_chat_settings[working_hours][<?php echo esc_attr( $day ); ?>][enabled]" 
+                                       value="yes" 
+                                       <?php checked( $day_data['enabled'], 'yes' ); ?> />
+                            </td>
+                            <td>
+                                <input type="time" 
+                                       name="tap_chat_settings[working_hours][<?php echo esc_attr( $day ); ?>][start]" 
+                                       value="<?php echo esc_attr( $day_data['start'] ); ?>" />
+                            </td>
+                            <td>
+                                <input type="time" 
+                                       name="tap_chat_settings[working_hours][<?php echo esc_attr( $day ); ?>][end]" 
+                                       value="<?php echo esc_attr( $day_data['end'] ); ?>" />
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+                <!-- Offline Message -->
+                <div style="margin-top: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e( 'Offline Message (Optional)', 'tap-chat' ); ?>
+                    </label>
+                    <textarea name="tap_chat_settings[offline_message]" 
+                              rows="3" 
+                              class="large-text" 
+                              placeholder="<?php esc_attr_e( 'We are currently offline. Our business hours are Monday-Friday, 9 AM - 5 PM.', 'tap-chat' ); ?>"><?php echo esc_textarea( $offline_message ); ?></textarea>
+                    <p class="description">
+                        <?php esc_html_e( 'This message will replace the button label when outside working hours. Leave empty to hide the button completely.', 'tap-chat' ); ?>
+                    </p>
+                </div>
+                
+            </div>
+        </div>
         <?php
     }
     
     private function render_page_selector( $field_name, $selected_pages ) {
-        // Get all pages and posts
         $pages = get_pages( array(
             'post_type' => 'page',
             'post_status' => 'publish',
@@ -869,7 +878,6 @@ class Admin {
         ) );
         
         $all_content = array_merge( $pages, $posts );
-        
         ?>
         <div class="tap-chat-page-selector">
             <input type="text" 

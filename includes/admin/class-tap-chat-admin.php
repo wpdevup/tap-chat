@@ -16,6 +16,7 @@ class Admin {
             return;
         }
         
+        wp_enqueue_media();
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'wp-color-picker' );
         
@@ -176,7 +177,6 @@ class Admin {
                 margin-right: 20px;
             }
             
-            /* Working Hours Styles */
             .tap-chat-working-hours-table {
                 width: 100%;
                 max-width: 600px;
@@ -210,7 +210,6 @@ class Admin {
                 cursor: not-allowed;
             }
             
-            /* Offline Button Styles */
             .tapchat-fab-offline {
                 cursor: not-allowed !important;
                 opacity: 0.7;
@@ -218,14 +217,38 @@ class Admin {
             .tapchat-fab-offline:hover {
                 transform: none !important;
             }
+            
+            .tap-chat-avatar-upload {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+            .tap-chat-avatar-preview {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2px solid #ddd;
+                display: none;
+            }
+            .tap-chat-avatar-preview img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .tap-chat-avatar-preview.has-image {
+                display: block;
+            }
+            .tap-chat-avatar-buttons {
+                display: flex;
+                gap: 5px;
+            }
         ' );
         
         wp_add_inline_script( 'wp-color-picker', "
             jQuery(document).ready(function($) {
-                // Color Picker
                 $('.tap-chat-color-picker').wpColorPicker();
                 
-                // Country Selector
                 var selectedCode = $('input[name=\"tap_chat_settings[country_code]\"]').val();
                 
                 function updateSelectedDisplay() {
@@ -281,7 +304,6 @@ class Admin {
                     }
                 });
                 
-                // Page Selector Search
                 $('.tap-chat-search-pages').on('input', function() {
                     var search = $(this).val().toLowerCase();
                     $('.tap-chat-page-item').each(function() {
@@ -330,7 +352,6 @@ class Admin {
                 
                 toggleVisibilitySections();
                 
-                // Working Hours Toggle
                 function toggleWorkingHoursSection() {
                     if ($('#enable_working_hours').is(':checked')) {
                         $('#tap-chat-working-hours-section').slideDown(200);
@@ -345,7 +366,6 @@ class Admin {
                 
                 toggleWorkingHoursSection();
                 
-                // Day Enable/Disable Toggle
                 $('.tap-chat-day-enabled').on('change', function() {
                     var row = $(this).closest('tr');
                     var timeInputs = row.find('input[type=\"time\"]');
@@ -359,9 +379,61 @@ class Admin {
                     }
                 });
                 
-                // Initialize day rows state
                 $('.tap-chat-day-enabled').each(function() {
                     $(this).trigger('change');
+                });
+                
+                function toggleWelcomeBubbleSection() {
+                    if ($('#enable_welcome_bubble').is(':checked')) {
+                        $('#tap-chat-welcome-bubble-section').slideDown(200);
+                    } else {
+                        $('#tap-chat-welcome-bubble-section').slideUp(200);
+                    }
+                }
+                
+                $('#enable_welcome_bubble').on('change', function() {
+                    toggleWelcomeBubbleSection();
+                });
+                
+                toggleWelcomeBubbleSection();
+                
+                // Avatar Upload
+                var mediaUploader;
+                
+                $('#tap-chat-upload-avatar').on('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (mediaUploader) {
+                        mediaUploader.open();
+                        return;
+                    }
+                    
+                    mediaUploader = wp.media({
+                        title: 'Choose Avatar Image',
+                        button: {
+                            text: 'Use this image'
+                        },
+                        multiple: false,
+                        library: {
+                            type: 'image'
+                        }
+                    });
+                    
+                    mediaUploader.on('select', function() {
+                        var attachment = mediaUploader.state().get('selection').first().toJSON();
+                        $('#tap-chat-avatar-url').val(attachment.url);
+                        $('#tap-chat-avatar-preview').attr('src', attachment.url);
+                        $('.tap-chat-avatar-preview').addClass('has-image');
+                    });
+                    
+                    mediaUploader.open();
+                });
+                
+                $('#tap-chat-remove-avatar').on('click', function(e) {
+                    e.preventDefault();
+                    $('#tap-chat-avatar-url').val('');
+                    $('#tap-chat-avatar-preview').attr('src', '');
+                    $('.tap-chat-avatar-preview').removeClass('has-image');
                 });
             });
         " );
@@ -402,6 +474,11 @@ class Admin {
                 'timezone' => wp_timezone_string(),
                 'offline_message' => '',
                 'working_hours' => $this->get_default_working_hours(),
+                'enable_welcome_bubble' => 'no',
+                'welcome_bubble_message' => '',
+                'welcome_bubble_name' => '',
+                'welcome_bubble_avatar' => '',
+                'welcome_bubble_delay' => 3,
             )
         ) );
 
@@ -430,6 +507,9 @@ class Admin {
         
         add_settings_section( 'tapchat_working_hours', __( 'Working Hours', 'tap-chat' ), array( $this, 'working_hours_section_callback' ), 'tap-chat' );
         add_settings_field( 'working_hours_controls', __( 'Business Hours Settings', 'tap-chat' ), array( $this, 'field_working_hours_controls' ), 'tap-chat', 'tapchat_working_hours' );
+        
+        add_settings_section( 'tapchat_welcome_bubble', __( 'Welcome Bubble', 'tap-chat' ), array( $this, 'welcome_bubble_section_callback' ), 'tap-chat' );
+        add_settings_field( 'welcome_bubble_controls', __( 'Chat Bubble Settings', 'tap-chat' ), array( $this, 'field_welcome_bubble_controls' ), 'tap-chat', 'tapchat_welcome_bubble' );
     }
     
     public function visibility_section_callback() {
@@ -438,6 +518,10 @@ class Admin {
     
     public function working_hours_section_callback() {
         echo '<p>' . esc_html__( 'Set your business hours. The button will only be shown during these hours. Useful for customer service teams.', 'tap-chat' ) . '</p>';
+    }
+    
+    public function welcome_bubble_section_callback() {
+        echo '<p>' . esc_html__( 'Display a friendly welcome message above your chat button to encourage visitors to start a conversation.', 'tap-chat' ) . '</p>';
     }
 
     private function get_default_country_code() {
@@ -522,6 +606,12 @@ class Admin {
         } else {
             $out['working_hours'] = $this->get_default_working_hours();
         }
+        
+        $out['enable_welcome_bubble'] = ( isset( $input['enable_welcome_bubble'] ) && $input['enable_welcome_bubble'] === 'yes' ) ? 'yes' : 'no';
+        $out['welcome_bubble_message'] = isset( $input['welcome_bubble_message'] ) ? sanitize_textarea_field( $input['welcome_bubble_message'] ) : '';
+        $out['welcome_bubble_name'] = isset( $input['welcome_bubble_name'] ) ? sanitize_text_field( $input['welcome_bubble_name'] ) : '';
+        $out['welcome_bubble_avatar'] = isset( $input['welcome_bubble_avatar'] ) ? esc_url_raw( $input['welcome_bubble_avatar'] ) : '';
+        $out['welcome_bubble_delay'] = isset( $input['welcome_bubble_delay'] ) ? absint( $input['welcome_bubble_delay'] ) : 3;
         
         return $out;
     }
@@ -779,7 +869,6 @@ class Admin {
             
             <div id="tap-chat-working-hours-section" style="margin-left: 28px;">
                 
-                <!-- Timezone -->
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; font-weight: 600; margin-bottom: 5px;">
                         <?php esc_html_e( 'Timezone', 'tap-chat' ); ?>
@@ -802,7 +891,6 @@ class Admin {
                     </p>
                 </div>
                 
-                <!-- Working Hours Table -->
                 <table class="tap-chat-working-hours-table">
                     <thead>
                         <tr>
@@ -841,7 +929,6 @@ class Admin {
                     </tbody>
                 </table>
                 
-                <!-- Offline Message -->
                 <div style="margin-top: 20px;">
                     <label style="display: block; font-weight: 600; margin-bottom: 5px;">
                         <?php esc_html_e( 'Offline Message (Optional)', 'tap-chat' ); ?>
@@ -857,6 +944,110 @@ class Admin {
                 
             </div>
         </div>
+        <?php
+    }
+    
+    public function field_welcome_bubble_controls() {
+        $enable = $this->get('enable_welcome_bubble', 'no');
+        $message = $this->get('welcome_bubble_message', __('Hi there! 👋 How can we help you today?', 'tap-chat'));
+        $delay = $this->get('welcome_bubble_delay', 3);
+        $avatar = $this->get('welcome_bubble_avatar', '');
+        $name = $this->get('welcome_bubble_name', __('Support Team', 'tap-chat'));
+        ?>
+        
+        <div style="padding: 15px; background: #f9f9f9; border-left: 4px solid #2271b1; border-radius: 4px;">
+            
+            <input type="hidden" name="tap_chat_settings[enable_welcome_bubble]" value="no" />
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 15px;">
+                <input type="checkbox" 
+                       name="tap_chat_settings[enable_welcome_bubble]" 
+                       value="yes" 
+                       id="enable_welcome_bubble"
+                       <?php checked($enable, 'yes'); ?> />
+                <?php esc_html_e('💬 Enable Welcome Bubble', 'tap-chat'); ?>
+            </label>
+            <p class="description" style="margin: 0 0 15px 28px;">
+                <?php esc_html_e('Show a friendly message bubble above the chat button to encourage visitors to start a conversation.', 'tap-chat'); ?>
+            </p>
+            
+            <div id="tap-chat-welcome-bubble-section" style="margin-left: 28px;">
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e('Welcome Message', 'tap-chat'); ?>
+                    </label>
+                    <textarea name="tap_chat_settings[welcome_bubble_message]" 
+                              rows="3" 
+                              class="large-text" 
+                              placeholder="<?php esc_attr_e('Hi there! 👋 How can we help you today?', 'tap-chat'); ?>"><?php echo esc_textarea($message); ?></textarea>
+                    <p class="description">
+                        <?php esc_html_e('The message to display in the welcome bubble. Emojis are supported!', 'tap-chat'); ?>
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e('Agent/Team Name', 'tap-chat'); ?>
+                    </label>
+                    <input type="text" 
+                           name="tap_chat_settings[welcome_bubble_name]" 
+                           value="<?php echo esc_attr($name); ?>" 
+                           class="regular-text"
+                           placeholder="<?php esc_attr_e('Support Team', 'tap-chat'); ?>" />
+                    <p class="description">
+                        <?php esc_html_e('Display name for the agent or team', 'tap-chat'); ?>
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e('Avatar URL (Optional)', 'tap-chat'); ?>
+                    </label>
+                    <div class="tap-chat-avatar-upload">
+                        <div class="tap-chat-avatar-preview<?php echo !empty($avatar) ? ' has-image' : ''; ?>">
+                            <img id="tap-chat-avatar-preview" src="<?php echo esc_url($avatar); ?>" alt="Avatar" />
+                        </div>
+                        <div>
+                            <input type="url" 
+                                   id="tap-chat-avatar-url"
+                                   name="tap_chat_settings[welcome_bubble_avatar]" 
+                                   value="<?php echo esc_url($avatar); ?>" 
+                                   class="regular-text"
+                                   placeholder="https://example.com/avatar.jpg"
+                                   style="margin-bottom: 5px;" />
+                            <div class="tap-chat-avatar-buttons">
+                                <button type="button" id="tap-chat-upload-avatar" class="button">
+                                    <?php esc_html_e('Choose Image', 'tap-chat'); ?>
+                                </button>
+                                <button type="button" id="tap-chat-remove-avatar" class="button">
+                                    <?php esc_html_e('Remove', 'tap-chat'); ?>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="description">
+                        <?php esc_html_e('Upload an avatar image or enter URL. Leave empty to use default WhatsApp icon.', 'tap-chat'); ?>
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e('Display Delay (seconds)', 'tap-chat'); ?>
+                    </label>
+                    <input type="number" 
+                           name="tap_chat_settings[welcome_bubble_delay]" 
+                           value="<?php echo esc_attr($delay); ?>" 
+                           min="0" 
+                           max="60" 
+                           step="1" />
+                    <p class="description">
+                        <?php esc_html_e('How many seconds to wait before showing the bubble. 0 = show immediately.', 'tap-chat'); ?>
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+        
         <?php
     }
     

@@ -1,46 +1,54 @@
 # Tap Chat - WhatsApp Click to Chat for WordPress
 
-A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add a beautiful floating button or use shortcodes anywhere on your site.
+A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add a beautiful floating button with welcome bubble, working hours management, and advanced visibility controls.
 
 ## ✨ Features
 
+### 💬 Welcome Bubble
+- **Custom Greeting Messages** - Boost engagement by 30-40%
+- **Agent/Team Name & Avatar** - Personalize your support team
+- **Configurable Delay** - Show bubble after 0-60 seconds
+- **Session Memory** - Remembers if user closed the bubble
+- **Click to Chat** - Instant WhatsApp connection
+- **Beautiful Animations** - Smooth fade-in effects
+
 ### 🕐 Working Hours Management
-- **Business Hours Scheduler** - Set different hours for each day of the week
-- **Timezone Support** - Choose your business timezone
-- **Offline Mode** - Show custom message or hide button outside working hours
-- **Day-Specific Control** - Enable/disable specific days independently
-- **Flexible Scheduling** - Perfect for customer support teams
+- **Business Hours Scheduler** - Set different hours for each day
+- **Timezone Support** - Perfect for global businesses
+- **Offline Mode** - Show custom message or hide button
+- **Day-Specific Control** - Enable/disable individual days
+- **Flexible Scheduling** - Ideal for Mon-Fri 9-5 teams
 
 ### 🌍 Smart Country Selector
-- **150+ countries** with flag emojis
-- **Real-time search** - find your country instantly
-- **Auto-detection** - automatically selects country based on WordPress language
-- **Smart formatting** - automatically removes leading zeros from phone numbers
+- **150+ Countries** - With flag emojis
+- **Real-time Search** - Find your country instantly
+- **Auto-detection** - Based on WordPress language
+- **Smart Formatting** - Removes leading zeros automatically
 
 ### 🎯 Advanced Visibility Controls
-- **Show Only Mode** - Display button only on specific pages (perfect for landing pages)
-- **Hide Mode** - Hide button on specific pages (great for checkout/thank you pages)
-- **Combined Control** - Use both modes together for fine-grained control
-- **Page Search** - Quickly find pages/posts with built-in search
-- **WooCommerce Support** - Works perfectly with Shop pages and products
+- **Show Only Mode** - Display on specific pages only
+- **Hide Mode** - Hide on checkout/thank you pages
+- **Combined Control** - Use both modes together
+- **Page Search** - Built-in search functionality
+- **WooCommerce Support** - Works with shop pages
 
 ### 🎨 Full Customization
 - **Floating Button** - Customizable position (left/right)
-- **Color Picker** - Visual color selection with WordPress Color Picker
-- **Size Control** - Separate sizes for mobile and desktop
-- **Label Control** - Hide/show label on mobile or desktop independently
+- **Color Picker** - Visual color selection
+- **Size Control** - Separate mobile and desktop sizes
+- **Label Control** - Hide/show label independently
 - **Custom Messages** - Set default WhatsApp message
 - **Responsive Design** - Perfect on all devices
 
 ### 🔧 Developer-Friendly
 - **Shortcode Support** - `[tapchat phone="..." message="..." label="..."]`
-- **RTL Compatible** - Full support for right-to-left languages
-- **No External Dependencies** - Pure WordPress solution
-- **Clean Code** - Following WordPress coding standards
-- **Hooks & Filters** - Extensible architecture (coming soon)
+- **RTL Compatible** - Full right-to-left support
+- **No Dependencies** - Pure WordPress solution
+- **Clean Code** - WordPress coding standards
+- **Hooks & Filters** - Extensible architecture
 
 ### 🚀 Performance & Privacy
-- **Lightweight** - ~3KB total (CSS + JS)
+- **Lightweight** - ~5KB total (CSS + JS)
 - **No Tracking** - Zero cookies, zero analytics
 - **GDPR Friendly** - No personal data collection
 - **Fast Loading** - Optimized for speed
@@ -73,6 +81,23 @@ git clone https://github.com/yourusername/tap-chat.git
 4. Customize appearance (color, size, label)
 5. Save changes
 
+### Welcome Bubble Setup
+1. Navigate to **Settings → Tap Chat → Welcome Bubble**
+2. Enable **Welcome Bubble** checkbox
+3. Enter your greeting message (default: "Need help? Let's chat! 💬")
+4. Set agent/team name (default: "Support Team")
+5. Optionally add an avatar URL
+6. Configure display delay (default: 3 seconds)
+7. Save changes
+
+**Welcome Bubble Features:**
+- Engaging greeting message with emoji support
+- Display agent/team name with online indicator
+- Custom avatar or default WhatsApp icon
+- Configurable delay (0-60 seconds)
+- Session-based close memory
+- Click bubble to open chat instantly
+
 ### Working Hours Setup
 1. Navigate to **Settings → Tap Chat → Working Hours**
 2. Enable **Working Hours** checkbox
@@ -83,9 +108,9 @@ git clone https://github.com/yourusername/tap-chat.git
 7. Save changes
 
 **Working Hours Options:**
-- **Show button only during business hours** - Button appears during set times
-- **Hide button completely when offline** - Leave offline message empty
-- **Show offline message** - Display custom message when closed
+- Show button only during business hours
+- Hide button completely when offline (leave message empty)
+- Show offline message when closed
 
 ### Advanced Visibility
 1. Navigate to **Settings → Tap Chat → Visibility Settings**
@@ -138,6 +163,32 @@ All days: 00:00 - 23:59
 OR disable working hours completely
 ```
 
+### Welcome Bubble Examples
+
+#### E-commerce Store
+```
+Message: "Need help? Let's chat! 💬"
+Name: "Sales Team"
+Avatar: [Your team photo]
+Delay: 3 seconds
+```
+
+#### Tech Support
+```
+Message: "Got questions? We're here! 🤓"
+Name: "Tech Support"
+Avatar: [Support agent photo]
+Delay: 5 seconds
+```
+
+#### Service Business
+```
+Message: "Looking for our services? Ask us! 👋"
+Name: "Customer Care"
+Avatar: [Default WhatsApp icon]
+Delay: 4 seconds
+```
+
 ### Use Cases
 
 #### E-commerce Store
@@ -145,6 +196,7 @@ OR disable working hours completely
 ✓ Show on: Product pages, Shop page
 ✗ Hide on: Checkout, Thank you page, Cart
 ⏰ Hours: Mon-Sat 9 AM - 6 PM
+💬 Bubble: Enabled with product questions
 ```
 
 #### Service Business
@@ -152,6 +204,7 @@ OR disable working hours completely
 ✓ Show on: Services page, Contact page, Homepage
 ✗ Hide on: Privacy Policy, Terms of Service
 ⏰ Hours: Mon-Fri 8 AM - 5 PM
+💬 Bubble: Enabled with service inquiries
 ```
 
 #### Landing Page
@@ -159,6 +212,7 @@ OR disable working hours completely
 ✓ Show ONLY on: Specific landing page
 ✗ Hide on: (not needed)
 ⏰ Hours: Always available
+💬 Bubble: Immediate with special offer
 ```
 
 ## 🎯 Visibility Control Logic
@@ -170,30 +224,59 @@ OR disable working hours completely
 | Hide On | Everywhere except selected pages |
 | Both enabled | Show only on selected pages, excluding hide list |
 | Working Hours | Show only during business hours |
+| Welcome Bubble | Appears after configured delay |
 
 ## 🔄 Changelog
+
+### Version 1.1.1 (2024-12-XX)
+#### 🐛 Fixes
+- **Improved:** Welcome bubble close button size - larger and easier to click (32px desktop, 28px mobile)
+- **Fixed:** Better visibility of close button on all devices with `!important` CSS
+- **Enhanced:** CSS for admin panel bubble preview
+- **Updated:** Default welcome message to be more concise: "Need help? Let's chat! 💬"
+
+### Version 1.1.0
+#### 🎉 New Features
+- **Welcome Bubble** - Friendly greeting message to boost engagement by 30-40%
+- **Agent/Team Name & Avatar** - Personalize your support team
+- **Configurable Display Delay** - Show bubble after 0-60 seconds
+- **Session-based Close Memory** - Remembers user preference
+- **Click Bubble to Chat** - Instant WhatsApp connection
+- **Beautiful Animations** - Smooth fade-in effects
+
+#### 🎨 Improvements
+- Better user engagement with welcome messages
+- Enhanced mobile experience
+- Smooth animations and hover effects
 
 ### Version 1.0.0
 #### 🎉 New Features
 - **Working Hours Management** - Set business hours for each day
-- **Timezone Support** - Choose your business timezone
-- **Offline Mode** - Custom message or hide button when closed
+- **Timezone Support** - Perfect for global businesses
+- **Offline Mode** - Custom message when unavailable
 - **Day-Specific Scheduling** - Enable/disable individual days
 
 #### 🎨 Improvements
 - Better admin UI organization
 - Enhanced settings structure
-- Improved documentation
+- Comprehensive documentation
 
 ### Version 0.9.0
 #### 🎉 New Features
-- Advanced visibility controls with show/hide options
-- Smart country picker with 150+ countries and flags
-- Real-time country search functionality
-- Automatic country detection from WordPress locale
+- Advanced visibility controls - show button ONLY on specific pages
+- Hide button on specific pages (great for checkout/thank you pages)
+- Smart country picker with search functionality (150+ countries)
+- Automatic country detection based on WordPress locale
 - Automatic leading zero removal from phone numbers
-- WooCommerce shop page support
+- WooCommerce shop page support in visibility settings
 - Page/post search in visibility selector
+
+#### 🎨 Improvements
+- Better UX with checkbox-based visibility controls
+- Clear descriptions and visual indicators
+
+#### 🐛 Fixes
+- Shop page now correctly respects visibility settings
 
 [View Full Changelog](https://wordpress.org/plugins/tap-chat/#developers)
 
@@ -277,13 +360,24 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 3. **Test offline message** - Make sure it's helpful and professional
 4. **Combine with visibility rules** - Hide on irrelevant pages
 5. **Update phone number** - Make sure it's active and monitored
+6. **Optimize welcome bubble** - Keep message short and engaging (under 15 words)
+7. **Test delay timing** - 3-5 seconds works best for most sites
+8. **Use custom avatar** - Personal photos increase trust by 40%
+
+### Welcome Bubble Best Practices
+- **Keep it short** - 10-15 words maximum
+- **Use emojis** - Makes it more friendly and engaging
+- **Be specific** - "Need help with shipping?" vs "Need help?"
+- **Test timing** - Too fast is annoying, too slow is missed
+- **Monitor engagement** - Check if people are clicking
+- **A/B test messages** - Try different variations
 
 ### Common Use Cases
-- **E-commerce Support** - Quick customer service during business hours
+- **E-commerce Support** - Quick customer service during business hours with product-specific messages
 - **Appointment Booking** - Instant scheduling within working hours
-- **Sales Inquiries** - Direct communication when team is available
+- **Sales Inquiries** - Direct communication when team is available with special offers
 - **Technical Support** - Real-time help during support hours
-- **Lead Generation** - Convert visitors during peak hours
+- **Lead Generation** - Convert visitors during peak hours with engaging bubble messages
 
 ### Working Hours Best Practices
 - **Set buffer time** - End 15 minutes before actual closing

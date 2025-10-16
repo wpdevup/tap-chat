@@ -245,33 +245,34 @@ class Admin {
             }
             
             .tapchat-bubble-close {
-                position: absolute;
-                top: 50%;
-                right: -12px;
-                width: 28px !important;
-                height: 28px !important;
-                border: none !important;
-                background: none !important;
-                background-color: transparent !important;
-                box-shadow: none !important;
-                cursor: pointer;
-                padding: 0 !important;
-                margin: 0 !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0.5;
-                transition: all 0.25s ease;
-                color: #999 !important;
-                font-size: 32px !important;
-                line-height: 1 !important;
-                font-weight: 300 !important;
-                z-index: 10;
-                transform: translateY(-50%);
-                outline: none;
-                min-width: 28px !important;
-                min-height: 28px !important;
-            }
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px !important;
+    height: 28px !important;
+    border: none !important;
+    background: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    color: #666 !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: 400 !important;
+    z-index: 10;
+    outline: none;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    border-radius: 50%;
+}
         ' );
         
         wp_add_inline_script( 'wp-color-picker', "

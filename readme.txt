@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,6 +140,14 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 
 == Changelog ==
 
+= 1.1.2 =
+- **Fix:** Welcome bubble close button repositioned to top-right corner inside bubble
+- **Fix:** Close button now rotates perfectly centered on hover without shifting
+- **Fix:** Welcome bubble arrow now properly visible above WhatsApp button
+- **Improvement:** Better close button styling with smooth rotation animation
+- **Improvement:** Optimized close button character (✕) for perfect centering
+- **Improvement:** Added Arial font family for consistent close button rendering
+
 = 1.1.1 =
 - **Fix:** Improved welcome bubble close button size (larger and easier to click)
 - **Fix:** Better visibility of close button on all devices
@@ -196,6 +204,9 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 - i18n/compat: Text Domain set to `tap-chat`, update "Tested up to" to 6.8
 
 == Upgrade Notice ==
+
+= 1.1.2 =
+Bug fix release for welcome bubble positioning and close button behavior. Recommended update for all users.
 
 = 1.1.1 =
 Minor fix for welcome bubble close button - larger and easier to click. Recommended update.

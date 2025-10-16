@@ -228,6 +228,18 @@ Delay: 4 seconds
 
 ## 🔄 Changelog
 
+### Version 1.1.2
+#### 🐛 Bug Fixes
+- **Fixed:** Welcome bubble close button repositioned to top-right corner inside bubble
+- **Fixed:** Close button now rotates perfectly centered on hover without shifting left
+- **Fixed:** Welcome bubble arrow now properly visible above WhatsApp button (not hidden behind button)
+
+#### 🎨 Improvements
+- Better close button styling with smooth 90-degree rotation animation on hover
+- Optimized close button character (✕) for perfect centering
+- Added Arial font family for consistent close button rendering across browsers
+- Adjusted bubble bottom position for better spacing (105px desktop, 90px mobile)
+
 ### Version 1.1.1 (2024-12-XX)
 #### 🐛 Fixes
 - **Improved:** Welcome bubble close button size - larger and easier to click (32px desktop, 28px mobile)

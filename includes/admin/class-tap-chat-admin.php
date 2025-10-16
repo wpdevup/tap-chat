@@ -243,6 +243,35 @@ class Admin {
                 display: flex;
                 gap: 5px;
             }
+            
+            .tapchat-bubble-close {
+                position: absolute;
+                top: 50%;
+                right: -12px;
+                width: 28px !important;
+                height: 28px !important;
+                border: none !important;
+                background: none !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+                cursor: pointer;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0.5;
+                transition: all 0.25s ease;
+                color: #999 !important;
+                font-size: 32px !important;
+                line-height: 1 !important;
+                font-weight: 300 !important;
+                z-index: 10;
+                transform: translateY(-50%);
+                outline: none;
+                min-width: 28px !important;
+                min-height: 28px !important;
+            }
         ' );
         
         wp_add_inline_script( 'wp-color-picker', "
@@ -475,8 +504,8 @@ class Admin {
                 'offline_message' => '',
                 'working_hours' => $this->get_default_working_hours(),
                 'enable_welcome_bubble' => 'no',
-                'welcome_bubble_message' => '',
-                'welcome_bubble_name' => '',
+                'welcome_bubble_message' => __('Need help? Let\'s chat! 💬', 'tap-chat'),
+                'welcome_bubble_name' => __('Support Team', 'tap-chat'),
                 'welcome_bubble_avatar' => '',
                 'welcome_bubble_delay' => 3,
             )
@@ -949,7 +978,7 @@ class Admin {
     
     public function field_welcome_bubble_controls() {
         $enable = $this->get('enable_welcome_bubble', 'no');
-        $message = $this->get('welcome_bubble_message', __('Hi there! 👋 How can we help you today?', 'tap-chat'));
+        $message = $this->get('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
         $delay = $this->get('welcome_bubble_delay', 3);
         $avatar = $this->get('welcome_bubble_avatar', '');
         $name = $this->get('welcome_bubble_name', __('Support Team', 'tap-chat'));
@@ -979,7 +1008,7 @@ class Admin {
                     <textarea name="tap_chat_settings[welcome_bubble_message]" 
                               rows="3" 
                               class="large-text" 
-                              placeholder="<?php esc_attr_e('Hi there! 👋 How can we help you today?', 'tap-chat'); ?>"><?php echo esc_textarea($message); ?></textarea>
+                              placeholder="<?php esc_attr_e('Need help? Let\'s chat! 💬', 'tap-chat'); ?>"><?php echo esc_textarea($message); ?></textarea>
                     <p class="description">
                         <?php esc_html_e('The message to display in the welcome bubble. Emojis are supported!', 'tap-chat'); ?>
                     </p>

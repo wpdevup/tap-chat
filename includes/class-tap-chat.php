@@ -235,7 +235,7 @@ class Plugin {
             return;
         }
         
-        $message = $this->get_option('welcome_bubble_message', __('Hi there! 👋 How can we help you today?', 'tap-chat'));
+        $message = $this->get_option('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
         $name = $this->get_option('welcome_bubble_name', __('Support Team', 'tap-chat'));
         $avatar = $this->get_option('welcome_bubble_avatar', '');
         $delay = absint($this->get_option('welcome_bubble_delay', 3));

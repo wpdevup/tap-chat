@@ -1,10 +1,10 @@
 === Tap Chat ===
 Contributors: iruserwp9
-Tags: whatsapp, chat, click to chat, support, business hours, welcome bubble
+Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,6 +140,12 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 
 == Changelog ==
 
+= 1.1.1 =
+- **Fix:** Improved welcome bubble close button size (larger and easier to click)
+- **Fix:** Better visibility of close button on all devices
+- **Improvement:** Enhanced CSS for admin panel bubble preview
+- **Improvement:** Updated default welcome message to be more concise
+
 = 1.1.0 =
 - **New:** Welcome bubble feature with custom greeting messages
 - **New:** Agent/team name and avatar support
@@ -190,6 +196,9 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 - i18n/compat: Text Domain set to `tap-chat`, update "Tested up to" to 6.8
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Minor fix for welcome bubble close button - larger and easier to click. Recommended update.
 
 = 1.1.0 =
 Major feature update: Welcome bubble to boost engagement by 30-40%. New greeting messages, avatars, and smart animations. Highly recommended for all users.

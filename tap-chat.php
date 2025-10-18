@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tap Chat
  * Description: Lightweight WhatsApp click-to-chat button with working hours, page visibility controls, welcome bubble, and smart country selector. GDPR-friendly with no tracking.
- * Version: 1.1.2
+ * Version: 1.2.0
  * Author: iruserwp9
  * Author URI: https://profiles.wordpress.org/iruserwp9/
  * License: GPLv2 or later
@@ -16,32 +16,25 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.1.2');
+define('TAP_CHAT_VERSION', '1.2.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat.php';
 
-// Migrate old option key and phone format on activation
 register_activation_hook( __FILE__, function(){
-    // Migrate from old 'chatly_settings' to 'tap_chat_settings'
     $old = get_option('chatly_settings');
     if ( is_array($old) && ! get_option('tap_chat_settings') ) {
         update_option('tap_chat_settings', $old);
     }
     
-    // Migrate old phone format to new country_code + phone format
     $settings = get_option('tap_chat_settings', array());
     
-    // If phone exists but country_code doesn't, try to extract country code
     if ( ! empty( $settings['phone'] ) && empty( $settings['country_code'] ) ) {
         $phone = preg_replace('/\D+/', '', $settings['phone']);
-        
-        // Remove leading zeros first
         $phone = ltrim($phone, '0');
         
-        // Common country codes and their lengths
         $country_codes = array(
             '1' => 1, '7' => 1, '20' => 2, '27' => 2, '30' => 2, '31' => 2, '32' => 2, 
             '33' => 2, '34' => 2, '36' => 2, '39' => 2, '40' => 2, '41' => 2, '43' => 2, 
@@ -52,7 +45,6 @@ register_activation_hook( __FILE__, function(){
             '93' => 2, '94' => 2, '95' => 2, '98' => 2,
         );
         
-        // Get default country code based on locale
         $locale = get_locale();
         $locale_map = array(
             'de_DE' => '49', 'de_AT' => '43', 'de_CH' => '41',
@@ -66,7 +58,6 @@ register_activation_hook( __FILE__, function(){
         $country_code = isset($locale_map[$locale]) ? $locale_map[$locale] : '49';
         $phone_number = $phone;
         
-        // Try to extract country code from the full number
         foreach ( $country_codes as $code => $length ) {
             if ( substr( $phone, 0, $length ) === $code ) {
                 $country_code = $code;
@@ -75,7 +66,6 @@ register_activation_hook( __FILE__, function(){
             }
         }
         
-        // Remove any remaining leading zeros from phone number
         $phone_number = ltrim($phone_number, '0');
         
         $settings['country_code'] = $country_code;
@@ -84,7 +74,6 @@ register_activation_hook( __FILE__, function(){
         update_option('tap_chat_settings', $settings);
     }
     
-    // Initialize working hours if not set
     if ( ! isset( $settings['working_hours'] ) ) {
         $settings['working_hours'] = array(
             'monday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
@@ -103,14 +92,25 @@ register_activation_hook( __FILE__, function(){
         update_option('tap_chat_settings', $settings);
     }
     
-    // Initialize welcome bubble settings
     if ( ! isset( $settings['enable_welcome_bubble'] ) ) {
         $settings['enable_welcome_bubble'] = 'no';
         $settings['welcome_bubble_message'] = __('Need help? Let\'s chat! 💬', 'tap-chat');
         $settings['welcome_bubble_name'] = __('Support Team', 'tap-chat');
         $settings['welcome_bubble_avatar'] = '';
         $settings['welcome_bubble_delay'] = 3;
+        $settings['welcome_bubble_style'] = 'modern';
+        $settings['welcome_bubble_position'] = 'top';
         
+        update_option('tap_chat_settings', $settings);
+    }
+    
+    if ( isset( $settings['enable_welcome_bubble'] ) && ! isset( $settings['welcome_bubble_style'] ) ) {
+        $settings['welcome_bubble_style'] = 'modern';
+        update_option('tap_chat_settings', $settings);
+    }
+    
+    if ( isset( $settings['enable_welcome_bubble'] ) && ! isset( $settings['welcome_bubble_position'] ) ) {
+        $settings['welcome_bubble_position'] = 'top';
         update_option('tap_chat_settings', $settings);
     }
 });

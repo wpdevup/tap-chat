@@ -4,17 +4,16 @@ Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Lightweight WhatsApp chat button with welcome bubble styles, working hours, page visibility controls, and country selector. GDPR-friendly, no tracking.
+Lightweight WhatsApp chat button with welcome bubble, working hours, page visibility controls, and country selector. GDPR-friendly, no tracking.
 
 == Description ==
-Tap Chat adds a beautiful floating WhatsApp button with advanced features. Choose between modern or simple bubble styles, set business hours, show welcome messages, control visibility, and customize appearance - all while keeping your site fast and privacy-friendly.
+Tap Chat adds a beautiful floating WhatsApp button with advanced features. Set business hours, show welcome messages, control visibility, and customize appearance - all while keeping your site fast and privacy-friendly.
 
 **Key Features:**
-- **Two Bubble Styles** - Modern (with avatar) or Simple (minimal design)
 - **Welcome Bubble** - Friendly greeting message to boost engagement
 - **Working Hours Management** - Show button only during business hours
 - **Smart Country Selector** - 150+ countries with flags and search
@@ -26,27 +25,14 @@ Tap Chat adds a beautiful floating WhatsApp button with advanced features. Choos
 - **Performance First** - Only ~5KB, no external requests
 - **GDPR Friendly** - No tracking or cookies
 
-**Welcome Bubble Styles**
-
-**Modern Style:**
-- Team member avatar (circular photo or default icon)
-- Agent/Team name with online indicator
-- Rich animations and hover effects
-- Perfect for building personal connections
-
-**Simple Style:**
-- Clean, minimal design
-- Lightweight and fast
-- Professional appearance
-- Ideal for modern websites
-
+**Welcome Bubble**
 Increase engagement by 30-40% with a friendly welcome message:
 - Custom greeting text with emoji support
-- Display agent/team name and avatar (Modern style)
+- Display agent/team name and avatar
 - Configurable display delay (0-60 seconds)
 - Click bubble to open WhatsApp instantly
 - Session-based close memory
-- Beautiful animations
+- Beautiful animations and hover effects
 
 **Working Hours**
 Perfect for customer support teams and businesses with specific hours:
@@ -67,10 +53,9 @@ Control exactly where your button appears:
 1. Select your country (auto-detected from WordPress language)
 2. Enter your phone number (without country code)
 3. Set your business hours and timezone
-4. Choose bubble style (Modern or Simple)
-5. Configure welcome bubble message
-6. Customize appearance
-7. Done!
+4. Configure welcome bubble
+5. Customize appearance
+6. Done!
 
 **Use Cases**
 - E-commerce customer support (Mon-Fri, 9-5)
@@ -95,28 +80,8 @@ No. The plugin only renders a link to WhatsApp. It doesn't collect, store, or tr
 = Will it slow down my site? =
 No. It loads a tiny CSS/JS (~5KB total) with no external dependencies.
 
-= What's the difference between Modern and Simple bubble styles? =
-
-**Modern Style:**
-- Full-featured with avatar, name, and online indicator
-- Rich animations and hover effects
-- Perfect for personalized customer experience
-- Ideal for building trust with team photos
-
-**Simple Style:**
-- Minimal, clean design
-- Lightweight and fast
-- Professional appearance
-- Great for modern, minimalist websites
-
-= Which bubble style should I choose? =
-Choose **Modern** if you want to showcase your team and build personal connections. Choose **Simple** if you prefer a clean, distraction-free design that matches minimal aesthetics.
-
-= Can I switch between bubble styles? =
-Yes! You can change the style anytime from Settings → Tap Chat → Welcome Bubble. Your settings will be preserved when switching styles.
-
 = How do I set up the welcome bubble? =
-Go to Settings → Tap Chat → Welcome Bubble. Enable it, choose your style (Modern or Simple), enter your message, and optionally add name/avatar for Modern style. Set the delay and save.
+Go to Settings → Tap Chat → Welcome Bubble. Enable it, enter your message, name, and optionally add an avatar URL. Set the delay and save.
 
 = What's the optimal delay for the welcome bubble? =
 3-5 seconds works best for most sites. It gives users time to look around before engaging them.
@@ -144,13 +109,13 @@ Yes! Fully compatible with WooCommerce, including Shop page and product pages.
 3. Example: For Germany +49 1234567890, just enter: 1234567890
 
 = Can I have different button sizes for mobile and desktop? =
-Yes! The plugin includes separate size controls for desktop and mobile devices.
+Yes! Version 0.7.0+ includes separate size controls for desktop and mobile devices.
 
 = Does it support different timezones? =
 Yes! You can select any timezone from the dropdown. This is perfect for businesses serving global customers.
 
 = Can I customize the welcome bubble avatar? =
-Yes! In Modern style, you can upload any image URL. It will be displayed as a circular avatar. Leave empty to use the default WhatsApp icon. Simple style doesn't use avatars.
+Yes! You can provide a URL to any image. It will be displayed as a circular avatar. Leave empty to use the default WhatsApp icon.
 
 = How does the bubble remember if I closed it? =
 The plugin uses sessionStorage to remember your choice. It will show again in a new browser session or on a different page.
@@ -165,25 +130,15 @@ Yes! Use the shortcode: `[tapchat phone="49123456789" message="Sales Team" label
 Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and Persian.
 
 == Screenshots ==
-1. Floating chat button with Modern bubble style on the site
-2. Simple bubble style - clean and minimal
-3. General settings page with country picker
-4. Welcome bubble style selector with live previews
-5. Working hours scheduler with timezone
-6. Visibility settings with page selector
-7. Offline mode with custom message
-8. Mobile responsive design
+1. Floating chat button with welcome bubble on the site (front-end)
+2. General settings page with country picker
+3. Welcome bubble settings with live preview
+4. Working hours scheduler with timezone
+5. Visibility settings with page selector
+6. Offline mode with custom message
+7. Mobile responsive design
 
 == Changelog ==
-
-= 1.2.0 =
-- **New:** Two bubble styles - Modern (full-featured) and Simple (minimal)
-- **New:** Style selector with live preview in admin panel
-- **New:** Simple bubble style for minimalist websites
-- **Improvement:** Better customization options for different design preferences
-- **Improvement:** Enhanced mobile experience for simple style
-- **Improvement:** Performance optimization for simple bubble style
-- **Improvement:** Modern style remains as default for existing users
 
 = 1.1.2 =
 - **Fix:** Welcome bubble close button repositioned to top-right corner inside bubble
@@ -249,9 +204,6 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 - i18n/compat: Text Domain set to `tap-chat`, update "Tested up to" to 6.8
 
 == Upgrade Notice ==
-
-= 1.2.0 =
-Major feature update: Choose between Modern or Simple bubble styles! Perfect for all website designs. Highly recommended for all users.
 
 = 1.1.2 =
 Bug fix release for welcome bubble positioning and close button behavior. Recommended update for all users.

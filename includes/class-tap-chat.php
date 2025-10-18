@@ -236,44 +236,15 @@ class Plugin {
         }
         
         $message = $this->get_option('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
-        $style = $this->get_option('welcome_bubble_style', 'modern');
-        $position = $this->get_option('welcome_bubble_position', 'top');
+        $name = $this->get_option('welcome_bubble_name', __('Support Team', 'tap-chat'));
+        $avatar = $this->get_option('welcome_bubble_avatar', '');
         $delay = absint($this->get_option('welcome_bubble_delay', 3));
         
         if (empty($message)) {
             return;
         }
-        
-        if ($style === 'simple') {
-            $this->render_simple_bubble($message, $delay, $position);
-        } else {
-            $this->render_modern_bubble($message, $delay, $position);
-        }
-    }
-    
-    private function render_simple_bubble($message, $delay, $position) {
-        $position_class = $position === 'side' ? ' bubble-position-side' : '';
         ?>
-        <div class="tapchat-welcome-bubble-simple<?php echo esc_attr($position_class); ?>" data-delay="<?php echo esc_attr($delay); ?>">
-            <div class="tapchat-bubble-simple-message">
-                <?php echo esc_html($message); ?>
-            </div>
-            
-            <button class="tapchat-bubble-close" aria-label="<?php esc_attr_e('Close', 'tap-chat'); ?>">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-            </button>
-        </div>
-        <?php
-    }
-    
-    private function render_modern_bubble($message, $delay, $position) {
-        $name = $this->get_option('welcome_bubble_name', __('Support Team', 'tap-chat'));
-        $avatar = $this->get_option('welcome_bubble_avatar', '');
-        $position_class = $position === 'side' ? ' bubble-position-side' : '';
-        ?>
-        <div class="tapchat-welcome-bubble<?php echo esc_attr($position_class); ?>" data-delay="<?php echo esc_attr($delay); ?>">
+        <div class="tapchat-welcome-bubble" data-delay="<?php echo esc_attr($delay); ?>">
             <div class="tapchat-bubble-avatar">
                 <?php if (!empty($avatar)) : ?>
                     <img src="<?php echo esc_url($avatar); ?>" alt="<?php echo esc_attr($name); ?>" />

@@ -28,7 +28,6 @@
 .tapchat-icon { width: var(--tapchat-size); height: var(--tapchat-size); display: inline-block; fill: #fff; }
 .tapchat-label { white-space: nowrap; }
 
-/* Desktop - Perfectly round button when label is hidden */
 @media (min-width: 481px) {
   .tapchat-hide-label-desktop .tapchat-label { 
     display: none; 
@@ -52,9 +51,7 @@
   }
 }
 
-/* Mobile - Separate size and round button */
 @media (max-width: 480px) { 
-  /* Use mobile size */
   .tapchat-icon { 
     width: var(--tapchat-mobile-size); 
     height: var(--tapchat-mobile-size); 
@@ -64,7 +61,6 @@
     display: none; 
   }
   
-  /* When label is hidden, button should be perfectly round */
   .tapchat-hide-label-mobile.tapchat-fab {
     padding: 0;
     width: calc(var(--tapchat-mobile-size) + 20px);
@@ -85,7 +81,6 @@
 
 .tapchat-inline { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; border-bottom: 2px solid currentColor; }
 
-/* Welcome Bubble */
 .tapchat-welcome-bubble {
   position: fixed;
   bottom: 105px;
@@ -298,6 +293,122 @@
   border-color: rgba(0, 0, 0, 0.08);
 }
 
+.tapchat-welcome-bubble.style-simple {
+  padding: 12px 16px;
+  gap: 0;
+  max-width: 320px;
+  border-radius: 12px;
+}
+
+.tapchat-welcome-bubble.style-simple .tapchat-bubble-avatar,
+.tapchat-welcome-bubble.style-simple .tapchat-bubble-name,
+.tapchat-welcome-bubble.style-simple .tapchat-bubble-online {
+  display: none;
+}
+
+.tapchat-welcome-bubble.style-simple .tapchat-bubble-content {
+  padding-right: 26px;
+}
+
+.tapchat-welcome-bubble.style-simple .tapchat-bubble-message {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+[dir="rtl"] .tapchat-welcome-bubble.style-simple .tapchat-bubble-content {
+  padding-right: 0;
+  padding-left: 26px;
+}
+
+.tapchat-welcome-bubble.position-side {
+  bottom: 30px;
+  top: auto;
+  transform: translateX(-10px) scale(0.95);
+  display: flex;
+  align-items: center;
+}
+
+.tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
+  right: 190px;
+  left: auto;
+}
+
+.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
+  left: 190px;
+  right: auto;
+}
+
+.tapchat-hide-label-desktop ~ .tapchat-welcome-bubble.position-side {
+  right: 100px;
+}
+
+.tapchat-hide-label-desktop.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
+  left: 100px;
+  right: auto;
+}
+
+[dir="rtl"] .tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
+  right: auto;
+  left: 190px;
+}
+
+[dir="rtl"] .tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
+  left: auto;
+  right: 190px;
+}
+
+[dir="rtl"] .tapchat-hide-label-desktop ~ .tapchat-welcome-bubble.position-side {
+  left: 100px;
+}
+
+[dir="rtl"] .tapchat-hide-label-desktop.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
+  right: 100px;
+  left: auto;
+}
+
+.tapchat-welcome-bubble.position-side::after {
+  top: 50%;
+  bottom: auto;
+  margin-top: -8px;
+  left: auto;
+  right: auto;
+  transform: rotate(45deg);
+}
+
+.tapchat-pos-right ~ .tapchat-welcome-bubble.position-side::after {
+  right: -9px;
+  left: auto;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side::after {
+  left: -9px;
+  right: auto;
+  border-left: none;
+  border-top: none;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tapchat-welcome-bubble.position-side.visible {
+  animation: tapchat-bubble-side-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes tapchat-bubble-side-in {
+  from {
+    opacity: 0;
+    transform: translateX(-15px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 @media (max-width: 480px) {
   .tapchat-welcome-bubble {
     max-width: calc(100vw - 40px);
@@ -350,6 +461,37 @@
     bottom: -8px;
     width: 14px;
     height: 14px;
+  }
+  
+  .tapchat-welcome-bubble.style-simple {
+    padding: 10px 14px;
+    max-width: calc(100vw - 40px);
+  }
+  
+  .tapchat-welcome-bubble.style-simple .tapchat-bubble-message {
+    font-size: 13px;
+  }
+  
+  .tapchat-welcome-bubble.position-side {
+    bottom: 30px;
+    max-width: calc(100vw - 100px);
+  }
+  
+  .tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
+    right: 190px;
+  }
+
+  .tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
+    left: 190px;
+  }
+  
+  .tapchat-hide-label-mobile ~ .tapchat-welcome-bubble.position-side {
+    right: 100px;
+  }
+
+  .tapchat-hide-label-mobile.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
+    left: 100px;
+    right: auto;
   }
 }
 

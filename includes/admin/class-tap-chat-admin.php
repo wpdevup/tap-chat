@@ -244,35 +244,71 @@ class Admin {
                 gap: 5px;
             }
             
+            .tap-chat-bubble-style-selector {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            .tap-chat-bubble-style-option {
+                flex: 1;
+                max-width: 200px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                padding: 15px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+            .tap-chat-bubble-style-option:hover {
+                border-color: #2271b1;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            .tap-chat-bubble-style-option.selected {
+                border-color: #2271b1;
+                background: #f0f6fc;
+            }
+            .tap-chat-bubble-style-option input[type="radio"] {
+                margin: 0 0 10px 0;
+            }
+            .tap-chat-bubble-style-label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+            .tap-chat-bubble-style-desc {
+                font-size: 12px;
+                color: #646970;
+            }
+            
             .tapchat-bubble-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 28px !important;
-    height: 28px !important;
-    border: none !important;
-    background: none !important;
-    background-color: transparent !important;
-    box-shadow: none !important;
-    cursor: pointer;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.4;
-    transition: all 0.3s ease;
-    color: #666 !important;
-    font-size: 20px !important;
-    line-height: 1 !important;
-    font-family: Arial, sans-serif !important;
-    font-weight: 400 !important;
-    z-index: 10;
-    outline: none;
-    min-width: 28px !important;
-    min-height: 28px !important;
-    border-radius: 50%;
-}
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 28px !important;
+                height: 28px !important;
+                border: none !important;
+                background: none !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+                cursor: pointer;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0.4;
+                transition: all 0.3s ease;
+                color: #666 !important;
+                font-size: 20px !important;
+                line-height: 1 !important;
+                font-family: Arial, sans-serif !important;
+                font-weight: 400 !important;
+                z-index: 10;
+                outline: none;
+                min-width: 28px !important;
+                min-height: 28px !important;
+                border-radius: 50%;
+            }
         ' );
         
         wp_add_inline_script( 'wp-color-picker', "
@@ -427,7 +463,38 @@ class Admin {
                 
                 toggleWelcomeBubbleSection();
                 
-                // Avatar Upload
+                function toggleBubbleStyleFields() {
+                    var selectedStyle = $('input[name=\"tap_chat_settings[bubble_style]\"]:checked').val();
+                    
+                    if (selectedStyle === 'simple') {
+                        $('#bubble-name-field').slideUp(200);
+                        $('#bubble-avatar-field').slideUp(200);
+                        $('#bubble-position-field').slideDown(200);
+                    } else {
+                        $('#bubble-name-field').slideDown(200);
+                        $('#bubble-avatar-field').slideDown(200);
+                        $('#bubble-position-field').slideUp(200);
+                    }
+                }
+                
+                $('.tap-chat-bubble-style-option').on('click', function() {
+                    $(this).find('input[type=\"radio\"]').prop('checked', true);
+                    $('.tap-chat-bubble-style-option').removeClass('selected');
+                    $(this).addClass('selected');
+                    toggleBubbleStyleFields();
+                });
+                
+                $('input[name=\"tap_chat_settings[bubble_style]\"]').on('change', function() {
+                    toggleBubbleStyleFields();
+                });
+                
+                var selectedStyle = $('input[name=\"tap_chat_settings[bubble_style]\"]:checked').closest('.tap-chat-bubble-style-option');
+                if (selectedStyle.length) {
+                    selectedStyle.addClass('selected');
+                }
+                
+                toggleBubbleStyleFields();
+                
                 var mediaUploader;
                 
                 $('#tap-chat-upload-avatar').on('click', function(e) {
@@ -505,6 +572,8 @@ class Admin {
                 'offline_message' => '',
                 'working_hours' => $this->get_default_working_hours(),
                 'enable_welcome_bubble' => 'no',
+                'bubble_style' => 'modern',
+                'bubble_position' => 'top',
                 'welcome_bubble_message' => __('Need help? Let\'s chat! 💬', 'tap-chat'),
                 'welcome_bubble_name' => __('Support Team', 'tap-chat'),
                 'welcome_bubble_avatar' => '',
@@ -638,6 +707,8 @@ class Admin {
         }
         
         $out['enable_welcome_bubble'] = ( isset( $input['enable_welcome_bubble'] ) && $input['enable_welcome_bubble'] === 'yes' ) ? 'yes' : 'no';
+        $out['bubble_style'] = ( isset( $input['bubble_style'] ) && in_array( $input['bubble_style'], array( 'modern', 'simple' ), true ) ) ? $input['bubble_style'] : 'modern';
+        $out['bubble_position'] = ( isset( $input['bubble_position'] ) && in_array( $input['bubble_position'], array( 'top', 'side' ), true ) ) ? $input['bubble_position'] : 'top';
         $out['welcome_bubble_message'] = isset( $input['welcome_bubble_message'] ) ? sanitize_textarea_field( $input['welcome_bubble_message'] ) : '';
         $out['welcome_bubble_name'] = isset( $input['welcome_bubble_name'] ) ? sanitize_text_field( $input['welcome_bubble_name'] ) : '';
         $out['welcome_bubble_avatar'] = isset( $input['welcome_bubble_avatar'] ) ? esc_url_raw( $input['welcome_bubble_avatar'] ) : '';
@@ -979,6 +1050,7 @@ class Admin {
     
     public function field_welcome_bubble_controls() {
         $enable = $this->get('enable_welcome_bubble', 'no');
+        $bubble_style = $this->get('bubble_style', 'modern');
         $message = $this->get('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
         $delay = $this->get('welcome_bubble_delay', 3);
         $avatar = $this->get('welcome_bubble_avatar', '');
@@ -1002,6 +1074,41 @@ class Admin {
             
             <div id="tap-chat-welcome-bubble-section" style="margin-left: 28px;">
                 
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 10px;">
+                        <?php esc_html_e('Bubble Style', 'tap-chat'); ?>
+                    </label>
+                    <div class="tap-chat-bubble-style-selector">
+                        <div class="tap-chat-bubble-style-option <?php echo $bubble_style === 'modern' ? 'selected' : ''; ?>">
+                            <input type="radio" 
+                                   name="tap_chat_settings[bubble_style]" 
+                                   value="modern" 
+                                   id="bubble_style_modern"
+                                   <?php checked($bubble_style, 'modern'); ?> />
+                            <label for="bubble_style_modern" class="tap-chat-bubble-style-label">
+                                <?php esc_html_e('Modern', 'tap-chat'); ?>
+                            </label>
+                            <p class="tap-chat-bubble-style-desc">
+                                <?php esc_html_e('Rich bubble with avatar, name, and online status', 'tap-chat'); ?>
+                            </p>
+                        </div>
+                        
+                        <div class="tap-chat-bubble-style-option <?php echo $bubble_style === 'simple' ? 'selected' : ''; ?>">
+                            <input type="radio" 
+                                   name="tap_chat_settings[bubble_style]" 
+                                   value="simple" 
+                                   id="bubble_style_simple"
+                                   <?php checked($bubble_style, 'simple'); ?> />
+                            <label for="bubble_style_simple" class="tap-chat-bubble-style-label">
+                                <?php esc_html_e('Simple', 'tap-chat'); ?>
+                            </label>
+                            <p class="tap-chat-bubble-style-desc">
+                                <?php esc_html_e('Clean bubble with message and label only', 'tap-chat'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; font-weight: 600; margin-bottom: 5px;">
                         <?php esc_html_e('Welcome Message', 'tap-chat'); ?>
@@ -1015,7 +1122,24 @@ class Admin {
                     </p>
                 </div>
                 
-                <div style="margin-bottom: 20px;">
+                <div id="bubble-position-field" style="margin-bottom: 20px; display: none;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">
+                        <?php esc_html_e('Bubble Position', 'tap-chat'); ?>
+                    </label>
+                    <select name="tap_chat_settings[bubble_position]" class="regular-text">
+                        <option value="top" <?php selected($this->get('bubble_position', 'top'), 'top'); ?>>
+                            <?php esc_html_e('Top (Above button)', 'tap-chat'); ?>
+                        </option>
+                        <option value="side" <?php selected($this->get('bubble_position', 'top'), 'side'); ?>>
+                            <?php esc_html_e('Side (Next to button)', 'tap-chat'); ?>
+                        </option>
+                    </select>
+                    <p class="description">
+                        <?php esc_html_e('Choose where the bubble appears relative to the WhatsApp button (Simple style only)', 'tap-chat'); ?>
+                    </p>
+                </div>
+                
+                <div id="bubble-name-field" style="margin-bottom: 20px;">
                     <label style="display: block; font-weight: 600; margin-bottom: 5px;">
                         <?php esc_html_e('Agent/Team Name', 'tap-chat'); ?>
                     </label>
@@ -1025,11 +1149,11 @@ class Admin {
                            class="regular-text"
                            placeholder="<?php esc_attr_e('Support Team', 'tap-chat'); ?>" />
                     <p class="description">
-                        <?php esc_html_e('Display name for the agent or team', 'tap-chat'); ?>
+                        <?php esc_html_e('Display name for the agent or team (Modern style only)', 'tap-chat'); ?>
                     </p>
                 </div>
                 
-                <div style="margin-bottom: 20px;">
+                <div id="bubble-avatar-field" style="margin-bottom: 20px;">
                     <label style="display: block; font-weight: 600; margin-bottom: 5px;">
                         <?php esc_html_e('Avatar URL (Optional)', 'tap-chat'); ?>
                     </label>
@@ -1056,7 +1180,7 @@ class Admin {
                         </div>
                     </div>
                     <p class="description">
-                        <?php esc_html_e('Upload an avatar image or enter URL. Leave empty to use default WhatsApp icon.', 'tap-chat'); ?>
+                        <?php esc_html_e('Upload an avatar image or enter URL. Leave empty to use default WhatsApp icon (Modern style only).', 'tap-chat'); ?>
                     </p>
                 </div>
                 

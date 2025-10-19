@@ -1,16 +1,40 @@
 # Tap Chat - WhatsApp Click to Chat for WordPress
 
-A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add a beautiful floating button with welcome bubble, working hours management, and advanced visibility controls.
+A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add a beautiful floating button with welcome bubble styles, working hours management, and advanced visibility controls.
 
 ## ✨ Features
 
-### 💬 Welcome Bubble
+### 💬 Welcome Bubble with Styles
+- **Two Distinct Styles** - Modern (rich) and Simple (minimalist)
+- **Flexible Positioning** - Top or Side placement for Simple style
 - **Custom Greeting Messages** - Boost engagement by 30-40%
-- **Agent/Team Name & Avatar** - Personalize your support team
+- **Agent/Team Name & Avatar** - Personalize your support team (Modern style)
 - **Configurable Delay** - Show bubble after 0-60 seconds
 - **Session Memory** - Remembers if user closed the bubble
 - **Click to Chat** - Instant WhatsApp connection
 - **Beautiful Animations** - Smooth fade-in effects
+
+### 🎨 Bubble Styles
+
+#### Modern Style
+- Rich bubble with avatar display
+- Agent/team name with online indicator
+- Animated online pulse effect
+- Larger, more detailed design
+- Perfect for personalized support
+
+#### Simple Style
+- Clean, minimalist design
+- Message-only display
+- Compact layout
+- Choose Top or Side positioning
+- Perfect for quick notifications
+
+### 📍 Bubble Position (Simple Style Only)
+- **Top Position** - Bubble appears above the WhatsApp button
+- **Side Position** - Bubble appears next to the WhatsApp button (horizontal layout)
+- Automatically adjusts for button placement (left/right)
+- Perfect alignment with button in all sizes
 
 ### 🕐 Working Hours Management
 - **Business Hours Scheduler** - Set different hours for each day
@@ -84,19 +108,28 @@ git clone https://github.com/yourusername/tap-chat.git
 ### Welcome Bubble Setup
 1. Navigate to **Settings → Tap Chat → Welcome Bubble**
 2. Enable **Welcome Bubble** checkbox
-3. Enter your greeting message (default: "Need help? Let's chat! 💬")
-4. Set agent/team name (default: "Support Team")
-5. Optionally add an avatar URL
-6. Configure display delay (default: 3 seconds)
-7. Save changes
+3. **Choose your style:**
+   - **Modern:** Rich bubble with avatar, name, and online indicator
+   - **Simple:** Clean bubble with message only
+4. **Set position (Simple style only):**
+   - **Top:** Bubble appears above button (default)
+   - **Side:** Bubble appears next to button
+5. Enter your greeting message (default: "Need help? Let's chat! 💬")
+6. Set agent/team name (Modern style only)
+7. Optionally add an avatar URL (Modern style only)
+8. Configure display delay (default: 3 seconds)
+9. Save changes
 
-**Welcome Bubble Features:**
-- Engaging greeting message with emoji support
-- Display agent/team name with online indicator
-- Custom avatar or default WhatsApp icon
-- Configurable delay (0-60 seconds)
-- Session-based close memory
-- Click bubble to open chat instantly
+**Bubble Style Features:**
+
+| Feature | Modern | Simple |
+|---------|--------|--------|
+| Avatar | ✓ | ✗ |
+| Name | ✓ | ✗ |
+| Online Indicator | ✓ | ✗ |
+| Message | ✓ | ✓ |
+| Position Options | Top only | Top or Side |
+| Best For | Personalized support | Quick notifications |
 
 ### Working Hours Setup
 1. Navigate to **Settings → Tap Chat → Working Hours**
@@ -140,6 +173,34 @@ The button appears automatically on all pages after configuration.
 [tapchat phone="4915012345678" message="Hello!" label="Contact Support"]
 ```
 
+### Bubble Style Examples
+
+#### Modern Style - E-commerce
+```
+Style: Modern
+Message: "Need help? Let's chat! 💬"
+Name: "Sales Team"
+Avatar: [Your team photo]
+Delay: 3 seconds
+Position: Top (only option)
+```
+
+#### Simple Style - Top Position
+```
+Style: Simple
+Message: "Questions? We're here! 👋"
+Position: Top
+Delay: 4 seconds
+```
+
+#### Simple Style - Side Position
+```
+Style: Simple
+Message: "Chat with us! 💬"
+Position: Side
+Delay: 3 seconds
+```
+
 ### Working Hours Examples
 
 #### Customer Support (Mon-Fri, 9-5)
@@ -163,32 +224,6 @@ All days: 00:00 - 23:59
 OR disable working hours completely
 ```
 
-### Welcome Bubble Examples
-
-#### E-commerce Store
-```
-Message: "Need help? Let's chat! 💬"
-Name: "Sales Team"
-Avatar: [Your team photo]
-Delay: 3 seconds
-```
-
-#### Tech Support
-```
-Message: "Got questions? We're here! 🤓"
-Name: "Tech Support"
-Avatar: [Support agent photo]
-Delay: 5 seconds
-```
-
-#### Service Business
-```
-Message: "Looking for our services? Ask us! 👋"
-Name: "Customer Care"
-Avatar: [Default WhatsApp icon]
-Delay: 4 seconds
-```
-
 ### Use Cases
 
 #### E-commerce Store
@@ -196,7 +231,7 @@ Delay: 4 seconds
 ✓ Show on: Product pages, Shop page
 ✗ Hide on: Checkout, Thank you page, Cart
 ⏰ Hours: Mon-Sat 9 AM - 6 PM
-💬 Bubble: Enabled with product questions
+💬 Bubble: Simple style, Side position
 ```
 
 #### Service Business
@@ -204,7 +239,7 @@ Delay: 4 seconds
 ✓ Show on: Services page, Contact page, Homepage
 ✗ Hide on: Privacy Policy, Terms of Service
 ⏰ Hours: Mon-Fri 8 AM - 5 PM
-💬 Bubble: Enabled with service inquiries
+💬 Bubble: Modern style with agent photo
 ```
 
 #### Landing Page
@@ -212,7 +247,7 @@ Delay: 4 seconds
 ✓ Show ONLY on: Specific landing page
 ✗ Hide on: (not needed)
 ⏰ Hours: Always available
-💬 Bubble: Immediate with special offer
+💬 Bubble: Simple style, Top position
 ```
 
 ## 🎯 Visibility Control Logic
@@ -228,66 +263,54 @@ Delay: 4 seconds
 
 ## 🔄 Changelog
 
-### Version 1.1.2
-#### 🐛 Bug Fixes
-- **Fixed:** Welcome bubble close button repositioned to top-right corner inside bubble
-- **Fixed:** Close button now rotates perfectly centered on hover without shifting left
-- **Fixed:** Welcome bubble arrow now properly visible above WhatsApp button (not hidden behind button)
+### Version 1.2.0
+#### 🎉 New Features
+- **Bubble Style Selector** - Choose between Modern and Simple styles
+- **Bubble Position Control** - Top or Side positioning for Simple style
+- **Side Positioning** - Display bubble horizontally next to button
+- **Conditional Fields** - Avatar and Name fields only show for Modern style
 
 #### 🎨 Improvements
-- Better close button styling with smooth 90-degree rotation animation on hover
-- Optimized close button character (✕) for perfect centering
-- Added Arial font family for consistent close button rendering across browsers
-- Adjusted bubble bottom position for better spacing (105px desktop, 90px mobile)
-### Version 1.1.1
+- Reduced bubble padding for more compact design (4-5px smaller)
+- Better vertical alignment for Side positioned bubbles
+- Optimized bubble sizing and spacing
+- Enhanced admin UI with style preview cards
+- Improved responsive behavior for both styles
+
 #### 🐛 Fixes
-- **Improved:** Welcome bubble close button size - larger and easier to click (32px desktop, 28px mobile)
-- **Fixed:** Better visibility of close button on all devices with `!important` CSS
-- **Enhanced:** CSS for admin panel bubble preview
-- **Updated:** Default welcome message to be more concise: "Need help? Let's chat! 💬"
+- Fixed bubble positioning calculations
+- Improved arrow pointer placement for Side position
+- Better mobile optimization for compact bubbles
+
+### Version 1.1.2
+- **Fix:** Welcome bubble close button repositioned to top-right corner
+- **Fix:** Close button rotates perfectly centered on hover
+- **Fix:** Arrow now properly visible above WhatsApp button
+- **Improvement:** Better close button styling
+
+### Version 1.1.1
+- **Fix:** Improved close button size and visibility
+- **Improvement:** Enhanced CSS for admin panel
+- **Improvement:** Updated default welcome message
 
 ### Version 1.1.0
-#### 🎉 New Features
-- **Welcome Bubble** - Friendly greeting message to boost engagement by 30-40%
-- **Agent/Team Name & Avatar** - Personalize your support team
-- **Configurable Display Delay** - Show bubble after 0-60 seconds
-- **Session-based Close Memory** - Remembers user preference
-- **Click Bubble to Chat** - Instant WhatsApp connection
-- **Beautiful Animations** - Smooth fade-in effects
-
-#### 🎨 Improvements
-- Better user engagement with welcome messages
-- Enhanced mobile experience
-- Smooth animations and hover effects
+- **New:** Welcome bubble feature
+- **New:** Agent/team name and avatar support
+- **New:** Configurable display delay
+- **New:** Session-based close memory
+- **New:** Beautiful animations
 
 ### Version 1.0.0
-#### 🎉 New Features
-- **Working Hours Management** - Set business hours for each day
-- **Timezone Support** - Perfect for global businesses
-- **Offline Mode** - Custom message when unavailable
-- **Day-Specific Scheduling** - Enable/disable individual days
-
-#### 🎨 Improvements
-- Better admin UI organization
-- Enhanced settings structure
-- Comprehensive documentation
+- **New:** Working hours management
+- **New:** Timezone support
+- **New:** Offline mode
+- **New:** Day-specific scheduling
 
 ### Version 0.9.0
-#### 🎉 New Features
-- Advanced visibility controls - show button ONLY on specific pages
-- Hide button on specific pages (great for checkout/thank you pages)
-- Smart country picker with search functionality (150+ countries)
-- Automatic country detection based on WordPress locale
-- Automatic leading zero removal from phone numbers
-- WooCommerce shop page support in visibility settings
-- Page/post search in visibility selector
-
-#### 🎨 Improvements
-- Better UX with checkbox-based visibility controls
-- Clear descriptions and visual indicators
-
-#### 🐛 Fixes
-- Shop page now correctly respects visibility settings
+- **New:** Advanced visibility controls
+- **New:** Smart country picker
+- **New:** WooCommerce shop page support
+- **Improvement:** Better UX
 
 [View Full Changelog](https://wordpress.org/plugins/tap-chat/#developers)
 
@@ -307,7 +330,7 @@ Delay: 4 seconds
 
 ### Performance Metrics
 - **Total Size:** ~50KB
-- **CSS:** ~2KB (minified)
+- **CSS:** ~3KB (minified)
 - **JS:** ~1KB (minified)
 - **Load Time Impact:** <50ms
 - **HTTP Requests:** 0 external
@@ -366,36 +389,41 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 ## 💡 Pro Tips
 
 ### For Best Results
-1. **Set realistic working hours** - Match your actual availability
-2. **Use timezone correctly** - Ensure it matches your business location
-3. **Test offline message** - Make sure it's helpful and professional
-4. **Combine with visibility rules** - Hide on irrelevant pages
-5. **Update phone number** - Make sure it's active and monitored
-6. **Optimize welcome bubble** - Keep message short and engaging (under 15 words)
-7. **Test delay timing** - 3-5 seconds works best for most sites
-8. **Use custom avatar** - Personal photos increase trust by 40%
+1. **Choose the right style** - Modern for personalized support, Simple for quick contact
+2. **Use Side position wisely** - Great for desktop, but test on mobile
+3. **Set realistic working hours** - Match your actual availability
+4. **Use timezone correctly** - Ensure it matches your business location
+5. **Test offline message** - Make sure it's helpful and professional
+6. **Combine with visibility rules** - Hide on irrelevant pages
+7. **Update phone number** - Make sure it's active and monitored
+8. **Optimize welcome bubble** - Keep message short and engaging (under 15 words)
+9. **Test delay timing** - 3-5 seconds works best for most sites
+10. **Use custom avatar** - Personal photos increase trust by 40% (Modern style)
 
-### Welcome Bubble Best Practices
-- **Keep it short** - 10-15 words maximum
-- **Use emojis** - Makes it more friendly and engaging
-- **Be specific** - "Need help with shipping?" vs "Need help?"
-- **Test timing** - Too fast is annoying, too slow is missed
-- **Monitor engagement** - Check if people are clicking
-- **A/B test messages** - Try different variations
+### Bubble Style Best Practices
+
+**Modern Style:**
+- Use for customer service and support
+- Add team member photo for trust
+- Keep name short and friendly
+- Perfect for B2C businesses
+
+**Simple Style:**
+- Use for quick notifications
+- Great for minimalist designs
+- Side position for desktop focus
+- Top position for mobile-first
+
+**Position Selection:**
+- **Top:** Best for mobile, universal compatibility
+- **Side:** Best for desktop, prominent placement
 
 ### Common Use Cases
-- **E-commerce Support** - Quick customer service during business hours with product-specific messages
-- **Appointment Booking** - Instant scheduling within working hours
-- **Sales Inquiries** - Direct communication when team is available with special offers
-- **Technical Support** - Real-time help during support hours
-- **Lead Generation** - Convert visitors during peak hours with engaging bubble messages
-
-### Working Hours Best Practices
-- **Set buffer time** - End 15 minutes before actual closing
-- **Consider time zones** - Use customer's timezone for global businesses
-- **Holiday schedules** - Temporarily disable on holidays
-- **Lunch breaks** - Consider splitting into morning/afternoon shifts
-- **Auto-responders** - Use offline message to set expectations
+- **E-commerce Support** - Simple style, Side position, quick responses
+- **Appointment Booking** - Modern style with agent photo and availability
+- **Sales Inquiries** - Simple style, Top position, special offers
+- **Technical Support** - Modern style with team name and hours
+- **Lead Generation** - Simple style, Side position, engaging message
 
 ---
 

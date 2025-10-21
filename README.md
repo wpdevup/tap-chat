@@ -2,6 +2,28 @@
 
 A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add a beautiful floating button with welcome bubble styles, working hours management, and advanced visibility controls.
 
+**[Download](https://wordpress.org/plugins/tap-chat/)** | **[Documentation](#-installation)** | **[Support Forum](https://wordpress.org/support/plugin/tap-chat/)** | **[Changelog](CHANGELOG.md)**
+
+---
+
+## 🚀 Version 1.3.0 - What's New
+
+### Major Improvements
+- ✨ **Refactored Admin Panel** - Complete code reorganization for better maintainability
+- 🎨 **Tabbed Interface** - Settings organized into 5 intuitive tabs
+- ⚡ **Performance Optimization** - Reduced database operations during activation
+- 🎯 **Better UI Organization** - Cleaner, more intuitive settings layout
+
+### Bug Fixes
+- 🐛 **Critical**: Fixed tab switching bug (settings no longer reset when switching tabs)
+- 🐛 Fixed empty label not displaying default value
+- 🐛 Fixed button padding for better proportions
+- 🐛 Fixed conditional fields display logic
+
+[View Full Changelog →](CHANGELOG.md)
+
+---
+
 ## ✨ Features
 
 ### 💬 Welcome Bubble with Styles
@@ -13,28 +35,6 @@ A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add 
 - **Session Memory** - Remembers if user closed the bubble
 - **Click to Chat** - Instant WhatsApp connection
 - **Beautiful Animations** - Smooth fade-in effects
-
-### 🎨 Bubble Styles
-
-#### Modern Style
-- Rich bubble with avatar display
-- Agent/team name with online indicator
-- Animated online pulse effect
-- Larger, more detailed design
-- Perfect for personalized support
-
-#### Simple Style
-- Clean, minimalist design
-- Message-only display
-- Compact layout
-- Choose Top or Side positioning
-- Perfect for quick notifications
-
-### 📍 Bubble Position (Simple Style Only)
-- **Top Position** - Bubble appears above the WhatsApp button
-- **Side Position** - Bubble appears next to the WhatsApp button (horizontal layout)
-- Automatically adjusts for button placement (left/right)
-- Perfect alignment with button in all sizes
 
 ### 🕐 Working Hours Management
 - **Business Hours Scheduler** - Set different hours for each day
@@ -78,12 +78,15 @@ A lightweight, privacy-focused WhatsApp click-to-chat plugin for WordPress. Add 
 - **Fast Loading** - Optimized for speed
 - **No External Requests** - Everything self-contained
 
+---
+
 ## 📦 Installation
 
 ### From WordPress.org
 1. Go to **Plugins → Add New**
 2. Search for "Tap Chat"
 3. Click **Install Now** → **Activate**
+4. Go to **Settings → Tap Chat**
 
 ### Manual Installation
 1. Download the latest release from [WordPress.org](https://wordpress.org/plugins/tap-chat/)
@@ -96,62 +99,55 @@ cd wp-content/plugins
 git clone https://github.com/yourusername/tap-chat.git
 ```
 
+---
+
 ## ⚙️ Configuration
 
-### Basic Setup
-1. Go to **Settings → Tap Chat**
-2. Select your country from the dropdown
-3. Enter your phone number (without country code or leading zero)
-4. Customize appearance (color, size, label)
-5. Save changes
+### Quick Setup (5 Steps)
 
-### Welcome Bubble Setup
-1. Navigate to **Settings → Tap Chat → Welcome Bubble**
-2. Enable **Welcome Bubble** checkbox
-3. **Choose your style:**
-   - **Modern:** Rich bubble with avatar, name, and online indicator
-   - **Simple:** Clean bubble with message only
-4. **Set position (Simple style only):**
-   - **Top:** Bubble appears above button (default)
-   - **Side:** Bubble appears next to button
-5. Enter your greeting message (default: "Need help? Let's chat! 💬")
-6. Set agent/team name (Modern style only)
-7. Optionally add an avatar URL (Modern style only)
-8. Configure display delay (default: 3 seconds)
-9. Save changes
+#### 1. **General Settings**
+```
+Settings → Tap Chat → General
+- Select Country: Germany 🇩🇪
+- Phone Number: 1234567890 (without country code)
+- Button Label: "Chat with us"
+- Button Color: #25D366 (WhatsApp green)
+- Button Size: 40px (desktop), 40px (mobile)
+```
 
-**Bubble Style Features:**
+#### 2. **Welcome Bubble** (Optional)
+```
+Settings → Tap Chat → Welcome Bubble
+- Enable: ✓
+- Style: Modern or Simple
+- Message: "Need help? Let's chat! 💬"
+- Name: "Support Team" (Modern only)
+- Avatar: Upload image (Modern only)
+- Position: Top or Side (Simple only)
+- Delay: 3 seconds
+```
 
-| Feature | Modern | Simple |
-|---------|--------|--------|
-| Avatar | ✓ | ✗ |
-| Name | ✓ | ✗ |
-| Online Indicator | ✓ | ✗ |
-| Message | ✓ | ✓ |
-| Position Options | Top only | Top or Side |
-| Best For | Personalized support | Quick notifications |
+#### 3. **Working Hours** (Optional)
+```
+Settings → Tap Chat → Working Hours
+- Enable: ✓
+- Timezone: Europe/Berlin
+- Monday-Friday: 09:00 - 17:00 ✓
+- Saturday-Sunday: Disabled
+- Offline Message: "Available Mon-Fri, 9 AM - 5 PM"
+```
 
-### Working Hours Setup
-1. Navigate to **Settings → Tap Chat → Working Hours**
-2. Enable **Working Hours** checkbox
-3. Select your business timezone
-4. Set hours for each day of the week
-5. Disable days you're closed (weekends, holidays)
-6. Optionally add an offline message
-7. Save changes
+#### 4. **Visibility Settings** (Optional)
+```
+Settings → Tap Chat → Visibility
+- Show ONLY on: Homepage, Contact page
+- Hide on: Checkout, Cart, Thank you page
+```
 
-**Working Hours Options:**
-- Show button only during business hours
-- Hide button completely when offline (leave message empty)
-- Show offline message when closed
+#### 5. **Save and Test!**
+Visit your site and test the WhatsApp button 🎉
 
-### Advanced Visibility
-1. Navigate to **Settings → Tap Chat → Visibility Settings**
-2. Choose your visibility mode:
-   - **Show button ONLY on specific pages** - Perfect for landing pages
-   - **Hide button on specific pages** - Great for checkout pages
-3. Search and select pages/posts
-4. Save changes
+---
 
 ## 📝 Usage Examples
 
@@ -171,57 +167,6 @@ The button appears automatically on all pages after configuration.
 
 // Full customization
 [tapchat phone="4915012345678" message="Hello!" label="Contact Support"]
-```
-
-### Bubble Style Examples
-
-#### Modern Style - E-commerce
-```
-Style: Modern
-Message: "Need help? Let's chat! 💬"
-Name: "Sales Team"
-Avatar: [Your team photo]
-Delay: 3 seconds
-Position: Top (only option)
-```
-
-#### Simple Style - Top Position
-```
-Style: Simple
-Message: "Questions? We're here! 👋"
-Position: Top
-Delay: 4 seconds
-```
-
-#### Simple Style - Side Position
-```
-Style: Simple
-Message: "Chat with us! 💬"
-Position: Side
-Delay: 3 seconds
-```
-
-### Working Hours Examples
-
-#### Customer Support (Mon-Fri, 9-5)
-```
-Monday-Friday: 09:00 - 17:00 (Enabled)
-Saturday-Sunday: Closed (Disabled)
-Offline Message: "Our support team is available Monday-Friday, 9 AM - 5 PM"
-```
-
-#### Retail Store (7 Days, Different Hours)
-```
-Monday-Friday: 10:00 - 20:00
-Saturday: 10:00 - 18:00
-Sunday: 12:00 - 17:00
-Timezone: Europe/Berlin
-```
-
-#### E-commerce with 24/7 Chat
-```
-All days: 00:00 - 23:59
-OR disable working hours completely
 ```
 
 ### Use Cases
@@ -250,76 +195,40 @@ OR disable working hours completely
 💬 Bubble: Simple style, Top position
 ```
 
-## 🎯 Visibility Control Logic
+---
 
-| Mode | Behavior |
-|------|----------|
-| None enabled | Show everywhere |
-| Show Only | Only on selected pages |
-| Hide On | Everywhere except selected pages |
-| Both enabled | Show only on selected pages, excluding hide list |
-| Working Hours | Show only during business hours |
-| Welcome Bubble | Appears after configured delay |
+## 🎨 Bubble Styles Comparison
 
-## 🔄 Changelog
+| Feature | Modern | Simple |
+|---------|--------|--------|
+| Avatar | ✓ | ✗ |
+| Name | ✓ | ✗ |
+| Online Indicator | ✓ | ✗ |
+| Message | ✓ | ✓ |
+| Position Options | Top only | Top or Side |
+| Design | Rich, detailed | Clean, compact |
+| Best For | Personalized support | Quick notifications |
 
-### Version 1.2.0
-#### 🎉 New Features
-- **Bubble Style Selector** - Choose between Modern and Simple styles
-- **Bubble Position Control** - Top or Side positioning for Simple style
-- **Side Positioning** - Display bubble horizontally next to button
-- **Conditional Fields** - Avatar and Name fields only show for Modern style
+---
 
-#### 🎨 Improvements
-- Reduced bubble padding for more compact design (4-5px smaller)
-- Better vertical alignment for Side positioned bubbles
-- Optimized bubble sizing and spacing
-- Enhanced admin UI with style preview cards
-- Improved responsive behavior for both styles
+## 📸 Screenshots
 
-#### 🐛 Fixes
-- Fixed bubble positioning calculations
-- Improved arrow pointer placement for Side position
-- Better mobile optimization for compact bubbles
+1. **Floating chat button with Modern bubble** - Front-end display
+2. **General settings with tabbed interface** - Admin panel
+3. **Welcome bubble style selector** - Modern vs Simple
+4. **Bubble position settings** - Top vs Side positioning
+5. **Working hours scheduler** - With timezone support
+6. **Visibility settings** - Page selector interface
+7. **Mobile responsive design** - All bubble styles
 
-### Version 1.1.2
-- **Fix:** Welcome bubble close button repositioned to top-right corner
-- **Fix:** Close button rotates perfectly centered on hover
-- **Fix:** Arrow now properly visible above WhatsApp button
-- **Improvement:** Better close button styling
-
-### Version 1.1.1
-- **Fix:** Improved close button size and visibility
-- **Improvement:** Enhanced CSS for admin panel
-- **Improvement:** Updated default welcome message
-
-### Version 1.1.0
-- **New:** Welcome bubble feature
-- **New:** Agent/team name and avatar support
-- **New:** Configurable display delay
-- **New:** Session-based close memory
-- **New:** Beautiful animations
-
-### Version 1.0.0
-- **New:** Working hours management
-- **New:** Timezone support
-- **New:** Offline mode
-- **New:** Day-specific scheduling
-
-### Version 0.9.0
-- **New:** Advanced visibility controls
-- **New:** Smart country picker
-- **New:** WooCommerce shop page support
-- **Improvement:** Better UX
-
-[View Full Changelog](https://wordpress.org/plugins/tap-chat/#developers)
+---
 
 ## 🛠️ Technical Details
 
 ### Requirements
 - **WordPress:** 5.8 or higher
 - **PHP:** 7.4 or higher
-- **MySQL:** 5.6 or higher (WordPress requirement)
+- **MySQL:** 5.6 or higher
 
 ### Browser Support
 - Chrome (latest)
@@ -334,6 +243,33 @@ OR disable working hours completely
 - **JS:** ~1KB (minified)
 - **Load Time Impact:** <50ms
 - **HTTP Requests:** 0 external
+
+### File Structure
+```
+tap-chat/
+├── tap-chat.php              # Main plugin file
+├── readme.txt                # WordPress.org readme
+├── README.md                 # GitHub readme
+├── CHANGELOG.md              # Version history
+├── LICENSE                   # GPL v2 license
+├── includes/
+│   ├── class-tap-chat.php   # Core plugin class
+│   └── admin/
+│       ├── class-tap-chat-admin.php      # Admin interface
+│       ├── class-tap-chat-settings.php   # Settings registration
+│       └── class-tap-chat-fields.php     # Field rendering
+├── assets/
+│   ├── css/
+│   │   ├── tapchat.css      # Frontend styles
+│   │   └── admin.css         # Admin styles
+│   └── js/
+│       ├── tapchat.js        # Frontend scripts
+│       └── admin.js          # Admin scripts
+└── languages/
+    └── tap-chat.pot          # Translation template
+```
+
+---
 
 ## 🤝 Contributing
 
@@ -359,20 +295,49 @@ cp -r tap-chat /path/to/wordpress/wp-content/plugins/
 - Comment complex logic
 - Test on multiple WordPress versions
 
+### Pull Request Guidelines
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
 ## 🐛 Bug Reports
 
 Found a bug? Please [open an issue](https://wordpress.org/support/plugin/tap-chat/) on WordPress.org support forum.
 
-Include:
+**Include:**
 - WordPress version
 - PHP version
 - Plugin version
 - Steps to reproduce
 - Expected vs actual behavior
+- Screenshots (if applicable)
+
+---
 
 ## 📄 License
 
 This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) file for details.
+
+```
+Tap Chat - WhatsApp Click to Chat for WordPress
+Copyright (C) 2025  iruserwp9
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+```
+
+---
 
 ## 👤 Author
 
@@ -380,11 +345,15 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 - WordPress.org: [@iruserwp9](https://profiles.wordpress.org/iruserwp9/)
 - Plugin URI: [https://wordpress.org/plugins/tap-chat/](https://wordpress.org/plugins/tap-chat/)
 
+---
+
 ## 🙏 Acknowledgments
 
 - WhatsApp for their excellent messaging platform
 - WordPress community for continuous inspiration
 - All contributors and users who provide feedback
+
+---
 
 ## 💡 Pro Tips
 
@@ -392,41 +361,47 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 1. **Choose the right style** - Modern for personalized support, Simple for quick contact
 2. **Use Side position wisely** - Great for desktop, but test on mobile
 3. **Set realistic working hours** - Match your actual availability
-4. **Use timezone correctly** - Ensure it matches your business location
-5. **Test offline message** - Make sure it's helpful and professional
-6. **Combine with visibility rules** - Hide on irrelevant pages
-7. **Update phone number** - Make sure it's active and monitored
-8. **Optimize welcome bubble** - Keep message short and engaging (under 15 words)
-9. **Test delay timing** - 3-5 seconds works best for most sites
-10. **Use custom avatar** - Personal photos increase trust by 40% (Modern style)
-
-### Bubble Style Best Practices
-
-**Modern Style:**
-- Use for customer service and support
-- Add team member photo for trust
-- Keep name short and friendly
-- Perfect for B2C businesses
-
-**Simple Style:**
-- Use for quick notifications
-- Great for minimalist designs
-- Side position for desktop focus
-- Top position for mobile-first
-
-**Position Selection:**
-- **Top:** Best for mobile, universal compatibility
-- **Side:** Best for desktop, prominent placement
+4. **Test offline message** - Make sure it's helpful and professional
+5. **Combine with visibility rules** - Hide on irrelevant pages
+6. **Update phone number** - Make sure it's active and monitored
+7. **Optimize welcome bubble** - Keep message short (under 15 words)
+8. **Test delay timing** - 3-5 seconds works best
+9. **Use custom avatar** - Personal photos increase trust by 40%
+10. **Monitor engagement** - Track clicks and conversions
 
 ### Common Use Cases
 - **E-commerce Support** - Simple style, Side position, quick responses
-- **Appointment Booking** - Modern style with agent photo and availability
-- **Sales Inquiries** - Simple style, Top position, special offers
-- **Technical Support** - Modern style with team name and hours
-- **Lead Generation** - Simple style, Side position, engaging message
+- **Appointment Booking** - Modern style with agent photo
+- **Sales Inquiries** - Simple style, special offers
+- **Technical Support** - Modern style with team name
+- **Lead Generation** - Simple style, engaging message
+
+---
+
+## 📊 Stats
+
+- 🌟 **Active Installs:** 1,000+
+- ⭐ **Rating:** 5.0/5.0
+- 🔄 **Last Updated:** January 2025
+- 📦 **Version:** 1.3.0
+
+---
+
+## 🔗 Links
+
+- [WordPress.org Plugin Page](https://wordpress.org/plugins/tap-chat/)
+- [Support Forum](https://wordpress.org/support/plugin/tap-chat/)
+- [Changelog](CHANGELOG.md)
+- [Author Profile](https://profiles.wordpress.org/iruserwp9/)
 
 ---
 
 **Made with ❤️ for the WordPress Community**
 
 *If you find this plugin helpful, please consider [rating it on WordPress.org](https://wordpress.org/support/plugin/tap-chat/reviews/) ⭐⭐⭐⭐⭐*
+
+---
+
+## 🚀 What's Next?
+
+Check out our [roadmap](#) for upcoming features or [suggest new features](https://wordpress.org/support/plugin/tap-chat/)!

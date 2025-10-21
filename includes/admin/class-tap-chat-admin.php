@@ -55,6 +55,12 @@ class Admin {
     }
 
     public function settings_page() {
+        // Check user capabilities
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'tap-chat' ) );
+        }
+        
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe read-only operation for tab navigation
         $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
         ?>
         <div class="wrap tap-chat-admin-wrap">

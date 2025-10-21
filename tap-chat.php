@@ -24,6 +24,17 @@ define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat.php';
 
+// Add Settings link to plugin list
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $links ) {
+    $settings_link = sprintf(
+        '<a href="%s">%s</a>',
+        admin_url( 'options-general.php?page=tap-chat' ),
+        esc_html__( 'Settings', 'tap-chat' )
+    );
+    array_unshift( $links, $settings_link );
+    return $links;
+} );
+
 register_activation_hook( __FILE__, function(){
     // Migrate from old plugin name if exists
     $old = get_option('chatly_settings');

@@ -15,8 +15,10 @@ class Plugin {
     }
 
     private function __construct() {
-        require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-admin.php';
-        new \Tap_Chat\Admin();
+        if ( is_admin() ) {
+            require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-admin.php';
+            new \Tap_Chat\Admin();
+        }
 
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_front' ] );
         add_action( 'wp_footer', [ $this, 'render_floating_button' ] );
@@ -174,9 +176,15 @@ class Plugin {
 
         $message = $this->get_option( 'message', '' );
         $label   = $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) );
+        
+        // If label is empty string, use default
+        if ( empty( $label ) ) {
+            $label = __( 'Chat with us', 'tap-chat' );
+        }
+        
         $pos     = $this->get_option( 'position', 'right' );
-        $size    = absint( $this->get_option( 'size', 56 ) );
-        $mobile_size = absint( $this->get_option( 'mobile_size', 56 ) );
+        $size    = absint( $this->get_option( 'size', 40 ) );
+        $mobile_size = absint( $this->get_option( 'mobile_size', 40 ) );
         $color   = sanitize_hex_color( $this->get_option( 'color', '#25D366' ) );
         $hide_mb = $this->get_option( 'hide_label_mobile', 'yes' );
         $hide_dt = $this->get_option( 'hide_label_desktop', 'no' );
@@ -209,8 +217,8 @@ class Plugin {
     
     private function render_offline_button( $offline_message ) {
         $pos     = $this->get_option( 'position', 'right' );
-        $size    = absint( $this->get_option( 'size', 56 ) );
-        $mobile_size = absint( $this->get_option( 'mobile_size', 56 ) );
+        $size    = absint( $this->get_option( 'size', 40 ) );
+        $mobile_size = absint( $this->get_option( 'mobile_size', 40 ) );
         $color   = '#999999';
 
         $classes = 'tapchat-fab tapchat-fab-offline tapchat-pos-' . esc_attr( $pos );
@@ -242,8 +250,12 @@ class Plugin {
         $avatar = $this->get_option('welcome_bubble_avatar', '');
         $delay = absint($this->get_option('welcome_bubble_delay', 3));
         
-        if (empty($message)) {
-            return;
+        if ( empty( $message ) ) {
+            $message = __('Need help? Let\'s chat! 💬', 'tap-chat');
+        }
+        
+        if ( empty( $name ) && $bubble_style === 'modern' ) {
+            $name = __('Support Team', 'tap-chat');
         }
         
         $bubble_class = 'tapchat-welcome-bubble';

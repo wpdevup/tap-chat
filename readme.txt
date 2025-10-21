@@ -176,7 +176,7 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 
 == Changelog ==
 
-= 1.3.0 - 2025-01-XX =
+= 1.3.0 - 2025-10-21 =
 **Major Improvements:**
 - **Refactored Admin Panel** - Complete code reorganization for better maintainability and performance
 - **Tabbed Interface** - Settings now organized into General, Welcome Bubble, Working Hours, Visibility, and Advanced tabs for easier navigation

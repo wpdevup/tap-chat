@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,7 @@ Choose between two distinct bubble styles:
 - Rich design with avatar display
 - Agent/team name with online indicator
 - Animated pulse effect
+- Larger, more detailed design
 - Perfect for personalized customer support
 
 *Simple Style:*
@@ -46,6 +47,8 @@ Choose between two distinct bubble styles:
 When using Simple style, choose where the bubble appears:
 - **Top** - Above the WhatsApp button (default)
 - **Side** - Next to the WhatsApp button (horizontal layout)
+- Automatically adjusts for button placement (left/right)
+- Perfect alignment with button in all sizes
 
 **Welcome Bubble Features**
 Increase engagement by 30-40% with a friendly welcome message:
@@ -173,80 +176,133 @@ Yes! The plugin fully supports right-to-left languages like Arabic, Hebrew, and 
 
 == Changelog ==
 
-= 1.2.0 =
-- **New:** Bubble style selector - Choose between Modern and Simple styles
-- **New:** Bubble position control for Simple style (Top or Side)
-- **New:** Side positioning - Display bubble horizontally next to button
-- **Improvement:** Reduced bubble padding for more compact design
-- **Improvement:** Conditional field display - Avatar and Name fields only show for Modern style
-- **Improvement:** Better vertical alignment for Side positioned bubbles
-- **Improvement:** Optimized bubble sizing and spacing
-- **Enhancement:** Improved admin UI with style preview cards
+= 1.3.0 - 2025-01-XX =
+**Major Improvements:**
+- **Refactored Admin Panel** - Complete code reorganization for better maintainability and performance
+- **Tabbed Interface** - Settings now organized into General, Welcome Bubble, Working Hours, Visibility, and Advanced tabs for easier navigation
+- **Better UI Organization** - Cleaner, more intuitive settings layout with improved user experience
+- **Performance Optimization** - Reduced database writes in activation hook (single write instead of multiple)
+- **Improved FOUC Prevention** - Settings sections no longer flash on page load
 
-= 1.1.2 =
-- **Fix:** Welcome bubble close button repositioned to top-right corner inside bubble
-- **Fix:** Close button now rotates perfectly centered on hover without shifting
-- **Fix:** Welcome bubble arrow now properly visible above WhatsApp button
-- **Improvement:** Better close button styling with smooth rotation animation
-- **Improvement:** Optimized close button character (✕) for perfect centering
-- **Improvement:** Added Arial font family for consistent close button rendering
+**Bug Fixes:**
+- Fixed critical tab switching bug where saving one tab would reset other tabs' settings
+- Fixed label not displaying default value when empty
+- Fixed button padding for better visual proportions
+- Fixed conditional fields display logic in admin panel
 
-= 1.1.1 =
-- **Fix:** Improved welcome bubble close button size - larger and easier to click
-- **Fix:** Better visibility of close button on all devices
-- **Improvement:** Enhanced CSS for admin panel bubble preview
-- **Improvement:** Updated default welcome message to be more concise
+**Technical Changes:**
+- Split large admin file into 3 organized files (Admin, Settings, Fields) following WordPress standards
+- Separate CSS/JS files for admin panel for better organization
+- Optimized default value handling throughout the codebase
+- Improved code structure and documentation
+- Better separation of concerns in admin code
 
-= 1.1.0 =
-- **New:** Welcome bubble feature with custom greeting messages
-- **New:** Agent/team name and avatar support
-- **New:** Configurable display delay (0-60 seconds)
-- **New:** Session-based close state memory
-- **New:** Click bubble to open WhatsApp instantly
-- **New:** Beautiful animations and hover effects
-- **Improvement:** Better user engagement (30-40% increase)
-- **Improvement:** Enhanced mobile experience
-- **Improvement:** Smooth fade-in animations
+= 1.2.0 - 2025-01-15 =
+**New Features:**
+- **Bubble Style Selector** - Choose between Modern (rich with avatar) and Simple (minimalist) styles
+- **Bubble Position Control** - Top or Side positioning for Simple style bubbles
+- **Side Positioning** - Display bubble horizontally next to button for prominent placement
+- **Conditional Fields** - Avatar and Name fields only show for Modern style to reduce clutter
 
-= 1.0.0 =
-- **New:** Working hours management for each day of the week
-- **New:** Timezone support for global businesses
-- **New:** Offline mode with custom message
-- **New:** Day-specific scheduling (enable/disable individual days)
-- **Improvement:** Better admin UI organization
-- **Improvement:** Enhanced settings structure
-- **Improvement:** Comprehensive documentation
+**Improvements:**
+- Reduced bubble padding for more compact design (4-5px smaller overall)
+- Better vertical alignment for Side positioned bubbles
+- Optimized bubble sizing and spacing across all devices
+- Enhanced admin UI with visual style preview cards
+- Improved responsive behavior for both bubble styles
+- Better mobile optimization for compact bubbles
+- Clearer field organization in admin panel
+- Performance optimizations in activation hook
 
-= 0.9.0 =
-- **New:** Advanced visibility controls - show button ONLY on specific pages
-- **New:** Hide button on specific pages (great for checkout/thank you pages)
-- **New:** Smart country picker with search functionality (150+ countries)
-- **New:** Automatic country detection based on WordPress locale
-- **New:** Automatic leading zero removal from phone numbers
-- **New:** WooCommerce shop page support in visibility settings
-- **New:** Page/post search in visibility selector
-- **Improvement:** Better UX with checkbox-based visibility controls
-- **Improvement:** Clear descriptions and visual indicators
-- **Fix:** Shop page now correctly respects visibility settings
+**Technical:**
+- Refactored activation hook to reduce database writes
+- Improved default value handling for labels
+- Better conditional display logic for admin fields
+- Optimized CSS for bubble positioning
 
-= 0.8.0 =
-- feat: Country picker with flags and search
-- feat: Automatic country detection from WordPress locale
-- feat: Smart phone number formatting (removes leading zeros)
-- improvement: Better admin UI organization
-- improvement: Migration system for existing phone numbers
+= 1.1.2 - 2025-01-15 =
+**Bug Fixes:**
+- Fixed welcome bubble close button repositioned to top-right corner inside bubble
+- Fixed close button rotation now perfectly centered on hover without shifting
+- Fixed welcome bubble arrow now properly visible above WhatsApp button
+- Improved close button styling with smooth rotation animation
+- Optimized close button character (✕) for perfect centering
+- Added Arial font family for consistent close button rendering
 
-= 0.7.0 =
-- feat: WordPress Color Picker for button color selection
-- feat: Separate mobile button size control
-- feat: Hide label on desktop option (icon-only mode)
-- improvement: Perfectly round button shape when label is hidden
-- improvement: Better responsive design controls
+= 1.1.1 - 2025-01-14 =
+**Bug Fixes:**
+- Improved welcome bubble close button size - larger and easier to click
+- Better visibility of close button on all devices
 
-= 0.6.1 =
-- i18n/compat: Text Domain set to `tap-chat`, update "Tested up to" to 6.8
+**Improvements:**
+- Enhanced CSS for admin panel bubble preview
+- Updated default welcome message to be more concise
+
+= 1.1.0 - 2025-01-13 =
+**New Features:**
+- **Welcome Bubble** - Display friendly greeting messages to boost engagement by 30-40%
+- **Agent/Team Avatar** - Add personal photo to build trust with visitors
+- **Agent/Team Name** - Show who visitors will be chatting with
+- **Online Indicator** - Animated pulse effect showing real-time availability
+- **Display Delay** - Configure when bubble appears (0-60 seconds)
+- **Session Memory** - Remembers if user closed the bubble
+- **Click to Chat** - Bubble clickable for instant WhatsApp connection
+- **Beautiful Animations** - Smooth fade-in and hover effects
+
+**Improvements:**
+- Better user engagement metrics
+- Enhanced mobile experience
+- Improved animation performance
+
+= 1.0.0 - 2025-01-10 =
+**New Features:**
+- **Working Hours Management** - Set different hours for each day of the week
+- **Timezone Support** - Perfect for global businesses
+- **Offline Mode** - Show custom message or hide button when unavailable
+- **Day-Specific Scheduling** - Enable/disable individual days (weekends, holidays)
+
+**Improvements:**
+- Better admin UI organization with tabs
+- Enhanced settings structure
+- Comprehensive documentation
+
+= 0.9.0 - 2025-01-08 =
+**New Features:**
+- **Advanced Visibility Controls** - Show button ONLY on specific pages
+- **Hide on Pages** - Hide button on checkout/cart/thank you pages
+- **Smart Country Picker** - Search functionality for 150+ countries
+- **Auto Country Detection** - Based on WordPress locale
+- **Phone Formatting** - Automatic leading zero removal
+- **WooCommerce Shop Support** - Visibility settings work with shop page
+
+**Improvements:**
+- Better UX with checkbox-based controls
+- Clear visual indicators
+- Page/post search functionality
+
+= 0.8.0 - 2025-01-05 =
+- Country picker with flags and search
+- Automatic country detection from WordPress locale
+- Smart phone number formatting (removes leading zeros)
+- Better admin UI organization
+- Migration system for existing phone numbers
+
+= 0.7.0 - 2025-01-03 =
+- WordPress Color Picker for button color selection
+- Separate mobile button size control
+- Hide label on desktop option (icon-only mode)
+- Perfectly round button shape when label is hidden
+- Better responsive design controls
+
+= 0.6.1 - 2025-01-01 =
+- Text Domain set to `tap-chat`
+- Updated "Tested up to" to WordPress 6.8
+- Improved internationalization
 
 == Upgrade Notice ==
+
+= 1.3.0 =
+Major update: Refactored admin panel with tabbed interface for better organization. Critical bug fixes for tab switching and label display. Highly recommended for all users.
 
 = 1.2.0 =
 Major update: Choose between Modern and Simple bubble styles with flexible positioning options. Simple style now supports Side positioning for horizontal layout. Highly recommended for all users.
@@ -265,12 +321,6 @@ Major feature update: Working hours management with timezone support. Perfect fo
 
 = 0.9.0 =
 Advanced page visibility controls, smart country picker, and better UX. Recommended for all users.
-
-= 0.8.0 =
-New country picker with flags and automatic detection. Easier phone number setup.
-
-= 0.7.0 =
-New features: WordPress Color Picker, separate mobile/desktop controls, and improved button design.
 
 == Privacy Policy ==
 

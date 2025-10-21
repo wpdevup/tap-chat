@@ -177,6 +177,7 @@ class Plugin {
         $message = $this->get_option( 'message', '' );
         $label   = $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) );
         
+        // If label is empty string, use default
         if ( empty( $label ) ) {
             $label = __( 'Chat with us', 'tap-chat' );
         }
@@ -308,10 +309,6 @@ class Plugin {
 
         if ( empty( $atts['phone'] ) ) {
             $atts['phone'] = $this->get_full_phone_number();
-        }
-        
-        if ( empty( $atts['label'] ) ) {
-            $atts['label'] = __( 'Chat with us', 'tap-chat' );
         }
 
         if ( empty( $atts['phone'] ) ) { return ''; }

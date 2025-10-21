@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tap Chat
  * Description: Lightweight WhatsApp click-to-chat button with bubble styles, working hours, page visibility controls, welcome bubble, and smart country selector. GDPR-friendly with no tracking.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: iruserwp9
  * Author URI: https://profiles.wordpress.org/iruserwp9/
  * License: GPLv2 or later
@@ -12,11 +12,12 @@
  
  * Requires at least: 5.8
  * Requires PHP: 7.4
+ * Tested up to: 6.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.2.0');
+define('TAP_CHAT_VERSION', '1.3.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -24,16 +25,18 @@ define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat.php';
 
 register_activation_hook( __FILE__, function(){
+    // Migrate from old plugin name if exists
     $old = get_option('chatly_settings');
     if ( is_array($old) && ! get_option('tap_chat_settings') ) {
         update_option('tap_chat_settings', $old);
     }
     
     $settings = get_option('tap_chat_settings', array());
+    $needs_update = false;
     
+    // Migrate phone number to country code format
     if ( ! empty( $settings['phone'] ) && empty( $settings['country_code'] ) ) {
         $phone = preg_replace('/\D+/', '', $settings['phone']);
-        
         $phone = ltrim($phone, '0');
         
         $country_codes = array(
@@ -71,10 +74,10 @@ register_activation_hook( __FILE__, function(){
         
         $settings['country_code'] = $country_code;
         $settings['phone'] = $phone_number;
-        
-        update_option('tap_chat_settings', $settings);
+        $needs_update = true;
     }
     
+    // Add working hours defaults if not exists
     if ( ! isset( $settings['working_hours'] ) ) {
         $settings['working_hours'] = array(
             'monday' => array('enabled' => 'yes', 'start' => '09:00', 'end' => '17:00'),
@@ -85,14 +88,13 @@ register_activation_hook( __FILE__, function(){
             'saturday' => array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00'),
             'sunday' => array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00'),
         );
-        
         $settings['enable_working_hours'] = 'no';
         $settings['timezone'] = wp_timezone_string();
         $settings['offline_message'] = '';
-        
-        update_option('tap_chat_settings', $settings);
+        $needs_update = true;
     }
     
+    // Add welcome bubble defaults if not exists
     if ( ! isset( $settings['enable_welcome_bubble'] ) ) {
         $settings['enable_welcome_bubble'] = 'no';
         $settings['bubble_style'] = 'modern';
@@ -101,17 +103,23 @@ register_activation_hook( __FILE__, function(){
         $settings['welcome_bubble_name'] = __('Support Team', 'tap-chat');
         $settings['welcome_bubble_avatar'] = '';
         $settings['welcome_bubble_delay'] = 3;
-        
-        update_option('tap_chat_settings', $settings);
+        $needs_update = true;
     }
     
+    // Add bubble style if not exists (for upgrades from 1.1.x)
     if ( ! isset( $settings['bubble_style'] ) ) {
         $settings['bubble_style'] = 'modern';
-        update_option('tap_chat_settings', $settings);
+        $needs_update = true;
     }
     
+    // Add bubble position if not exists (for upgrades from 1.1.x)
     if ( ! isset( $settings['bubble_position'] ) ) {
         $settings['bubble_position'] = 'top';
+        $needs_update = true;
+    }
+    
+    // Update only once if any changes were made
+    if ( $needs_update ) {
         update_option('tap_chat_settings', $settings);
     }
 });

@@ -76,6 +76,9 @@ class Admin_Settings {
         
         add_settings_field( 'welcome_bubble_controls', __( 'Bubble Settings', 'tap-chat' ), 
             array( $fields, 'field_welcome_bubble_controls' ), 'tap-chat-bubble', 'tapchat_bubble' );
+        
+        add_settings_field( 'smart_triggers', __( 'Smart Triggers', 'tap-chat' ), 
+            array( $fields, 'field_smart_triggers' ), 'tap-chat-bubble', 'tapchat_bubble' );
     }
 
     private function register_hours_settings() {
@@ -125,7 +128,7 @@ class Admin_Settings {
     }
 
     public function bubble_section_callback() {
-        echo '<p>' . esc_html__( 'Display a friendly welcome message to encourage visitors to start a conversation.', 'tap-chat' ) . '</p>';
+        echo '<p>' . esc_html__( 'Display a friendly welcome message to encourage visitors to start a conversation. Use smart triggers to show the bubble at the perfect moment.', 'tap-chat' ) . '</p>';
     }
 
     public function hours_section_callback() {
@@ -168,7 +171,13 @@ class Admin_Settings {
             'welcome_bubble_message' => __('Need help? Let\'s chat! 💬', 'tap-chat'),
             'welcome_bubble_name' => __('Support Team', 'tap-chat'),
             'welcome_bubble_avatar' => '',
-            'welcome_bubble_delay' => 3,
+            'trigger_scroll_enabled' => 'no',
+            'trigger_scroll_depth' => 50,
+            'trigger_exit_enabled' => 'no',
+            'trigger_time_enabled' => 'yes',
+            'trigger_time_delay' => 3,
+            'trigger_idle_enabled' => 'no',
+            'trigger_idle_time' => 60,
         );
     }
 
@@ -200,11 +209,10 @@ class Admin_Settings {
 
     public function sanitize( $input ) {
         $old = get_option( 'tap_chat_settings', array() );
-        $out = $old; // Start with old values
+        $out = $old;
         
         $active_tab = isset( $input['_active_tab'] ) ? $input['_active_tab'] : 'general';
         
-        // Update only fields from the active tab
         switch ( $active_tab ) {
             case 'general':
                 $out['enable_floating'] = ( isset( $input['enable_floating'] ) && $input['enable_floating'] === 'yes' ) ? 'yes' : 'no';
@@ -245,7 +253,14 @@ class Admin_Settings {
                 $out['welcome_bubble_name'] = $bubble_name;
                 
                 $out['welcome_bubble_avatar'] = isset( $input['welcome_bubble_avatar'] ) ? esc_url_raw( $input['welcome_bubble_avatar'] ) : '';
-                $out['welcome_bubble_delay'] = isset( $input['welcome_bubble_delay'] ) ? absint( $input['welcome_bubble_delay'] ) : 3;
+                
+                $out['trigger_scroll_enabled'] = ( isset( $input['trigger_scroll_enabled'] ) && $input['trigger_scroll_enabled'] === 'yes' ) ? 'yes' : 'no';
+                $out['trigger_scroll_depth'] = isset( $input['trigger_scroll_depth'] ) ? absint( $input['trigger_scroll_depth'] ) : 50;
+                $out['trigger_exit_enabled'] = ( isset( $input['trigger_exit_enabled'] ) && $input['trigger_exit_enabled'] === 'yes' ) ? 'yes' : 'no';
+                $out['trigger_time_enabled'] = ( isset( $input['trigger_time_enabled'] ) && $input['trigger_time_enabled'] === 'yes' ) ? 'yes' : 'no';
+                $out['trigger_time_delay'] = isset( $input['trigger_time_delay'] ) ? absint( $input['trigger_time_delay'] ) : 3;
+                $out['trigger_idle_enabled'] = ( isset( $input['trigger_idle_enabled'] ) && $input['trigger_idle_enabled'] === 'yes' ) ? 'yes' : 'no';
+                $out['trigger_idle_time'] = isset( $input['trigger_idle_time'] ) ? absint( $input['trigger_idle_time'] ) : 60;
                 break;
                 
             case 'hours':
@@ -281,7 +296,6 @@ class Admin_Settings {
                 break;
         }
         
-        // Remove the temporary tab tracker
         unset( $out['_active_tab'] );
         
         return $out;

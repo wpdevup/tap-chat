@@ -29,9 +29,21 @@ class Plugin {
     public function enqueue_front() {
         wp_enqueue_style( 'tap-chat', TAP_CHAT_PLUGIN_URL . 'assets/css/tapchat.css', [], TAP_CHAT_VERSION );
         wp_enqueue_script( 'tap-chat', TAP_CHAT_PLUGIN_URL . 'assets/js/tapchat.js', [ 'jquery' ], TAP_CHAT_VERSION, true );
-        wp_localize_script( 'tap-chat', 'TapChatData', [
+        
+        $trigger_data = array(
+            'scrollEnabled' => $this->get_option('trigger_scroll_enabled', 'no') === 'yes',
+            'scrollDepth' => absint($this->get_option('trigger_scroll_depth', 50)),
+            'exitEnabled' => $this->get_option('trigger_exit_enabled', 'no') === 'yes',
+            'timeEnabled' => $this->get_option('trigger_time_enabled', 'yes') === 'yes',
+            'timeDelay' => absint($this->get_option('trigger_time_delay', 3)),
+            'idleEnabled' => $this->get_option('trigger_idle_enabled', 'no') === 'yes',
+            'idleTime' => absint($this->get_option('trigger_idle_time', 60)),
+        );
+        
+        wp_localize_script( 'tap-chat', 'TapChatData', array(
             'whatsAppBase' => 'https://wa.me/',
-        ] );
+            'triggers' => $trigger_data,
+        ));
     }
 
     private function get_option( $key, $default = '' ) {
@@ -177,7 +189,6 @@ class Plugin {
         $message = $this->get_option( 'message', '' );
         $label   = $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) );
         
-        // If label is empty string, use default
         if ( empty( $label ) ) {
             $label = __( 'Chat with us', 'tap-chat' );
         }
@@ -248,7 +259,6 @@ class Plugin {
         $message = $this->get_option('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
         $name = $this->get_option('welcome_bubble_name', __('Support Team', 'tap-chat'));
         $avatar = $this->get_option('welcome_bubble_avatar', '');
-        $delay = absint($this->get_option('welcome_bubble_delay', 3));
         
         if ( empty( $message ) ) {
             $message = __('Need help? Let\'s chat! 💬', 'tap-chat');
@@ -266,7 +276,7 @@ class Plugin {
             }
         }
         ?>
-        <div class="<?php echo esc_attr($bubble_class); ?>" data-delay="<?php echo esc_attr($delay); ?>">
+        <div class="<?php echo esc_attr($bubble_class); ?>">
             <?php if ($bubble_style === 'modern') : ?>
                 <div class="tapchat-bubble-avatar">
                     <?php if (!empty($avatar)) : ?>

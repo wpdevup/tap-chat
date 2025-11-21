@@ -509,164 +509,281 @@ class Admin_Fields {
     }
 
     public function field_welcome_bubble_controls() {
-        $enable = $this->get('enable_welcome_bubble', 'no');
-        $bubble_style = $this->get('bubble_style', 'modern');
-        $bubble_position = $this->get('bubble_position', 'top');
-        $message = $this->get('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
-        $name = $this->get('welcome_bubble_name', __('Support Team', 'tap-chat'));
-        $avatar = $this->get('welcome_bubble_avatar', '');
-        $delay = $this->get('welcome_bubble_delay', 3);
-        ?>
+    $enable = $this->get('enable_welcome_bubble', 'no');
+    $bubble_style = $this->get('bubble_style', 'modern');
+    $bubble_position = $this->get('bubble_position', 'top');
+    $message = $this->get('welcome_bubble_message', __('Need help? Let\'s chat! 💬', 'tap-chat'));
+    $name = $this->get('welcome_bubble_name', __('Support Team', 'tap-chat'));
+    $avatar = $this->get('welcome_bubble_avatar', '');
+    ?>
+    
+    <div class="tap-chat-bubble-box">
         
-        <div class="tap-chat-bubble-box">
+        <input type="hidden" name="tap_chat_settings[enable_welcome_bubble]" value="no" />
+        <label class="tap-chat-bubble-label">
+            <input type="checkbox" 
+                   name="tap_chat_settings[enable_welcome_bubble]" 
+                   value="yes" 
+                   id="enable_welcome_bubble"
+                   <?php checked($enable, 'yes'); ?> />
+            <span class="tap-chat-label-text">
+                <?php esc_html_e('Enable Welcome Bubble', 'tap-chat'); ?>
+            </span>
+        </label>
+        <p class="description">
+            <?php esc_html_e('Show a friendly message bubble to encourage visitors to start a conversation', 'tap-chat'); ?>
+        </p>
+        
+        <div id="tap-chat-welcome-bubble-section" class="tap-chat-bubble-section" style="display: <?php echo $enable === 'yes' ? 'block' : 'none'; ?>;">
             
-            <input type="hidden" name="tap_chat_settings[enable_welcome_bubble]" value="no" />
-            <label class="tap-chat-bubble-label">
+            <div class="tap-chat-bubble-style-selector">
+                <label class="tap-chat-field-label">
+                    <?php esc_html_e('Bubble Style', 'tap-chat'); ?>
+                </label>
+                <div class="tap-chat-style-options">
+                    <div class="tap-chat-bubble-style-option <?php echo $bubble_style === 'modern' ? 'selected' : ''; ?>">
+                        <input type="radio" 
+                               name="tap_chat_settings[bubble_style]" 
+                               value="modern" 
+                               id="bubble_style_modern"
+                               <?php checked($bubble_style, 'modern'); ?> />
+                        <label for="bubble_style_modern" class="tap-chat-bubble-style-label">
+                            <?php esc_html_e('Modern', 'tap-chat'); ?>
+                        </label>
+                        <p class="tap-chat-bubble-style-desc">
+                            <?php esc_html_e('Rich bubble with avatar, name, and online status', 'tap-chat'); ?>
+                        </p>
+                    </div>
+                    
+                    <div class="tap-chat-bubble-style-option <?php echo $bubble_style === 'simple' ? 'selected' : ''; ?>">
+                        <input type="radio" 
+                               name="tap_chat_settings[bubble_style]" 
+                               value="simple" 
+                               id="bubble_style_simple"
+                               <?php checked($bubble_style, 'simple'); ?> />
+                        <label for="bubble_style_simple" class="tap-chat-bubble-style-label">
+                            <?php esc_html_e('Simple', 'tap-chat'); ?>
+                        </label>
+                        <p class="tap-chat-bubble-style-desc">
+                            <?php esc_html_e('Clean bubble with message only', 'tap-chat'); ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tap-chat-bubble-field">
+                <label class="tap-chat-field-label">
+                    <?php esc_html_e('Welcome Message', 'tap-chat'); ?>
+                </label>
+                <textarea name="tap_chat_settings[welcome_bubble_message]" 
+                          rows="3" 
+                          class="large-text" 
+                          placeholder="<?php esc_attr_e('Need help? Let\'s chat! 💬', 'tap-chat'); ?>"><?php echo esc_textarea($message); ?></textarea>
+                <p class="description">
+                    <?php esc_html_e('The message to display in the welcome bubble. Emojis are supported!', 'tap-chat'); ?>
+                </p>
+            </div>
+            
+            <div id="bubble-position-field" class="tap-chat-bubble-field" style="display: <?php echo $bubble_style === 'simple' ? 'block' : 'none'; ?>;">
+                <label class="tap-chat-field-label">
+                    <?php esc_html_e('Bubble Position', 'tap-chat'); ?>
+                </label>
+                <select name="tap_chat_settings[bubble_position]" class="regular-text">
+                    <option value="top" <?php selected($bubble_position, 'top'); ?>>
+                        <?php esc_html_e('Top (Above button)', 'tap-chat'); ?>
+                    </option>
+                    <option value="side" <?php selected($bubble_position, 'side'); ?>>
+                        <?php esc_html_e('Side (Next to button)', 'tap-chat'); ?>
+                    </option>
+                </select>
+                <p class="description">
+                    <?php esc_html_e('Choose where the bubble appears relative to the button (Simple style only)', 'tap-chat'); ?>
+                </p>
+            </div>
+            
+            <div id="bubble-name-field" class="tap-chat-bubble-field" style="display: <?php echo $bubble_style === 'modern' ? 'block' : 'none'; ?>;">
+                <label class="tap-chat-field-label">
+                    <?php esc_html_e('Agent/Team Name', 'tap-chat'); ?>
+                </label>
+                <input type="text" 
+                       name="tap_chat_settings[welcome_bubble_name]" 
+                       value="<?php echo esc_attr($name); ?>" 
+                       class="regular-text"
+                       placeholder="<?php esc_attr_e('Support Team', 'tap-chat'); ?>" />
+                <p class="description">
+                    <?php esc_html_e('Display name for the agent or team (Modern style only)', 'tap-chat'); ?>
+                </p>
+            </div>
+            
+            <div id="bubble-avatar-field" class="tap-chat-bubble-field" style="display: <?php echo $bubble_style === 'modern' ? 'block' : 'none'; ?>;">
+                <label class="tap-chat-field-label">
+                    <?php esc_html_e('Avatar URL (Optional)', 'tap-chat'); ?>
+                </label>
+                <div class="tap-chat-avatar-upload">
+                    <div class="tap-chat-avatar-preview<?php echo !empty($avatar) ? ' has-image' : ''; ?>">
+                        <img id="tap-chat-avatar-preview" src="<?php echo esc_url($avatar); ?>" alt="Avatar" />
+                    </div>
+                    <div>
+                        <input type="url" 
+                               id="tap-chat-avatar-url"
+                               name="tap_chat_settings[welcome_bubble_avatar]" 
+                               value="<?php echo esc_url($avatar); ?>" 
+                               class="regular-text"
+                               placeholder="https://example.com/avatar.jpg" />
+                        <div class="tap-chat-avatar-buttons">
+                            <button type="button" id="tap-chat-upload-avatar" class="button">
+                                <?php esc_html_e('Choose Image', 'tap-chat'); ?>
+                            </button>
+                            <button type="button" id="tap-chat-remove-avatar" class="button">
+                                <?php esc_html_e('Remove', 'tap-chat'); ?>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="description">
+                    <?php esc_html_e('Upload an avatar image or enter URL. Leave empty to use default WhatsApp icon (Modern style only).', 'tap-chat'); ?>
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <?php
+}
+
+    public function field_smart_triggers() {
+    $scroll_enabled = $this->get('trigger_scroll_enabled', 'no');
+    $scroll_depth = $this->get('trigger_scroll_depth', 50);
+    $exit_enabled = $this->get('trigger_exit_enabled', 'no');
+    $time_enabled = $this->get('trigger_time_enabled', 'yes');
+    $time_delay = $this->get('trigger_time_delay', 3);
+    $idle_enabled = $this->get('trigger_idle_enabled', 'no');
+    $idle_time = $this->get('trigger_idle_time', 60);
+    ?>
+    
+    <div class="tap-chat-triggers-box">
+        <p class="description" style="margin-bottom: 15px;">
+            <?php esc_html_e('Control when the welcome bubble appears. At least one trigger must be enabled.', 'tap-chat'); ?>
+        </p>
+        
+        <div class="tap-chat-trigger-item">
+            <input type="hidden" name="tap_chat_settings[trigger_time_enabled]" value="no" />
+            <label class="tap-chat-trigger-label">
                 <input type="checkbox" 
-                       name="tap_chat_settings[enable_welcome_bubble]" 
+                       name="tap_chat_settings[trigger_time_enabled]" 
                        value="yes" 
-                       id="enable_welcome_bubble"
-                       <?php checked($enable, 'yes'); ?> />
-                <span class="tap-chat-label-text">
-                    <?php esc_html_e('Enable Welcome Bubble', 'tap-chat'); ?>
+                       class="tap-chat-trigger-checkbox"
+                       data-target="time-options"
+                       <?php checked($time_enabled, 'yes'); ?> />
+                <span class="tap-chat-trigger-title">
+                    <?php esc_html_e('⏱️ Time on Page (Default)', 'tap-chat'); ?>
                 </span>
             </label>
             <p class="description">
-                <?php esc_html_e('Show a friendly message bubble to encourage visitors to start a conversation', 'tap-chat'); ?>
+                <?php esc_html_e('Show bubble after visitor spends specific time on page (recommended)', 'tap-chat'); ?>
             </p>
-            
-            <div id="tap-chat-welcome-bubble-section" class="tap-chat-bubble-section" style="display: <?php echo $enable === 'yes' ? 'block' : 'none'; ?>;">
-                
-                <div class="tap-chat-bubble-style-selector">
-                    <label class="tap-chat-field-label">
-                        <?php esc_html_e('Bubble Style', 'tap-chat'); ?>
-                    </label>
-                    <div class="tap-chat-style-options">
-                        <div class="tap-chat-bubble-style-option <?php echo $bubble_style === 'modern' ? 'selected' : ''; ?>">
-                            <input type="radio" 
-                                   name="tap_chat_settings[bubble_style]" 
-                                   value="modern" 
-                                   id="bubble_style_modern"
-                                   <?php checked($bubble_style, 'modern'); ?> />
-                            <label for="bubble_style_modern" class="tap-chat-bubble-style-label">
-                                <?php esc_html_e('Modern', 'tap-chat'); ?>
-                            </label>
-                            <p class="tap-chat-bubble-style-desc">
-                                <?php esc_html_e('Rich bubble with avatar, name, and online status', 'tap-chat'); ?>
-                            </p>
-                        </div>
-                        
-                        <div class="tap-chat-bubble-style-option <?php echo $bubble_style === 'simple' ? 'selected' : ''; ?>">
-                            <input type="radio" 
-                                   name="tap_chat_settings[bubble_style]" 
-                                   value="simple" 
-                                   id="bubble_style_simple"
-                                   <?php checked($bubble_style, 'simple'); ?> />
-                            <label for="bubble_style_simple" class="tap-chat-bubble-style-label">
-                                <?php esc_html_e('Simple', 'tap-chat'); ?>
-                            </label>
-                            <p class="tap-chat-bubble-style-desc">
-                                <?php esc_html_e('Clean bubble with message only', 'tap-chat'); ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tap-chat-bubble-field">
-                    <label class="tap-chat-field-label">
-                        <?php esc_html_e('Welcome Message', 'tap-chat'); ?>
-                    </label>
-                    <textarea name="tap_chat_settings[welcome_bubble_message]" 
-                              rows="3" 
-                              class="large-text" 
-                              placeholder="<?php esc_attr_e('Need help? Let\'s chat! 💬', 'tap-chat'); ?>"><?php echo esc_textarea($message); ?></textarea>
-                    <p class="description">
-                        <?php esc_html_e('The message to display in the welcome bubble. Emojis are supported!', 'tap-chat'); ?>
-                    </p>
-                </div>
-                
-                <div id="bubble-position-field" class="tap-chat-bubble-field" style="display: <?php echo $bubble_style === 'simple' ? 'block' : 'none'; ?>;">
-                    <label class="tap-chat-field-label">
-                        <?php esc_html_e('Bubble Position', 'tap-chat'); ?>
-                    </label>
-                    <select name="tap_chat_settings[bubble_position]" class="regular-text">
-                        <option value="top" <?php selected($bubble_position, 'top'); ?>>
-                            <?php esc_html_e('Top (Above button)', 'tap-chat'); ?>
-                        </option>
-                        <option value="side" <?php selected($bubble_position, 'side'); ?>>
-                            <?php esc_html_e('Side (Next to button)', 'tap-chat'); ?>
-                        </option>
-                    </select>
-                    <p class="description">
-                        <?php esc_html_e('Choose where the bubble appears relative to the button (Simple style only)', 'tap-chat'); ?>
-                    </p>
-                </div>
-                
-                <div id="bubble-name-field" class="tap-chat-bubble-field" style="display: <?php echo $bubble_style === 'modern' ? 'block' : 'none'; ?>;">
-                    <label class="tap-chat-field-label">
-                        <?php esc_html_e('Agent/Team Name', 'tap-chat'); ?>
-                    </label>
-                    <input type="text" 
-                           name="tap_chat_settings[welcome_bubble_name]" 
-                           value="<?php echo esc_attr($name); ?>" 
-                           class="regular-text"
-                           placeholder="<?php esc_attr_e('Support Team', 'tap-chat'); ?>" />
-                    <p class="description">
-                        <?php esc_html_e('Display name for the agent or team (Modern style only)', 'tap-chat'); ?>
-                    </p>
-                </div>
-                
-                <div id="bubble-avatar-field" class="tap-chat-bubble-field" style="display: <?php echo $bubble_style === 'modern' ? 'block' : 'none'; ?>;">
-                    <label class="tap-chat-field-label">
-                        <?php esc_html_e('Avatar URL (Optional)', 'tap-chat'); ?>
-                    </label>
-                    <div class="tap-chat-avatar-upload">
-                        <div class="tap-chat-avatar-preview<?php echo !empty($avatar) ? ' has-image' : ''; ?>">
-                            <img id="tap-chat-avatar-preview" src="<?php echo esc_url($avatar); ?>" alt="Avatar" />
-                        </div>
-                        <div>
-                            <input type="url" 
-                                   id="tap-chat-avatar-url"
-                                   name="tap_chat_settings[welcome_bubble_avatar]" 
-                                   value="<?php echo esc_url($avatar); ?>" 
-                                   class="regular-text"
-                                   placeholder="https://example.com/avatar.jpg" />
-                            <div class="tap-chat-avatar-buttons">
-                                <button type="button" id="tap-chat-upload-avatar" class="button">
-                                    <?php esc_html_e('Choose Image', 'tap-chat'); ?>
-                                </button>
-                                <button type="button" id="tap-chat-remove-avatar" class="button">
-                                    <?php esc_html_e('Remove', 'tap-chat'); ?>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="description">
-                        <?php esc_html_e('Upload an avatar image or enter URL. Leave empty to use default WhatsApp icon (Modern style only).', 'tap-chat'); ?>
-                    </p>
-                </div>
-                
-                <div class="tap-chat-bubble-field">
-                    <label class="tap-chat-field-label">
-                        <?php esc_html_e('Display Delay (seconds)', 'tap-chat'); ?>
-                    </label>
+            <div id="time-options" class="tap-chat-trigger-options" style="display: <?php echo $time_enabled === 'yes' ? 'block' : 'none'; ?>;">
+                <label>
+                    <?php esc_html_e('Delay (seconds)', 'tap-chat'); ?>
                     <input type="number" 
-                           name="tap_chat_settings[welcome_bubble_delay]" 
-                           value="<?php echo esc_attr($delay); ?>" 
+                           name="tap_chat_settings[trigger_time_delay]" 
+                           value="<?php echo esc_attr($time_delay); ?>" 
                            min="0" 
-                           max="60" 
+                           max="300" 
                            step="1" 
                            class="small-text" />
-                    <p class="description">
-                        <?php esc_html_e('How many seconds to wait before showing the bubble. 0 = show immediately.', 'tap-chat'); ?>
-                    </p>
-                </div>
-                
+                    <span class="description"><?php esc_html_e('Show bubble after this many seconds (0-300). 0 = show immediately.', 'tap-chat'); ?></span>
+                </label>
             </div>
         </div>
         
-        <?php
-    }
+        <div class="tap-chat-trigger-item">
+            <input type="hidden" name="tap_chat_settings[trigger_scroll_enabled]" value="no" />
+            <label class="tap-chat-trigger-label">
+                <input type="checkbox" 
+                       name="tap_chat_settings[trigger_scroll_enabled]" 
+                       value="yes" 
+                       class="tap-chat-trigger-checkbox"
+                       data-target="scroll-options"
+                       <?php checked($scroll_enabled, 'yes'); ?> />
+                <span class="tap-chat-trigger-title">
+                    <?php esc_html_e('📜 Scroll Depth', 'tap-chat'); ?>
+                </span>
+            </label>
+            <p class="description">
+                <?php esc_html_e('Show bubble when visitor scrolls to a specific percentage of the page', 'tap-chat'); ?>
+            </p>
+            <div id="scroll-options" class="tap-chat-trigger-options" style="display: <?php echo $scroll_enabled === 'yes' ? 'block' : 'none'; ?>;">
+                <label>
+                    <?php esc_html_e('Scroll Depth (%)', 'tap-chat'); ?>
+                    <input type="number" 
+                           name="tap_chat_settings[trigger_scroll_depth]" 
+                           value="<?php echo esc_attr($scroll_depth); ?>" 
+                           min="10" 
+                           max="100" 
+                           step="5" 
+                           class="small-text" />
+                    <span class="description"><?php esc_html_e('Show bubble after scrolling this percentage (10-100%)', 'tap-chat'); ?></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="tap-chat-trigger-item">
+            <input type="hidden" name="tap_chat_settings[trigger_exit_enabled]" value="no" />
+            <label class="tap-chat-trigger-label">
+                <input type="checkbox" 
+                       name="tap_chat_settings[trigger_exit_enabled]" 
+                       value="yes" 
+                       class="tap-chat-trigger-checkbox"
+                       <?php checked($exit_enabled, 'yes'); ?> />
+                <span class="tap-chat-trigger-title">
+                    <?php esc_html_e('🚪 Exit Intent', 'tap-chat'); ?>
+                </span>
+            </label>
+            <p class="description">
+                <?php esc_html_e('Show bubble when visitor moves mouse towards closing the page/tab', 'tap-chat'); ?>
+            </p>
+        </div>
+        
+        <div class="tap-chat-trigger-item">
+            <input type="hidden" name="tap_chat_settings[trigger_idle_enabled]" value="no" />
+            <label class="tap-chat-trigger-label">
+                <input type="checkbox" 
+                       name="tap_chat_settings[trigger_idle_enabled]" 
+                       value="yes" 
+                       class="tap-chat-trigger-checkbox"
+                       data-target="idle-options"
+                       <?php checked($idle_enabled, 'yes'); ?> />
+                <span class="tap-chat-trigger-title">
+                    <?php esc_html_e('💤 Idle Detection', 'tap-chat'); ?>
+                </span>
+            </label>
+            <p class="description">
+                <?php esc_html_e('Show bubble when visitor is inactive (no mouse/keyboard activity)', 'tap-chat'); ?>
+            </p>
+            <div id="idle-options" class="tap-chat-trigger-options" style="display: <?php echo $idle_enabled === 'yes' ? 'block' : 'none'; ?>;">
+                <label>
+                    <?php esc_html_e('Idle Time (seconds)', 'tap-chat'); ?>
+                    <input type="number" 
+                           name="tap_chat_settings[trigger_idle_time]" 
+                           value="<?php echo esc_attr($idle_time); ?>" 
+                           min="10" 
+                           max="300" 
+                           step="10" 
+                           class="small-text" />
+                    <span class="description"><?php esc_html_e('Show bubble after this many seconds of inactivity (10-300)', 'tap-chat'); ?></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="tap-chat-trigger-note">
+            <strong><?php esc_html_e('💡 Tip:', 'tap-chat'); ?></strong>
+            <?php esc_html_e('When multiple triggers are enabled, the bubble shows on whichever condition is met first. Time on Page is enabled by default and recommended for most websites.', 'tap-chat'); ?>
+        </div>
+    </div>
+    
+    <?php
+}
 
     private function render_page_selector( $field_name, $selected_pages ) {
         $pages = get_pages( array(

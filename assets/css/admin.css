@@ -379,3 +379,74 @@
 #tap-chat-avatar-url {
     margin-bottom: 5px !important;
 }
+.tap-chat-triggers-box {
+    background: #f9f9f9;
+    border-left: 4px solid #2271b1;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.tap-chat-trigger-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.tap-chat-trigger-item:last-of-type {
+    margin-bottom: 15px;
+}
+
+.tap-chat-trigger-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.tap-chat-trigger-checkbox {
+    margin: 0 !important;
+}
+
+.tap-chat-trigger-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tap-chat-trigger-options {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f6f7f7;
+    border-radius: 4px;
+    border-left: 3px solid #2271b1;
+}
+
+.tap-chat-trigger-options label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.tap-chat-trigger-options input[type="number"] {
+    margin: 5px 0;
+}
+
+.tap-chat-trigger-options .description {
+    display: block;
+    margin-top: 5px;
+}
+
+.tap-chat-trigger-note {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 12px 15px;
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.tap-chat-trigger-note strong {
+    color: #856404;
+}

@@ -219,4 +219,20 @@ jQuery(document).ready(function($) {
         $('#tap-chat-avatar-preview').attr('src', '');
         $('.tap-chat-avatar-preview').removeClass('has-image');
     });
+    
+    // Smart Triggers toggle
+    $('.tap-chat-trigger-checkbox').on('change', function() {
+        var target = $(this).data('target');
+        if (target) {
+            $('#' + target).slideToggle(200);
+        }
+    });
+    
+    // Show trigger options on page load if already enabled
+    $('.tap-chat-trigger-checkbox:checked').each(function() {
+        var target = $(this).data('target');
+        if (target) {
+            $('#' + target).show();
+        }
+    });
 });

@@ -8,7 +8,7 @@ Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Lightweight chat button with welcome bubble, smart triggers, working hours, and visibility controls. GDPR-friendly with no tracking.
+Lightweight WhatsApp chat button with welcome bubble, working hours, page controls. GDPR-friendly, no tracking.
 
 == Description ==
 

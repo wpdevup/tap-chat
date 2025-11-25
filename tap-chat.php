@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: Tap Chat
- * Description: Lightweight WhatsApp click-to-chat button with bubble styles, working hours, page visibility controls, welcome bubble, smart triggers, and country selector. GDPR-friendly with no tracking.
- * Version: 1.4.0
+ * Description: Lightweight WhatsApp click-to-chat button with custom icons, welcome bubble, working hours, page visibility controls, and smart country selector. GDPR-friendly with no tracking.
+ * Version: 1.5.0
  * Author: iruserwp9
  * Author URI: https://profiles.wordpress.org/iruserwp9/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tap-chat
  * Domain Path: /languages
- 
+ * 
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Tested up to: 6.8
@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.4.0');
+define('TAP_CHAT_VERSION', '1.5.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -129,6 +129,11 @@ register_activation_hook( __FILE__, function(){
         $settings['trigger_time_delay'] = 3;
         $settings['trigger_idle_enabled'] = 'no';
         $settings['trigger_idle_time'] = 60;
+        $needs_update = true;
+    }
+    
+    if ( ! isset( $settings['custom_icon'] ) ) {
+        $settings['custom_icon'] = '';
         $needs_update = true;
     }
     

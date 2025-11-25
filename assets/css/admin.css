@@ -345,13 +345,15 @@
     color: #646970;
 }
 
-.tap-chat-avatar-upload {
+.tap-chat-avatar-upload,
+.tap-chat-icon-upload {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-.tap-chat-avatar-preview {
+.tap-chat-avatar-preview,
+.tap-chat-icon-preview {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -360,25 +362,34 @@
     display: none;
 }
 
-.tap-chat-avatar-preview img {
+.tap-chat-icon-preview {
+    border-radius: 8px;
+}
+
+.tap-chat-avatar-preview img,
+.tap-chat-icon-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.tap-chat-avatar-preview.has-image {
+.tap-chat-avatar-preview.has-image,
+.tap-chat-icon-preview.has-image {
     display: block;
 }
 
-.tap-chat-avatar-buttons {
+.tap-chat-avatar-buttons,
+.tap-chat-icon-buttons {
     display: flex;
     gap: 5px;
     margin-top: 5px;
 }
 
-#tap-chat-avatar-url {
+#tap-chat-avatar-url,
+#tap-chat-icon-url {
     margin-bottom: 5px !important;
 }
+
 .tap-chat-triggers-box {
     background: #f9f9f9;
     border-left: 4px solid #2271b1;

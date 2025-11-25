@@ -182,35 +182,30 @@ jQuery(document).ready(function($) {
     
     toggleBubbleStyleFields();
     
-    var mediaUploader;
-    
     $('#tap-chat-upload-avatar').on('click', function(e) {
         e.preventDefault();
         
-        if (mediaUploader) {
-            mediaUploader.open();
-            return;
+        if (typeof wp.media !== 'undefined') {
+            var frame = wp.media({
+                title: 'Select or Upload Avatar',
+                button: {
+                    text: 'Select Avatar'
+                },
+                multiple: false,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            frame.on('select', function() {
+                var attachment = frame.state().get('selection').first().toJSON();
+                $('#tap-chat-avatar-url').val(attachment.url);
+                $('#tap-chat-avatar-preview').attr('src', attachment.url);
+                $('.tap-chat-avatar-preview').addClass('has-image');
+            });
+            
+            frame.open();
         }
-        
-        mediaUploader = wp.media({
-            title: 'Choose Avatar Image',
-            button: {
-                text: 'Use this image'
-            },
-            multiple: false,
-            library: {
-                type: 'image'
-            }
-        });
-        
-        mediaUploader.on('select', function() {
-            var attachment = mediaUploader.state().get('selection').first().toJSON();
-            $('#tap-chat-avatar-url').val(attachment.url);
-            $('#tap-chat-avatar-preview').attr('src', attachment.url);
-            $('.tap-chat-avatar-preview').addClass('has-image');
-        });
-        
-        mediaUploader.open();
     });
     
     $('#tap-chat-remove-avatar').on('click', function(e) {
@@ -220,7 +215,39 @@ jQuery(document).ready(function($) {
         $('.tap-chat-avatar-preview').removeClass('has-image');
     });
     
-    // Smart Triggers toggle
+    $('#tap-chat-upload-icon').on('click', function(e) {
+        e.preventDefault();
+        
+        if (typeof wp.media !== 'undefined') {
+            var frame = wp.media({
+                title: 'Select or Upload Icon',
+                button: {
+                    text: 'Select Icon'
+                },
+                multiple: false,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            frame.on('select', function() {
+                var attachment = frame.state().get('selection').first().toJSON();
+                $('#tap-chat-icon-url').val(attachment.url);
+                $('#tap-chat-icon-preview').attr('src', attachment.url);
+                $('.tap-chat-icon-preview').addClass('has-image');
+            });
+            
+            frame.open();
+        }
+    });
+    
+    $('#tap-chat-remove-icon').on('click', function(e) {
+        e.preventDefault();
+        $('#tap-chat-icon-url').val('');
+        $('#tap-chat-icon-preview').attr('src', '');
+        $('.tap-chat-icon-preview').removeClass('has-image');
+    });
+    
     $('.tap-chat-trigger-checkbox').on('change', function() {
         var target = $(this).data('target');
         if (target) {
@@ -228,7 +255,6 @@ jQuery(document).ready(function($) {
         }
     });
     
-    // Show trigger options on page load if already enabled
     $('.tap-chat-trigger-checkbox:checked').each(function() {
         var target = $(this).data('target');
         if (target) {

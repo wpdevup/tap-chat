@@ -45,6 +45,9 @@ class Admin_Settings {
         add_settings_field( 'label', __( 'Button Label', 'tap-chat' ), 
             array( $fields, 'field_label' ), 'tap-chat-general', 'tapchat_general' );
         
+        add_settings_field( 'custom_icon', __( 'Custom Icon', 'tap-chat' ), 
+            array( $fields, 'field_custom_icon' ), 'tap-chat-general', 'tapchat_general' );
+        
         add_settings_field( 'position', __( 'Button Position', 'tap-chat' ), 
             array( $fields, 'field_position' ), 'tap-chat-general', 'tapchat_general' );
         
@@ -150,6 +153,7 @@ class Admin_Settings {
             'phone' => '',
             'message' => '',
             'label' => __( 'Chat with us', 'tap-chat' ),
+            'custom_icon' => '',
             'position' => 'right',
             'size' => 40,
             'mobile_size' => 40,
@@ -227,6 +231,7 @@ class Admin_Settings {
                 
                 $out['message'] = isset( $input['message'] ) ? sanitize_textarea_field( $input['message'] ) : '';
                 $out['label'] = isset( $input['label'] ) ? sanitize_text_field( $input['label'] ) : '';
+                $out['custom_icon'] = isset( $input['custom_icon'] ) ? esc_url_raw( $input['custom_icon'] ) : '';
                 $out['position'] = ( isset( $input['position'] ) && in_array( $input['position'], array( 'left','right' ), true ) ) ? $input['position'] : 'right';
                 $out['size'] = isset( $input['size'] ) ? absint( $input['size'] ) : 40;
                 $out['mobile_size'] = isset( $input['mobile_size'] ) ? absint( $input['mobile_size'] ) : 40;

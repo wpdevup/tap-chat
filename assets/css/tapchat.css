@@ -21,12 +21,47 @@
   transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
   flex-direction: row;
 }
-[dir="rtl"] .tapchat-fab { flex-direction: row-reverse; }
-.tapchat-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,.25); }
-.tapchat-pos-right { right: 18px; }
-.tapchat-pos-left { left: 18px; }
-.tapchat-icon { width: var(--tapchat-size); height: var(--tapchat-size); display: inline-block; fill: #fff; }
-.tapchat-label { white-space: nowrap; }
+
+[dir="rtl"] .tapchat-fab { 
+  flex-direction: row-reverse; 
+}
+
+.tapchat-fab:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 12px 24px rgba(0,0,0,.25); 
+}
+
+.tapchat-pos-right { 
+  right: 18px; 
+}
+
+.tapchat-pos-left { 
+  left: 18px; 
+}
+
+.tapchat-icon { 
+  width: var(--tapchat-size); 
+  height: var(--tapchat-size); 
+  display: inline-block; 
+  fill: #fff;
+  flex-shrink: 0;
+}
+
+.tapchat-fab img.tapchat-icon {
+  border-radius: 50%;
+  object-fit: cover;
+  width: var(--tapchat-size) !important;
+  height: var(--tapchat-size) !important;
+  flex-shrink: 0;
+}
+
+.tapchat-fab-offline img.tapchat-icon {
+  opacity: 0.5;
+}
+
+.tapchat-label { 
+  white-space: nowrap; 
+}
 
 @media (min-width: 481px) {
   .tapchat-hide-label-desktop .tapchat-label { 
@@ -46,15 +81,25 @@
   }
   
   .tapchat-hide-label-desktop.tapchat-fab .tapchat-icon {
-    width: calc(var(--tapchat-size) - 8px);
-    height: calc(var(--tapchat-size) - 8px);
+    width: calc(var(--tapchat-size) - 8px) !important;
+    height: calc(var(--tapchat-size) - 8px) !important;
+  }
+  
+  .tapchat-hide-label-desktop.tapchat-fab img.tapchat-icon {
+    width: calc(var(--tapchat-size) + 20px) !important;
+    height: calc(var(--tapchat-size) + 20px) !important;
   }
 }
 
 @media (max-width: 480px) { 
   .tapchat-icon { 
-    width: var(--tapchat-mobile-size); 
-    height: var(--tapchat-mobile-size); 
+    width: var(--tapchat-mobile-size) !important; 
+    height: var(--tapchat-mobile-size) !important; 
+  }
+  
+  .tapchat-fab img.tapchat-icon {
+    width: var(--tapchat-mobile-size) !important;
+    height: var(--tapchat-mobile-size) !important;
   }
   
   .tapchat-hide-label-mobile .tapchat-label { 
@@ -74,12 +119,24 @@
   }
   
   .tapchat-hide-label-mobile.tapchat-fab .tapchat-icon {
-    width: calc(var(--tapchat-mobile-size) - 8px);
-    height: calc(var(--tapchat-mobile-size) - 8px);
+    width: calc(var(--tapchat-mobile-size) - 8px) !important;
+    height: calc(var(--tapchat-mobile-size) - 8px) !important;
+  }
+  
+  .tapchat-hide-label-mobile.tapchat-fab img.tapchat-icon {
+    width: calc(var(--tapchat-mobile-size) + 20px) !important;
+    height: calc(var(--tapchat-mobile-size) + 20px) !important;
   }
 }
 
-.tapchat-inline { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; border-bottom: 2px solid currentColor; }
+.tapchat-inline { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+  font-weight: 600; 
+  text-decoration: none; 
+  border-bottom: 2px solid currentColor; 
+}
 
 .tapchat-welcome-bubble {
   position: fixed;
@@ -154,6 +211,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
 .tapchat-bubble-avatar svg {

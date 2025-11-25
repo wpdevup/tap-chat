@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,7 @@ Lightweight WhatsApp chat button with welcome bubble, working hours, page contro
 = Key Features =
 
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
+* **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
 * **Welcome Bubble** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
 * **Smart Triggers** - Show the bubble at the perfect moment based on visitor behavior
 * **Country Selector** - Easy phone number configuration with 150+ country codes and flags
@@ -51,6 +52,13 @@ The welcome bubble is designed to increase engagement and conversions:
   * Session-based display (won't annoy visitors)
 
 = Advanced Features =
+
+* **Custom Icon Upload:**
+  * Replace default WhatsApp icon with your brand logo
+  * Supports PNG, JPG, SVG formats
+  * Perfect circular display with automatic sizing
+  * Works in floating button, offline button, and bubble avatar
+  * Easy fallback to default icon
 
 * **Business Hours Control:**
   * Set different hours for each day of the week
@@ -110,7 +118,7 @@ Display chat link anywhere with: `[tapchat]`
 **Custom shortcode parameters:**
 `[tapchat phone="+1234567890" message="Hello!" label="Contact us"]`
 
-= 🔧 Technical Details =
+= Technical Details =
 
 * Clean, semantic HTML5
 * Modern CSS3 with smooth animations
@@ -138,14 +146,15 @@ Make Tap Chat match your brand:
 * Modern or Simple bubble styles
 * Custom welcome messages
 * Avatar personalization
+* Upload custom icons
 
-= What's New in 1.4.0 =
+= What's New in 1.5.0 =
 
-* **Smart Triggers** - Control when bubble appears (Time, Scroll, Exit Intent, Idle)
-* **Improved UX** - Simplified trigger configuration
-* **Better Defaults** - Time on Page enabled by default (3 seconds)
-* **Enhanced Performance** - Optimized trigger detection
-* **Bug Fixes** - Various improvements and stability fixes
+* **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo
+* **Perfect Circular Display** - Icons automatically sized and styled
+* **WordPress Media Library** - Easy icon selection and management
+* **Responsive Icons** - Works perfectly on all devices
+* **Bug Fixes** - Icon sizing and display improvements
 
 == Installation ==
 
@@ -169,6 +178,7 @@ Make Tap Chat match your brand:
 1. **General Tab:**
    * Select your country code from the dropdown
    * Enter your phone number (without country code)
+   * Upload custom icon to replace WhatsApp logo (optional)
    * Customize button appearance (color, size, position)
    * Set default message and label
 
@@ -214,6 +224,10 @@ Yes! Tap Chat doesn't use cookies, doesn't track users, and doesn't make externa
 = Can I customize the button design? =
 
 Yes! You can customize colors, sizes, position, and labels. The button adapts to your brand.
+
+= Can I upload my own icon? =
+
+Yes! Go to General Settings and use the Custom Icon Upload feature to replace the WhatsApp icon with your own brand logo or any custom image.
 
 = Does it work on mobile? =
 
@@ -295,14 +309,24 @@ Yes! Use the Visibility tab:
 2. **Modern Welcome Bubble** - Rich bubble with avatar and name
 3. **Simple Welcome Bubble** - Minimal, clean bubble design
 4. **General Settings** - Easy configuration with country selector
-5. **Welcome Bubble Settings** - Customize bubble appearance and behavior
-6. **Smart Triggers** - Configure when bubble appears
-7. **Business Hours** - Set schedule with timezone support
-8. **Visibility Controls** - Choose where button appears
-9. **Mobile View** - Perfectly optimized for mobile devices
-10. **Country Selector** - 150+ countries with flags
+5. **Custom Icon Upload** - Replace WhatsApp icon with your brand logo
+6. **Welcome Bubble Settings** - Customize bubble appearance and behavior
+7. **Smart Triggers** - Configure when bubble appears
+8. **Business Hours** - Set schedule with timezone support
+9. **Visibility Controls** - Choose where button appears
+10. **Mobile View** - Perfectly optimized for mobile devices
 
 == Changelog ==
+
+= 1.5.0 - 2025-11-25 =
+* **New:** Custom Icon Upload feature - Replace WhatsApp icon with your brand logo
+* **New:** WordPress Media Library integration for icon selection
+* **Improved:** Perfect circular icon display with automatic sizing
+* **Improved:** Custom icon works in floating button, offline button, and bubble avatar
+* **Improved:** Responsive icon behavior across all devices
+* **Fixed:** Icon sizing and display issues on mobile
+* **Fixed:** Border spacing around custom icons
+* **Performance:** Optimized icon rendering with CSS
 
 = 1.4.0 - 2025-11-21 =
 * **New:** Smart Triggers system for welcome bubble
@@ -355,6 +379,9 @@ Yes! Use the Visibility tab:
 
 == Upgrade Notice ==
 
+= 1.5.0 =
+New Custom Icon Upload feature! Replace WhatsApp icon with your own brand logo. Perfect for branding and customization.
+
 = 1.4.0 =
 Major update with Smart Triggers! Now you can control when the welcome bubble appears based on visitor behavior. Time on Page trigger is enabled by default for better engagement.
 
@@ -398,7 +425,7 @@ Need help? We're here for you!
 
 * Icons from messaging platform brand resources
 * Country flags from Unicode emoji standard
-* Developed with ❤️ by Tapchat Team
+* Developed with love by Tapchat Team
 
 == Roadmap ==
 

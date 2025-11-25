@@ -271,6 +271,36 @@ class Admin_Fields {
         echo '<p class="description">' . esc_html__( 'Text displayed next to the WhatsApp icon. Leave empty to use default.', 'tap-chat' ) . '</p>';
     }
 
+    public function field_custom_icon() {
+        $custom_icon = $this->get( 'custom_icon', '' );
+        ?>
+        <div class="tap-chat-icon-upload">
+            <div class="tap-chat-icon-preview<?php echo !empty($custom_icon) ? ' has-image' : ''; ?>">
+                <img id="tap-chat-icon-preview" src="<?php echo esc_url($custom_icon); ?>" alt="Custom Icon" />
+            </div>
+            <div>
+                <input type="url" 
+                       id="tap-chat-icon-url"
+                       name="tap_chat_settings[custom_icon]" 
+                       value="<?php echo esc_url($custom_icon); ?>" 
+                       class="regular-text"
+                       placeholder="https://example.com/icon.png" />
+                <div class="tap-chat-icon-buttons">
+                    <button type="button" id="tap-chat-upload-icon" class="button">
+                        <?php esc_html_e('Choose Icon', 'tap-chat'); ?>
+                    </button>
+                    <button type="button" id="tap-chat-remove-icon" class="button">
+                        <?php esc_html_e('Use Default', 'tap-chat'); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="description">
+            <?php esc_html_e('Upload a custom icon or leave empty to use the default WhatsApp icon. Recommended size: 64x64px (PNG/SVG)', 'tap-chat'); ?>
+        </p>
+        <?php
+    }
+
     public function field_position() {
         $val = $this->get( 'position', 'right' );
         ?>

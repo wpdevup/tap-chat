@@ -306,15 +306,13 @@ Yes! Use the Visibility tab:
 == Screenshots ==
 
 1. **Floating Chat Button** - Clean, professional button on your site
-2. **Modern Welcome Bubble** - Rich bubble with avatar and name
-3. **Simple Welcome Bubble** - Minimal, clean bubble design
-4. **General Settings** - Easy configuration with country selector
-5. **Custom Icon Upload** - Replace WhatsApp icon with your brand logo
-6. **Welcome Bubble Settings** - Customize bubble appearance and behavior
-7. **Smart Triggers** - Configure when bubble appears
-8. **Business Hours** - Set schedule with timezone support
-9. **Visibility Controls** - Choose where button appears
-10. **Mobile View** - Perfectly optimized for mobile devices
+2. **General Settings** - Easy configuration with country selector
+3. **Modern Welcome Bubble** - Rich bubble with avatar and name
+4. **Simple Welcome Bubble** - Minimal, clean bubble design
+5. **Smart Triggers** - Configure when bubble appears
+6. **Business Hours** - Set schedule with timezone support
+7. **Visibility Controls** - Choose where button appears
+8. **Advanced** - other options
 
 == Changelog ==
 

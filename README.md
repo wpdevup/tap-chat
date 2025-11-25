@@ -1,6 +1,6 @@
 # Tap Chat - WordPress Click-to-Chat Plugin
 
-**Version:** 1.4.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
+**Version:** 1.5.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
@@ -12,6 +12,7 @@ Lightweight WordPress plugin for adding a professional floating chat button to y
 
 ### Core Features
 - ✨ **Floating Chat Button** - Beautiful, customizable button that sticks to your site
+- 🎨 **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
 - 💬 **Welcome Bubble** - Friendly greeting message with Modern & Simple styles
 - 🎯 **Smart Triggers** - Show bubble at the perfect moment based on visitor behavior
 - 🌍 **Country Selector** - 150+ country codes with flags
@@ -21,6 +22,24 @@ Lightweight WordPress plugin for adding a professional floating chat button to y
 - 📱 **Mobile Optimized** - Separate mobile/desktop configurations
 - 🔒 **GDPR Compliant** - Zero tracking, no cookies
 - 🌐 **Translation Ready** - Fully translatable with .pot file
+
+### Custom Icon Upload (New in 1.5.0)
+
+Replace the default WhatsApp icon with your own branding:
+
+- 🖼️ **Upload Your Logo** - Use WordPress Media Library to select any image
+- ⭕ **Perfect Circle Display** - Icons automatically sized and styled as perfect circles
+- 📱 **Fully Responsive** - Works perfectly on all devices and screen sizes
+- 🔄 **Easy Fallback** - Restore default WhatsApp icon with one click
+- 🎯 **Multiple Uses** - Works in floating button, offline button, and bubble avatar
+- 📏 **Format Support** - PNG, JPG, SVG formats supported
+
+**How it works:**
+1. Go to General Settings
+2. Click "Choose Icon" button
+3. Select image from WordPress Media Library
+4. Icon automatically displays as perfect circle
+5. Click "Use Default" to restore WhatsApp icon anytime
 
 ### Smart Triggers (New in 1.4.0)
 
@@ -82,6 +101,7 @@ ln -s $(pwd) /path/to/wordpress/wp-content/plugins/tap-chat
 1. **General Tab:**
    - Select country code
    - Enter phone number (without country code)
+   - **Upload custom icon (optional)** - Replace WhatsApp icon with your logo
    - Customize appearance (color, size, position)
    - Set default message and label
 
@@ -193,6 +213,12 @@ Override default styles in your theme:
     bottom: 30px;
     right: 30px;
 }
+
+/* Custom icon styling */
+.tapchat-fab img.tapchat-icon {
+    border-radius: 50%;
+    object-fit: cover;
+}
 ```
 
 ### JavaScript Hooks
@@ -262,6 +288,9 @@ zip -r tap-chat.zip . -x "*.git*" "node_modules/*" "*.DS_Store"
 ### Manual Testing Checklist
 
 - [ ] Button displays correctly on frontend
+- [ ] Custom icon uploads and displays properly
+- [ ] Custom icon shows as perfect circle
+- [ ] Custom icon works on mobile devices
 - [ ] Welcome bubble shows with enabled triggers
 - [ ] Smart triggers work as expected (Time, Scroll, Exit, Idle)
 - [ ] Country selector works properly
@@ -390,6 +419,31 @@ git commit -m "Add: Description of your changes"
 
 ## 📝 Changelog
 
+### [1.5.0] - 2025-11-25
+**Added:**
+- 🎨 Custom Icon Upload feature
+  - Replace WhatsApp icon with your own brand logo
+  - WordPress Media Library integration
+  - Perfect circular icon display with automatic sizing
+  - Supports PNG, JPG, SVG formats
+  - Works in floating button, offline button, and bubble avatar
+  - Easy fallback to default icon with "Use Default" button
+
+**Improved:**
+- Enhanced icon display with responsive sizing across all devices
+- Better CSS styling for custom icons with border-radius and object-fit
+- Separate icon handling for SVG vs IMG elements
+- Mobile-optimized icon rendering
+
+**Fixed:**
+- Icon sizing issues on mobile devices
+- Border spacing around custom icons in hide-label mode
+- Icon display inconsistencies across different themes
+
+**Performance:**
+- Optimized icon rendering with efficient CSS
+- Reduced layout shifts during icon loading
+
 ### [1.4.0] - 2025-11-21
 **Added:**
 - 🎯 Smart Triggers system for welcome bubble
@@ -484,6 +538,7 @@ Need help? We're here for you!
 ## 🗺️ Roadmap
 
 ### Completed ✅
+- ✅ Custom Icon Upload (v1.5.0)
 - ✅ Smart Triggers (v1.4.0)
 - ✅ Welcome Bubble (v1.3.0)
 - ✅ Working Hours (v1.2.0)
@@ -514,3 +569,4 @@ If you find this plugin helpful, please:
 Made with ❤️ for the WordPress community
 
 [WordPress.org](https://wordpress.org/plugins/tap-chat/) | [GitHub](https://github.com/yourusername/tap-chat) | [Support](https://wordpress.org/support/plugin/tap-chat/)
+

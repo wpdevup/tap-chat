@@ -2,187 +2,137 @@
 
 All notable changes to Tap Chat will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.3.0] - 2025-10-21
+## [1.5.0] - 2025-11-25
 
 ### Added
-- Tabbed interface in admin panel (General, Welcome Bubble, Working Hours, Visibility, Advanced)
-- Separate CSS file for admin panel (`assets/css/admin.css`)
-- Separate JavaScript file for admin panel (`assets/js/admin.js`)
-- Better code organization with separated admin classes
+- **Custom Icon Upload**: Replace WhatsApp icon with your own brand logo or custom image
+- WordPress Media Library integration for easy icon selection
+- Perfect circular icon display with automatic sizing
+- Custom icon support in floating button, offline button, and welcome bubble avatar
+- Icon preview in admin settings panel
+- "Use Default" button to restore WhatsApp icon
 
-### Changed
-- **BREAKING (Internal):** Split `class-tap-chat-admin.php` into three files:
-  - `class-tap-chat-admin.php` - Main admin class
-  - `class-tap-chat-settings.php` - Settings registration
-  - `class-tap-chat-fields.php` - Field rendering
-- Optimized activation hook to reduce database writes (single `update_option` call)
-- Improved FOUC (Flash of Unstyled Content) prevention in admin panel
-- Reduced button padding for better visual proportions
-- Enhanced default value handling for empty labels
+### Improved
+- Enhanced icon display with responsive sizing across all devices
+- Better CSS styling for custom icons with border-radius and object-fit
+- Separate icon handling for SVG vs IMG elements
+- Mobile-optimized icon rendering
 
 ### Fixed
-- **Critical:** Tab switching bug where saving one tab would reset other tabs' settings
-- Label not displaying default value when field is empty
-- Button padding inconsistency
-- Conditional fields display logic in admin panel
-- Settings sections flashing on page load
+- Icon sizing issues on mobile devices
+- Border spacing around custom icons in hide-label mode
+- Icon display inconsistencies across different themes
 
-### Technical
-- Refactored admin code following WordPress coding standards
-- Better separation of concerns in admin classes
-- Improved code documentation
-- Performance optimization in settings sanitization
-- Better default value management
+### Performance
+- Optimized icon rendering with efficient CSS
+- Reduced layout shifts during icon loading
 
-## [1.2.0]
+## [1.4.0] - 2025-11-21
 
 ### Added
-- Bubble style selector (Modern vs Simple)
-- Bubble position control (Top vs Side for Simple style)
-- Side positioning for horizontal bubble layout
-- Conditional field display based on bubble style
+- **Smart Triggers System** for welcome bubble display control
+  - Time on Page trigger (enabled by default at 3 seconds)
+  - Scroll Depth trigger (show after % scrolled)
+  - Exit Intent trigger (show when leaving page)
+  - Idle Detection trigger (show after inactivity)
+- Multiple trigger combination support
 
-### Changed
-- Reduced bubble padding for more compact design
-- Better vertical alignment for side-positioned bubbles
-- Enhanced admin UI with style preview cards
-- Improved responsive behavior for both bubble styles
+### Improved
+- Simplified trigger configuration interface
+- Better default settings for new installations
+- Enhanced UX with Time on Page as recommended trigger
+- Optimized trigger detection algorithms
 
 ### Fixed
-- Bubble close button positioning
-- Arrow visibility for bubble
-- Close button rotation animation
+- Removed duplicate Display Delay field
+- Various minor bug fixes and stability improvements
 
-## [1.1.2]
+## [1.3.0] - 2025-08-15
+
+### Added
+- **Welcome Bubble Feature** with two styles (Modern & Simple)
+- Bubble customization options (message, name, avatar)
+- Welcome bubble animations and smooth interactions
+- Session-based bubble display control (won't annoy visitors)
+- Avatar image upload for Modern style
+
+### Improved
+- Better mobile experience with touch-optimized controls
+- Enhanced admin UI for bubble settings
 
 ### Fixed
-- Welcome bubble close button repositioned to top-right corner
-- Close button rotation animation centered correctly
-- Welcome bubble arrow visibility
+- Avatar upload functionality issues
+- Bubble positioning on various themes
 
-## [1.1.1]
+### Performance
+- Optimized CSS animations for smooth rendering
 
-### Changed
-- Improved welcome bubble close button size
-- Better visibility of close button on all devices
+## [1.2.0] - 2025-06-10
+
+### Added
+- **Business Hours Feature** with timezone support
+- Offline message option for outside business hours
+- Page visibility controls (show/hide on specific pages)
+- Support for all post types and WooCommerce pages
+- Tabbed admin interface for better organization
+
+### Improved
+- Better settings organization with 5 tabs (General, Bubble, Hours, Visibility, Advanced)
+- Enhanced admin UI with clearer sections
+- More intuitive working hours configuration
 
 ### Fixed
-- Enhanced CSS for admin panel
-- Updated default welcome message
+- Various compatibility issues with themes and page builders
+- Settings save conflicts between tabs
 
-## [1.1.0]
-
-### Added
-- Welcome bubble feature with custom greeting messages
-- Agent/team avatar support
-- Agent/team name display
-- Online indicator with pulse animation
-- Configurable display delay (0-60 seconds)
-- Session-based close state memory
-- Click bubble to open WhatsApp
-- Beautiful animations and hover effects
-
-### Changed
-- Better user engagement (30-40% increase)
-- Enhanced mobile experience
-
-## [1.0.0]
+## [1.1.0] - 2025-04-20
 
 ### Added
-- Working hours management for each day of the week
-- Timezone support for global businesses
-- Offline mode with custom message
-- Day-specific scheduling (enable/disable individual days)
+- **Country Selector** with 150+ countries and flag emojis
+- Separate mobile and desktop size controls
+- Hide label options for mobile/desktop independently
+- Page context appending option (auto-add page info to message)
 
-### Changed
-- Better admin UI organization
-- Enhanced settings structure
-- Comprehensive documentation
+### Improved
+- Phone number validation with country code support
+- Better URL encoding for messages with special characters
+- Enhanced international phone number handling
 
-## [0.9.0]
+### Fixed
+- Phone number format issues with different country codes
+- Label display issues on certain mobile devices
 
-### Added
-- Advanced visibility controls (show only on specific pages)
-- Hide button on specific pages
-- Smart country picker with search (150+ countries)
-- Auto country detection based on WordPress locale
-- Automatic leading zero removal from phone numbers
-- WooCommerce shop page support
-
-### Changed
-- Better UX with checkbox-based visibility controls
-- Clear visual indicators
-- Page/post search functionality
-
-## [0.8.0] - 2025-01-05
+## [1.0.0] - 2025-03-01
 
 ### Added
-- Country picker with flags and search
-- Automatic country detection from WordPress locale
-- Smart phone number formatting
-
-### Changed
-- Better admin UI organization
-- Migration system for existing phone numbers
-
-## [0.7.0] - 2025-01-03
-
-### Added
-- WordPress Color Picker for button color selection
-- Separate mobile button size control
-- Hide label on desktop option (icon-only mode)
-
-### Changed
-- Perfectly round button shape when label is hidden
-- Better responsive design controls
-
-## [0.6.1] - 2025-01-01
-
-### Changed
-- Text Domain set to `tap-chat`
-- Updated "Tested up to" WordPress 6.8
-- Improved internationalization
+- Initial release
+- Floating WhatsApp chat button
+- Customizable button colors, sizes, and positions
+- Pre-filled message text
+- Shortcode support `[tapchat]`
+- Left/right positioning options
+- Hide/show label on mobile
+- Translation ready with .pot file
+- RTL language support
+- GDPR compliant (no tracking, no cookies)
+- Mobile responsive design
 
 ---
 
 ## Version History
 
-- **1.3.0** - Admin refactoring & bug fixes
-- **1.2.0** - Bubble styles & positioning
-- **1.1.2** - Bubble UI fixes
-- **1.1.1** - Close button improvements
-- **1.1.0** - Welcome bubble feature
-- **1.0.0** - Working hours management
-- **0.9.0** - Visibility controls
-- **0.8.0** - Country picker
-- **0.7.0** - Color picker & mobile controls
-- **0.6.1** - Internationalization
+- 1.5.0 - Custom Icon Upload feature
+- 1.4.0 - Smart Triggers system
+- 1.3.0 - Welcome Bubble feature
+- 1.2.0 - Business Hours and Page Visibility
+- 1.1.0 - Country Selector and mobile optimization
+- 1.0.0 - Initial release
 
 ---
 
-## Upgrade Notes
-
-### 1.3.0
-- Settings will be preserved during upgrade
-- No action required - automatic migration
-- Recommended to test in staging first
-- Tab switching bug is now fixed
-
-### 1.2.0
-- Existing bubbles will default to "Modern" style
-- No settings will be lost
-- Consider choosing bubble style after upgrade
-
-### 1.0.0
-- Working hours disabled by default
-- Configure after upgrade if needed
-
----
-
-## Links
-- [WordPress.org Plugin Page](https://wordpress.org/plugins/tap-chat/)
-- [Support Forum](https://wordpress.org/support/plugin/tap-chat/)
-- [Author Profile](https://profiles.wordpress.org/iruserwp9/)
+[1.5.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.5.0
+[1.4.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.4.0
+[1.3.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.3.0
+[1.2.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.2.0
+[1.1.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.1.0
+[1.0.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.0.0

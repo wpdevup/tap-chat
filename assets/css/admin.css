@@ -7,22 +7,33 @@
     border-bottom: 1px solid #ccd0d4;
 }
 
-.tap-chat-settings-form {
+.tap-chat-tabs .nav-tab {
+    cursor: pointer;
+}
+
+.tap-chat-tab-content {
     background: #fff;
     padding: 20px;
     border: 1px solid #ccd0d4;
     border-radius: 4px;
-    margin-top: 20px;
 }
 
-.tap-chat-settings-form h2 {
+.tap-chat-tab-content h2 {
     margin-top: 0;
     padding-bottom: 10px;
     border-bottom: 1px solid #f0f0f1;
 }
 
-.tap-chat-settings-form .form-table {
+.tap-chat-tab-content .form-table {
     margin-top: 0;
+}
+
+.tap-chat-settings-form .submit {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
 }
 
 .tap-chat-phone-wrapper {

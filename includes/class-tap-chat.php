@@ -30,6 +30,16 @@ class Plugin {
         wp_enqueue_style( 'tap-chat', TAP_CHAT_PLUGIN_URL . 'assets/css/tapchat.css', [], TAP_CHAT_VERSION );
         wp_enqueue_script( 'tap-chat', TAP_CHAT_PLUGIN_URL . 'assets/js/tapchat.js', [ 'jquery' ], TAP_CHAT_VERSION, true );
         
+        $size = absint( $this->get_option( 'size', 40 ) );
+        $mobile_size = absint( $this->get_option( 'mobile_size', 40 ) );
+        
+        $inline_css = sprintf(
+            ':root { --tapchat-size: %dpx; --tapchat-mobile-size: %dpx; }',
+            $size,
+            $mobile_size
+        );
+        wp_add_inline_style( 'tap-chat', $inline_css );
+        
         $trigger_data = array(
             'scrollEnabled' => $this->get_option('trigger_scroll_enabled', 'no') === 'yes',
             'scrollDepth' => absint($this->get_option('trigger_scroll_depth', 50)),
@@ -213,9 +223,7 @@ class Plugin {
         }
 
         $style = sprintf( 
-            '--tapchat-size:%dpx; --tapchat-mobile-size:%dpx; --tapchat-color:%s;', 
-            $size, 
-            $mobile_size,
+            '--tapchat-color:%s;', 
             $color ? $color : '#25D366' 
         );
 
@@ -243,9 +251,7 @@ class Plugin {
         $classes = 'tapchat-fab tapchat-fab-offline tapchat-pos-' . esc_attr( $pos );
 
         $style = sprintf( 
-            '--tapchat-size:%dpx; --tapchat-mobile-size:%dpx; --tapchat-color:%s; cursor: not-allowed; opacity: 0.7;', 
-            $size, 
-            $mobile_size,
+            '--tapchat-color:%s; cursor: not-allowed; opacity: 0.7;', 
             $color
         );
 

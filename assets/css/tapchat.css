@@ -140,7 +140,7 @@
 
 .tapchat-welcome-bubble {
   position: fixed;
-  bottom: 105px;
+  bottom: calc(var(--tapchat-size) + 54px);
   display: none;
   gap: 14px;
   padding: 20px 24px;
@@ -380,7 +380,7 @@
 }
 
 .tapchat-welcome-bubble.position-side {
-  bottom: 30px;
+  bottom: calc(18px + (var(--tapchat-size) + 20px) / 2 - 23px);
   top: auto;
   transform: translateX(-10px) scale(0.95);
   display: flex;
@@ -388,40 +388,41 @@
 }
 
 .tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
-  right: 190px;
+  right: calc(18px + 150px + 20px);
   left: auto;
 }
 
 .tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-  left: 190px;
+  left: calc(18px + 150px + 20px);
   right: auto;
 }
 
 .tapchat-hide-label-desktop ~ .tapchat-welcome-bubble.position-side {
-  right: 100px;
+  right: calc(18px + var(--tapchat-size) + 20px + 15px);
 }
 
 .tapchat-hide-label-desktop.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-  left: 100px;
+  left: calc(18px + var(--tapchat-size) + 20px + 15px);
   right: auto;
 }
 
 [dir="rtl"] .tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
   right: auto;
-  left: 190px;
+  left: calc(18px + 150px + 20px);
 }
 
 [dir="rtl"] .tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
   left: auto;
-  right: 190px;
+  right: calc(18px + 150px + 20px);
 }
 
 [dir="rtl"] .tapchat-hide-label-desktop ~ .tapchat-welcome-bubble.position-side {
-  left: 100px;
+  left: calc(18px + var(--tapchat-size) + 20px + 15px);
+  right: auto;
 }
 
 [dir="rtl"] .tapchat-hide-label-desktop.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-  right: 100px;
+  right: calc(18px + var(--tapchat-size) + 20px + 15px);
   left: auto;
 }
 
@@ -470,7 +471,7 @@
 @media (max-width: 480px) {
   .tapchat-welcome-bubble {
     max-width: calc(100vw - 40px);
-    bottom: 90px;
+    bottom: calc(var(--tapchat-mobile-size) + 44px);
     padding: 16px 20px;
     gap: 12px;
   }
@@ -531,24 +532,24 @@
   }
   
   .tapchat-welcome-bubble.position-side {
-    bottom: 30px;
+    bottom: calc(18px + (var(--tapchat-mobile-size) + 20px) / 2 - 21px);
     max-width: calc(100vw - 100px);
   }
   
   .tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
-    right: 190px;
+    right: calc(18px + 120px + 15px);
   }
 
   .tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-    left: 190px;
+    left: calc(18px + 120px + 15px);
   }
   
   .tapchat-hide-label-mobile ~ .tapchat-welcome-bubble.position-side {
-    right: 100px;
+    right: calc(18px + var(--tapchat-mobile-size) + 20px + 12px);
   }
 
   .tapchat-hide-label-mobile.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-    left: 100px;
+    left: calc(18px + var(--tapchat-mobile-size) + 20px + 12px);
     right: auto;
   }
 }

@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -148,13 +148,12 @@ Make Tap Chat match your brand:
 * Avatar personalization
 * Upload custom icons
 
-= What's New in 1.5.0 =
+= What's New in 1.6.0 =
 
-* **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo
-* **Perfect Circular Display** - Icons automatically sized and styled
-* **WordPress Media Library** - Easy icon selection and management
-* **Responsive Icons** - Works perfectly on all devices
-* **Bug Fixes** - Icon sizing and display improvements
+* **Improved Admin UX** - Tab navigation without page refresh
+* **Unified Settings** - All settings save together from any tab
+* **Dynamic Bubble Positioning** - Bubble automatically adjusts to icon size
+* **Better Responsive Behavior** - Perfect alignment on all screen sizes
 
 == Installation ==
 
@@ -316,6 +315,14 @@ Yes! Use the Visibility tab:
 
 == Changelog ==
 
+= 1.6.0 - 2025-11-27 =
+* **Improved:** Admin settings now use JavaScript tabs without page refresh
+* **Improved:** All settings from all tabs save together in one submission
+* **Improved:** Dynamic bubble positioning - automatically adjusts to icon size changes
+* **Improved:** Better responsive behavior for welcome bubble on all screen sizes
+* **Fixed:** Bubble alignment issues when changing icon sizes
+* **Performance:** Smoother admin experience with no page reloads between tabs
+
 = 1.5.0 - 2025-11-25 =
 * **New:** Custom Icon Upload feature - Replace WhatsApp icon with your brand logo
 * **New:** WordPress Media Library integration for icon selection
@@ -376,6 +383,9 @@ Yes! Use the Visibility tab:
 * GDPR compliant
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+Improved admin experience! Settings tabs now switch without page refresh, and all settings save together. Welcome bubble positioning now automatically adjusts to icon size.
 
 = 1.5.0 =
 New Custom Icon Upload feature! Replace WhatsApp icon with your own brand logo. Perfect for branding and customization.

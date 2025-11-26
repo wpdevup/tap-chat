@@ -1,7 +1,38 @@
 jQuery(document).ready(function($) {
     
+    // Tab switching without page refresh
+    $('.tap-chat-tabs .nav-tab').on('click', function(e) {
+        e.preventDefault();
+        
+        var tabId = $(this).data('tab');
+        
+        // Update active tab
+        $('.tap-chat-tabs .nav-tab').removeClass('nav-tab-active');
+        $(this).addClass('nav-tab-active');
+        
+        // Show/hide tab content
+        $('.tap-chat-tab-content').hide();
+        $('#tab-' + tabId).show();
+        
+        // Update URL hash without scrolling
+        if (history.pushState) {
+            history.pushState(null, null, '#' + tabId);
+        }
+    });
+    
+    // Handle initial tab from URL hash
+    var hash = window.location.hash.replace('#', '');
+    if (hash && $('#tab-' + hash).length) {
+        $('.tap-chat-tabs .nav-tab').removeClass('nav-tab-active');
+        $('.tap-chat-tabs .nav-tab[data-tab="' + hash + '"]').addClass('nav-tab-active');
+        $('.tap-chat-tab-content').hide();
+        $('#tab-' + hash).show();
+    }
+    
+    // Color picker
     $('.tap-chat-color-picker').wpColorPicker();
     
+    // Country selector
     var selectedCode = $('input[name="tap_chat_settings[country_code]"]').val();
     
     function updateSelectedDisplay() {
@@ -57,9 +88,10 @@ jQuery(document).ready(function($) {
         }
     });
     
+    // Page search
     $('.tap-chat-search-pages').on('input', function() {
         var search = $(this).val().toLowerCase();
-        $('.tap-chat-page-item').each(function() {
+        $(this).closest('.tap-chat-page-selector').find('.tap-chat-page-item').each(function() {
             var title = $(this).find('.tap-chat-page-title').text().toLowerCase();
             if (title.indexOf(search) > -1) {
                 $(this).show();
@@ -82,6 +114,7 @@ jQuery(document).ready(function($) {
         updateSelectedCount(this);
     });
     
+    // Visibility sections toggle
     function toggleVisibilitySections() {
         var showOnChecked = $('#enable_show_on').is(':checked');
         var hideOnChecked = $('#enable_hide_on').is(':checked');
@@ -97,6 +130,7 @@ jQuery(document).ready(function($) {
     
     toggleVisibilitySections();
     
+    // Working hours toggle
     function toggleWorkingHoursSection() {
         $('#tap-chat-working-hours-section').toggle($('#enable_working_hours').is(':checked'));
     }
@@ -107,6 +141,7 @@ jQuery(document).ready(function($) {
     
     toggleWorkingHoursSection();
     
+    // Day enabled toggle
     $('.tap-chat-day-enabled').on('change', function() {
         var row = $(this).closest('tr');
         var timeInputs = row.find('input[type="time"]');
@@ -124,6 +159,7 @@ jQuery(document).ready(function($) {
         $(this).trigger('change');
     });
     
+    // Welcome bubble toggle
     function toggleWelcomeBubbleSection() {
         if ($('#enable_welcome_bubble').is(':checked')) {
             $('#tap-chat-welcome-bubble-section').slideDown(200);
@@ -138,6 +174,7 @@ jQuery(document).ready(function($) {
     
     toggleWelcomeBubbleSection();
     
+    // Bubble style toggle
     function toggleBubbleStyleFields() {
         var selectedStyle = $('input[name="tap_chat_settings[bubble_style]"]:checked').val();
         
@@ -182,6 +219,7 @@ jQuery(document).ready(function($) {
     
     toggleBubbleStyleFields();
     
+    // Avatar upload
     $('#tap-chat-upload-avatar').on('click', function(e) {
         e.preventDefault();
         
@@ -215,6 +253,7 @@ jQuery(document).ready(function($) {
         $('.tap-chat-avatar-preview').removeClass('has-image');
     });
     
+    // Icon upload
     $('#tap-chat-upload-icon').on('click', function(e) {
         e.preventDefault();
         
@@ -248,6 +287,7 @@ jQuery(document).ready(function($) {
         $('.tap-chat-icon-preview').removeClass('has-image');
     });
     
+    // Trigger options toggle
     $('.tap-chat-trigger-checkbox').on('change', function() {
         var target = $(this).data('target');
         if (target) {

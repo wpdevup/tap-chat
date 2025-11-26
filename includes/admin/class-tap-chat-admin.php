@@ -55,72 +55,55 @@ class Admin {
     }
 
     public function settings_page() {
-        // Check user capabilities
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'tap-chat' ) );
         }
         
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe read-only operation for tab navigation
-        $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
+        $tabs = array(
+            'general' => __( 'General', 'tap-chat' ),
+            'bubble' => __( 'Welcome Bubble', 'tap-chat' ),
+            'hours' => __( 'Working Hours', 'tap-chat' ),
+            'visibility' => __( 'Visibility', 'tap-chat' ),
+            'advanced' => __( 'Advanced', 'tap-chat' ),
+        );
         ?>
         <div class="wrap tap-chat-admin-wrap">
             <h1><?php esc_html_e('Tap Chat Settings','tap-chat'); ?></h1>
             
-            <nav class="nav-tab-wrapper wp-clearfix">
-                <a href="?page=tap-chat&tab=general" 
-                   class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e( 'General', 'tap-chat' ); ?>
-                </a>
-                <a href="?page=tap-chat&tab=bubble" 
-                   class="nav-tab <?php echo $active_tab === 'bubble' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e( 'Welcome Bubble', 'tap-chat' ); ?>
-                </a>
-                <a href="?page=tap-chat&tab=hours" 
-                   class="nav-tab <?php echo $active_tab === 'hours' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e( 'Working Hours', 'tap-chat' ); ?>
-                </a>
-                <a href="?page=tap-chat&tab=visibility" 
-                   class="nav-tab <?php echo $active_tab === 'visibility' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e( 'Visibility', 'tap-chat' ); ?>
-                </a>
-                <a href="?page=tap-chat&tab=advanced" 
-                   class="nav-tab <?php echo $active_tab === 'advanced' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e( 'Advanced', 'tap-chat' ); ?>
-                </a>
+            <nav class="nav-tab-wrapper wp-clearfix tap-chat-tabs">
+                <?php foreach ( $tabs as $tab_id => $tab_name ) : ?>
+                    <a href="#<?php echo esc_attr( $tab_id ); ?>" 
+                       class="nav-tab <?php echo $tab_id === 'general' ? 'nav-tab-active' : ''; ?>"
+                       data-tab="<?php echo esc_attr( $tab_id ); ?>">
+                        <?php echo esc_html( $tab_name ); ?>
+                    </a>
+                <?php endforeach; ?>
             </nav>
             
             <form method="post" action="options.php" class="tap-chat-settings-form">
-                <?php
-                    settings_fields( 'tap_chat_settings_group' );
-                    
-                    // Hidden field to track which tab is being submitted
-                    $tab_name = 'general';
-                    switch( $active_tab ) {
-                        case 'bubble':
-                            $tab_name = 'bubble';
-                            do_settings_sections( 'tap-chat-bubble' );
-                            break;
-                        case 'hours':
-                            $tab_name = 'hours';
-                            do_settings_sections( 'tap-chat-hours' );
-                            break;
-                        case 'visibility':
-                            $tab_name = 'visibility';
-                            do_settings_sections( 'tap-chat-visibility' );
-                            break;
-                        case 'advanced':
-                            $tab_name = 'advanced';
-                            do_settings_sections( 'tap-chat-advanced' );
-                            break;
-                        default:
-                            do_settings_sections( 'tap-chat-general' );
-                            break;
-                    }
-                    
-                    echo '<input type="hidden" name="tap_chat_settings[_active_tab]" value="' . esc_attr( $tab_name ) . '" />';
-                    
-                    submit_button();
-                ?>
+                <?php settings_fields( 'tap_chat_settings_group' ); ?>
+                
+                <div class="tap-chat-tab-content" id="tab-general">
+                    <?php do_settings_sections( 'tap-chat-general' ); ?>
+                </div>
+                
+                <div class="tap-chat-tab-content" id="tab-bubble" style="display: none;">
+                    <?php do_settings_sections( 'tap-chat-bubble' ); ?>
+                </div>
+                
+                <div class="tap-chat-tab-content" id="tab-hours" style="display: none;">
+                    <?php do_settings_sections( 'tap-chat-hours' ); ?>
+                </div>
+                
+                <div class="tap-chat-tab-content" id="tab-visibility" style="display: none;">
+                    <?php do_settings_sections( 'tap-chat-visibility' ); ?>
+                </div>
+                
+                <div class="tap-chat-tab-content" id="tab-advanced" style="display: none;">
+                    <?php do_settings_sections( 'tap-chat-advanced' ); ?>
+                </div>
+                
+                <?php submit_button(); ?>
             </form>
         </div>
         <?php

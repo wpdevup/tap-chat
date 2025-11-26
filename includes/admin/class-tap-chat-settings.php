@@ -212,96 +212,80 @@ class Admin_Settings {
     }
 
     public function sanitize( $input ) {
-        $old = get_option( 'tap_chat_settings', array() );
-        $out = $old;
+        $out = array();
         
-        $active_tab = isset( $input['_active_tab'] ) ? $input['_active_tab'] : 'general';
+        // General tab
+        $out['enable_floating'] = ( isset( $input['enable_floating'] ) && $input['enable_floating'] === 'yes' ) ? 'yes' : 'no';
+        $out['country_code'] = isset( $input['country_code'] ) ? sanitize_text_field( $input['country_code'] ) : $this->get_default_country_code();
         
-        switch ( $active_tab ) {
-            case 'general':
-                $out['enable_floating'] = ( isset( $input['enable_floating'] ) && $input['enable_floating'] === 'yes' ) ? 'yes' : 'no';
-                $out['country_code'] = isset( $input['country_code'] ) ? sanitize_text_field( $input['country_code'] ) : $this->get_default_country_code();
-                
-                if ( isset( $input['phone'] ) ) {
-                    $phone = sanitize_text_field( $input['phone'] );
-                    $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
-                    $phone = ltrim($phone, '0');
-                    $out['phone'] = $phone;
-                }
-                
-                $out['message'] = isset( $input['message'] ) ? sanitize_textarea_field( $input['message'] ) : '';
-                $out['label'] = isset( $input['label'] ) ? sanitize_text_field( $input['label'] ) : '';
-                $out['custom_icon'] = isset( $input['custom_icon'] ) ? esc_url_raw( $input['custom_icon'] ) : '';
-                $out['position'] = ( isset( $input['position'] ) && in_array( $input['position'], array( 'left','right' ), true ) ) ? $input['position'] : 'right';
-                $out['size'] = isset( $input['size'] ) ? absint( $input['size'] ) : 40;
-                $out['mobile_size'] = isset( $input['mobile_size'] ) ? absint( $input['mobile_size'] ) : 40;
-                $out['color'] = isset( $input['color'] ) ? sanitize_hex_color( $input['color'] ) : '#25D366';
-                $out['hide_label_mobile'] = ( isset( $input['hide_label_mobile'] ) && $input['hide_label_mobile'] === 'yes' ) ? 'yes' : 'no';
-                $out['hide_label_desktop'] = ( isset( $input['hide_label_desktop'] ) && $input['hide_label_desktop'] === 'yes' ) ? 'yes' : 'no';
-                break;
-                
-            case 'bubble':
-                $out['enable_welcome_bubble'] = ( isset( $input['enable_welcome_bubble'] ) && $input['enable_welcome_bubble'] === 'yes' ) ? 'yes' : 'no';
-                $out['bubble_style'] = ( isset( $input['bubble_style'] ) && in_array( $input['bubble_style'], array( 'modern', 'simple' ), true ) ) ? $input['bubble_style'] : 'modern';
-                $out['bubble_position'] = ( isset( $input['bubble_position'] ) && in_array( $input['bubble_position'], array( 'top', 'side' ), true ) ) ? $input['bubble_position'] : 'top';
-                
-                $bubble_message = isset( $input['welcome_bubble_message'] ) ? sanitize_textarea_field( $input['welcome_bubble_message'] ) : '';
-                if ( empty( $bubble_message ) && empty( $old['welcome_bubble_message'] ) ) {
-                    $bubble_message = __('Need help? Let\'s chat! 💬', 'tap-chat');
-                }
-                $out['welcome_bubble_message'] = $bubble_message;
-                
-                $bubble_name = isset( $input['welcome_bubble_name'] ) ? sanitize_text_field( $input['welcome_bubble_name'] ) : '';
-                if ( empty( $bubble_name ) && empty( $old['welcome_bubble_name'] ) ) {
-                    $bubble_name = __('Support Team', 'tap-chat');
-                }
-                $out['welcome_bubble_name'] = $bubble_name;
-                
-                $out['welcome_bubble_avatar'] = isset( $input['welcome_bubble_avatar'] ) ? esc_url_raw( $input['welcome_bubble_avatar'] ) : '';
-                
-                $out['trigger_scroll_enabled'] = ( isset( $input['trigger_scroll_enabled'] ) && $input['trigger_scroll_enabled'] === 'yes' ) ? 'yes' : 'no';
-                $out['trigger_scroll_depth'] = isset( $input['trigger_scroll_depth'] ) ? absint( $input['trigger_scroll_depth'] ) : 50;
-                $out['trigger_exit_enabled'] = ( isset( $input['trigger_exit_enabled'] ) && $input['trigger_exit_enabled'] === 'yes' ) ? 'yes' : 'no';
-                $out['trigger_time_enabled'] = ( isset( $input['trigger_time_enabled'] ) && $input['trigger_time_enabled'] === 'yes' ) ? 'yes' : 'no';
-                $out['trigger_time_delay'] = isset( $input['trigger_time_delay'] ) ? absint( $input['trigger_time_delay'] ) : 3;
-                $out['trigger_idle_enabled'] = ( isset( $input['trigger_idle_enabled'] ) && $input['trigger_idle_enabled'] === 'yes' ) ? 'yes' : 'no';
-                $out['trigger_idle_time'] = isset( $input['trigger_idle_time'] ) ? absint( $input['trigger_idle_time'] ) : 60;
-                break;
-                
-            case 'hours':
-                $out['enable_working_hours'] = ( isset( $input['enable_working_hours'] ) && $input['enable_working_hours'] === 'yes' ) ? 'yes' : 'no';
-                $out['timezone'] = isset( $input['timezone'] ) ? sanitize_text_field( $input['timezone'] ) : wp_timezone_string();
-                $out['offline_message'] = isset( $input['offline_message'] ) ? sanitize_textarea_field( $input['offline_message'] ) : '';
-                
-                if ( isset( $input['working_hours'] ) && is_array( $input['working_hours'] ) ) {
-                    $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
-                    $out['working_hours'] = array();
-                    
-                    foreach ( $days as $day ) {
-                        if ( isset( $input['working_hours'][$day] ) ) {
-                            $out['working_hours'][$day] = array(
-                                'enabled' => ( isset( $input['working_hours'][$day]['enabled'] ) && $input['working_hours'][$day]['enabled'] === 'yes' ) ? 'yes' : 'no',
-                                'start' => isset( $input['working_hours'][$day]['start'] ) ? sanitize_text_field( $input['working_hours'][$day]['start'] ) : '09:00',
-                                'end' => isset( $input['working_hours'][$day]['end'] ) ? sanitize_text_field( $input['working_hours'][$day]['end'] ) : '17:00',
-                            );
-                        }
-                    }
-                }
-                break;
-                
-            case 'visibility':
-                $out['enable_show_on'] = ( isset( $input['enable_show_on'] ) && $input['enable_show_on'] === 'yes' ) ? 'yes' : 'no';
-                $out['enable_hide_on'] = ( isset( $input['enable_hide_on'] ) && $input['enable_hide_on'] === 'yes' ) ? 'yes' : 'no';
-                $out['show_on_pages'] = isset( $input['show_on_pages'] ) && is_array( $input['show_on_pages'] ) ? array_map( 'absint', $input['show_on_pages'] ) : array();
-                $out['hide_on_pages'] = isset( $input['hide_on_pages'] ) && is_array( $input['hide_on_pages'] ) ? array_map( 'absint', $input['hide_on_pages'] ) : array();
-                break;
-                
-            case 'advanced':
-                $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
-                break;
+        if ( isset( $input['phone'] ) ) {
+            $phone = sanitize_text_field( $input['phone'] );
+            $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
+            $phone = ltrim($phone, '0');
+            $out['phone'] = $phone;
+        } else {
+            $out['phone'] = '';
         }
         
-        unset( $out['_active_tab'] );
+        $out['message'] = isset( $input['message'] ) ? sanitize_textarea_field( $input['message'] ) : '';
+        $out['label'] = isset( $input['label'] ) ? sanitize_text_field( $input['label'] ) : '';
+        $out['custom_icon'] = isset( $input['custom_icon'] ) ? esc_url_raw( $input['custom_icon'] ) : '';
+        $out['position'] = ( isset( $input['position'] ) && in_array( $input['position'], array( 'left','right' ), true ) ) ? $input['position'] : 'right';
+        $out['size'] = isset( $input['size'] ) ? absint( $input['size'] ) : 40;
+        $out['mobile_size'] = isset( $input['mobile_size'] ) ? absint( $input['mobile_size'] ) : 40;
+        $out['color'] = isset( $input['color'] ) ? sanitize_hex_color( $input['color'] ) : '#25D366';
+        $out['hide_label_mobile'] = ( isset( $input['hide_label_mobile'] ) && $input['hide_label_mobile'] === 'yes' ) ? 'yes' : 'no';
+        $out['hide_label_desktop'] = ( isset( $input['hide_label_desktop'] ) && $input['hide_label_desktop'] === 'yes' ) ? 'yes' : 'no';
+        
+        // Bubble tab
+        $out['enable_welcome_bubble'] = ( isset( $input['enable_welcome_bubble'] ) && $input['enable_welcome_bubble'] === 'yes' ) ? 'yes' : 'no';
+        $out['bubble_style'] = ( isset( $input['bubble_style'] ) && in_array( $input['bubble_style'], array( 'modern', 'simple' ), true ) ) ? $input['bubble_style'] : 'modern';
+        $out['bubble_position'] = ( isset( $input['bubble_position'] ) && in_array( $input['bubble_position'], array( 'top', 'side' ), true ) ) ? $input['bubble_position'] : 'top';
+        
+        $out['welcome_bubble_message'] = isset( $input['welcome_bubble_message'] ) ? sanitize_textarea_field( $input['welcome_bubble_message'] ) : __('Need help? Let\'s chat! 💬', 'tap-chat');
+        $out['welcome_bubble_name'] = isset( $input['welcome_bubble_name'] ) ? sanitize_text_field( $input['welcome_bubble_name'] ) : __('Support Team', 'tap-chat');
+        $out['welcome_bubble_avatar'] = isset( $input['welcome_bubble_avatar'] ) ? esc_url_raw( $input['welcome_bubble_avatar'] ) : '';
+        
+        $out['trigger_scroll_enabled'] = ( isset( $input['trigger_scroll_enabled'] ) && $input['trigger_scroll_enabled'] === 'yes' ) ? 'yes' : 'no';
+        $out['trigger_scroll_depth'] = isset( $input['trigger_scroll_depth'] ) ? absint( $input['trigger_scroll_depth'] ) : 50;
+        $out['trigger_exit_enabled'] = ( isset( $input['trigger_exit_enabled'] ) && $input['trigger_exit_enabled'] === 'yes' ) ? 'yes' : 'no';
+        $out['trigger_time_enabled'] = ( isset( $input['trigger_time_enabled'] ) && $input['trigger_time_enabled'] === 'yes' ) ? 'yes' : 'no';
+        $out['trigger_time_delay'] = isset( $input['trigger_time_delay'] ) ? absint( $input['trigger_time_delay'] ) : 3;
+        $out['trigger_idle_enabled'] = ( isset( $input['trigger_idle_enabled'] ) && $input['trigger_idle_enabled'] === 'yes' ) ? 'yes' : 'no';
+        $out['trigger_idle_time'] = isset( $input['trigger_idle_time'] ) ? absint( $input['trigger_idle_time'] ) : 60;
+        
+        // Hours tab
+        $out['enable_working_hours'] = ( isset( $input['enable_working_hours'] ) && $input['enable_working_hours'] === 'yes' ) ? 'yes' : 'no';
+        $out['timezone'] = isset( $input['timezone'] ) ? sanitize_text_field( $input['timezone'] ) : wp_timezone_string();
+        $out['offline_message'] = isset( $input['offline_message'] ) ? sanitize_textarea_field( $input['offline_message'] ) : '';
+        
+        if ( isset( $input['working_hours'] ) && is_array( $input['working_hours'] ) ) {
+            $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+            $out['working_hours'] = array();
+            
+            foreach ( $days as $day ) {
+                if ( isset( $input['working_hours'][$day] ) ) {
+                    $out['working_hours'][$day] = array(
+                        'enabled' => ( isset( $input['working_hours'][$day]['enabled'] ) && $input['working_hours'][$day]['enabled'] === 'yes' ) ? 'yes' : 'no',
+                        'start' => isset( $input['working_hours'][$day]['start'] ) ? sanitize_text_field( $input['working_hours'][$day]['start'] ) : '09:00',
+                        'end' => isset( $input['working_hours'][$day]['end'] ) ? sanitize_text_field( $input['working_hours'][$day]['end'] ) : '17:00',
+                    );
+                } else {
+                    $out['working_hours'][$day] = array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00');
+                }
+            }
+        } else {
+            $out['working_hours'] = $this->get_default_working_hours();
+        }
+        
+        // Visibility tab
+        $out['enable_show_on'] = ( isset( $input['enable_show_on'] ) && $input['enable_show_on'] === 'yes' ) ? 'yes' : 'no';
+        $out['enable_hide_on'] = ( isset( $input['enable_hide_on'] ) && $input['enable_hide_on'] === 'yes' ) ? 'yes' : 'no';
+        $out['show_on_pages'] = isset( $input['show_on_pages'] ) && is_array( $input['show_on_pages'] ) ? array_map( 'absint', $input['show_on_pages'] ) : array();
+        $out['hide_on_pages'] = isset( $input['hide_on_pages'] ) && is_array( $input['hide_on_pages'] ) ? array_map( 'absint', $input['hide_on_pages'] ) : array();
+        
+        // Advanced tab
+        $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
         
         return $out;
     }

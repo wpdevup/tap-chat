@@ -2,6 +2,20 @@
 
 All notable changes to Tap Chat will be documented in this file.
 
+## [1.6.0] - 2025-11-27
+
+### Improved
+- Admin settings now use JavaScript tabs without page refresh
+- All settings from all tabs save together in one submission
+- Dynamic bubble positioning - automatically adjusts to icon size changes
+- Better responsive behavior for welcome bubble on all screen sizes
+
+### Fixed
+- Bubble alignment issues when changing icon sizes
+
+### Performance
+- Smoother admin experience with no page reloads between tabs
+
 ## [1.5.0] - 2025-11-25
 
 ### Added
@@ -121,6 +135,7 @@ All notable changes to Tap Chat will be documented in this file.
 
 ## Version History
 
+- 1.6.0 - Improved admin UX with JS tabs, dynamic bubble positioning
 - 1.5.0 - Custom Icon Upload feature
 - 1.4.0 - Smart Triggers system
 - 1.3.0 - Welcome Bubble feature
@@ -130,6 +145,7 @@ All notable changes to Tap Chat will be documented in this file.
 
 ---
 
+[1.6.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.6.0
 [1.5.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.5.0
 [1.4.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.4.0
 [1.3.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.3.0

@@ -1,6 +1,6 @@
 # Tap Chat - WordPress Click-to-Chat Plugin
 
-**Version:** 1.5.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
+**Version:** 1.6.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
@@ -419,6 +419,19 @@ git commit -m "Add: Description of your changes"
 
 ## 📝 Changelog
 
+### [1.6.0] - 2025-11-27
+**Improved:**
+- 🚀 Admin settings now use JavaScript tabs without page refresh
+- 💾 All settings from all tabs save together in one submission
+- 📐 Dynamic bubble positioning - automatically adjusts to icon size changes
+- 📱 Better responsive behavior for welcome bubble on all screen sizes
+
+**Fixed:**
+- Bubble alignment issues when changing icon sizes
+
+**Performance:**
+- Smoother admin experience with no page reloads between tabs
+
 ### [1.5.0] - 2025-11-25
 **Added:**
 - 🎨 Custom Icon Upload feature
@@ -538,6 +551,7 @@ Need help? We're here for you!
 ## 🗺️ Roadmap
 
 ### Completed ✅
+- ✅ Improved Admin UX (v1.6.0)
 - ✅ Custom Icon Upload (v1.5.0)
 - ✅ Smart Triggers (v1.4.0)
 - ✅ Welcome Bubble (v1.3.0)
@@ -569,4 +583,3 @@ If you find this plugin helpful, please:
 Made with ❤️ for the WordPress community
 
 [WordPress.org](https://wordpress.org/plugins/tap-chat/) | [GitHub](https://github.com/yourusername/tap-chat) | [Support](https://wordpress.org/support/plugin/tap-chat/)
-

@@ -14,6 +14,11 @@ Lightweight WhatsApp chat button with welcome bubble, working hours, page contro
 
 **Tap Chat** adds a beautiful floating WhatsApp button with advanced features. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance - all while keeping your site fast and privacy-friendly.
 
+* **Website:** [Plugin Website](https://wpdevup.com/tap-chat/)
+* **Documentation:** [Plugin documentation](https://wordpress.org/plugins/tap-chat/)
+* **Support Forum:** [WordPress.org support](https://wordpress.org/support/plugin/tap-chat/)
+* **Bug Reports:** [GitHub issues](https://github.com/wpdevup/tap-chat/issues)
+
 = Key Features =
 
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
@@ -80,36 +85,6 @@ The welcome bubble is designed to increase engagement and conversions:
   * Pre-filled message text
   * Page context appending (automatic page info in message)
 
-= Perfect For =
-
-* E-commerce stores (WooCommerce ready)
-* Service businesses
-* Support teams
-* Real estate agents
-* Consultants
-* Educational institutions
-* Healthcare providers
-* Any business that wants instant communication
-
-= Translation Ready =
-
-Tap Chat is fully translatable and includes:
-* English (default)
-* German (Deutsch) - coming soon
-* Spanish (Español) - coming soon
-* French (Français) - coming soon
-* RTL language support
-
-Want to translate? Submit your translation and get credit!
-
-= Privacy & GDPR =
-
-* No tracking or analytics
-* No cookies stored
-* No external requests
-* No data collection
-* 100% GDPR compliant
-
 = Usage =
 
 **Shortcode:**
@@ -117,43 +92,6 @@ Display chat link anywhere with: `[tapchat]`
 
 **Custom shortcode parameters:**
 `[tapchat phone="+1234567890" message="Hello!" label="Contact us"]`
-
-= Technical Details =
-
-* Clean, semantic HTML5
-* Modern CSS3 with smooth animations
-* Vanilla JavaScript (no jQuery frontend dependency)
-* Follows WordPress coding standards
-* Passes WordPress.org plugin review
-* Regular security updates
-* Compatible with all major themes and page builders
-
-= Mobile Experience =
-
-* Fully responsive design
-* Touch-optimized interactions
-* Native app integration
-* Separate mobile size controls
-* Optional label hiding on mobile
-
-= Customization =
-
-Make Tap Chat match your brand:
-* Custom button colors with color picker
-* Adjustable icon sizes
-* Flexible positioning
-* Label customization
-* Modern or Simple bubble styles
-* Custom welcome messages
-* Avatar personalization
-* Upload custom icons
-
-= What's New in 1.6.0 =
-
-* **Improved Admin UX** - Tab navigation without page refresh
-* **Unified Settings** - All settings save together from any tab
-* **Dynamic Bubble Positioning** - Bubble automatically adjusts to icon size
-* **Better Responsive Behavior** - Perfect alignment on all screen sizes
 
 == Installation ==
 
@@ -421,20 +359,6 @@ The only data processed is:
 
 When users click the chat button, they are redirected to the chosen messaging service, which is governed by that service's privacy policy.
 
-== Support ==
-
-Need help? We're here for you!
-
-* **Documentation:** [Plugin documentation](https://wordpress.org/plugins/tap-chat/)
-* **Support Forum:** [WordPress.org support](https://wordpress.org/support/plugin/tap-chat/)
-* **Bug Reports:** [GitHub issues](https://github.com/wpdevup/tap-chat/issues)
-
-== Credits ==
-
-* Icons from messaging platform brand resources
-* Country flags from Unicode emoji standard
-* Developed with love by Tapchat Team
-
 == Roadmap ==
 
 Planned features for future versions:
@@ -442,11 +366,5 @@ Planned features for future versions:
 * Multiple agents support with round-robin
 * Custom working hours per agent
 * Analytics dashboard (privacy-friendly)
-* More bubble styles and animations
-* Team chat widget
-* Pre-chat form
-* Quick replies templates
-* Multi-language welcome messages
-* Integration with popular form plugins
 
 Want a specific feature? Let us know in the support forum!

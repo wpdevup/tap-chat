@@ -242,14 +242,12 @@ Yes! Use the Visibility tab:
 
 == Screenshots ==
 
-1. **Floating Chat Button** - Clean, professional button on your site
+1. **Floating Chat Button Demo** - Clean, professional button on your site
 2. **General Settings** - Easy configuration with country selector
-3. **Modern Welcome Bubble** - Rich bubble with avatar and name
-4. **Simple Welcome Bubble** - Minimal, clean bubble design
-5. **Smart Triggers** - Configure when bubble appears
-6. **Business Hours** - Set schedule with timezone support
-7. **Visibility Controls** - Choose where button appears
-8. **Advanced** - other options
+3. **Welcome Bubble Settings** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
+4. **Working Hours Settings** - Display button only during business hours with timezone supportn
+5. **Visibility Configuration** - Control where the WhatsApp button appears on your site.
+6. **Advanced Options** - Advanced configuration options for power users.
 
 == Changelog ==
 

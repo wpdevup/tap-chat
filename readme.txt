@@ -2,7 +2,7 @@
 Contributors: iruserwp9, wpdevup
 Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.7.0
 License: GPLv2 or later

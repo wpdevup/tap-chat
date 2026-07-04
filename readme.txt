@@ -23,6 +23,7 @@ Lightweight WhatsApp chat button with welcome bubble, working hours, page contro
 
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
 * **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
+* **Custom link** - Replace WhatsApp Link with Telegram, Messenger, a contact page, Phone, Email or any URL
 * **Welcome Bubble** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
 * **Smart Triggers** - Show the bubble at the perfect moment based on visitor behavior
 * **Country Selector** - Easy phone number configuration with 150+ country codes and flags

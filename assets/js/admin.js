@@ -29,6 +29,18 @@ jQuery(document).ready(function($) {
         $('#tab-' + hash).show();
     }
     
+    // Link type toggle (phone vs custom URL)
+    function tapChatApplyLinkType(val) {
+        $('.tap-chat-link-panel').hide();
+        $('.tap-chat-link-panel[data-link-panel="' + val + '"]').show();
+        // Default Message is WhatsApp-only, hide it for custom links
+        $('.tap-chat-message-row').toggle(val === 'phone');
+    }
+    $('.tap-chat-link-type-radio').on('change', function() {
+        tapChatApplyLinkType($(this).val());
+    });
+    tapChatApplyLinkType($('.tap-chat-link-type-radio:checked').val() || 'phone');
+
     // Color picker
     $('.tap-chat-color-picker').wpColorPicker();
     

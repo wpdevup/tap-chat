@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tap Chat
  * Description: Lightweight WhatsApp click-to-chat button with custom icons, welcome bubble, working hours, page visibility controls, and smart country selector. GDPR-friendly with no tracking.
- * Version: 1.6.0
+ * Version: 1.7.0
  * Author: iruserwp9
  * Author URI: https://profiles.wordpress.org/iruserwp9/
  * License: GPLv2 or later
@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.6.0');
+define('TAP_CHAT_VERSION', '1.7.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -134,6 +134,12 @@ register_activation_hook( __FILE__, function(){
     
     if ( ! isset( $settings['custom_icon'] ) ) {
         $settings['custom_icon'] = '';
+        $needs_update = true;
+    }
+    
+    if ( ! isset( $settings['link_type'] ) ) {
+        $settings['link_type'] = 'phone';
+        $settings['custom_url'] = '';
         $needs_update = true;
     }
     

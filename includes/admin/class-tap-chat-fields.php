@@ -202,8 +202,22 @@ class Admin_Fields {
     public function field_phone() {
         $country_code = $this->get( 'country_code', '49' );
         $phone = $this->get( 'phone', '' );
+        $link_type = $this->get( 'link_type', 'phone' );
+        $custom_url = $this->get( 'custom_url', '' );
         $countries = $this->get_countries();
         ?>
+        <div class="tap-chat-link-type-toggle">
+            <label>
+                <input type="radio" name="tap_chat_settings[link_type]" value="phone" class="tap-chat-link-type-radio" <?php checked( $link_type, 'phone' ); ?> />
+                <?php esc_html_e( 'WhatsApp phone number', 'tap-chat' ); ?>
+            </label>
+            <label>
+                <input type="radio" name="tap_chat_settings[link_type]" value="custom" class="tap-chat-link-type-radio" <?php checked( $link_type, 'custom' ); ?> />
+                <?php esc_html_e( 'Custom link (Telegram, Messenger, etc.)', 'tap-chat' ); ?>
+            </label>
+        </div>
+
+        <div class="tap-chat-link-panel" data-link-panel="phone"<?php echo $link_type === 'custom' ? ' style="display:none;"' : ''; ?>>
         <div class="tap-chat-phone-wrapper">
             <div class="tap-chat-country-wrapper">
                 <input type="hidden" name="tap_chat_settings[country_code]" value="<?php echo esc_attr( $country_code ); ?>" />
@@ -246,6 +260,18 @@ class Admin_Fields {
         <p class="description">
             <?php esc_html_e( 'Select your country and enter your phone number (without country code or leading zero)', 'tap-chat' ); ?>
         </p>
+        </div>
+
+        <div class="tap-chat-link-panel" data-link-panel="custom"<?php echo $link_type === 'phone' ? ' style="display:none;"' : ''; ?>>
+            <input type="url"
+                   name="tap_chat_settings[custom_url]"
+                   value="<?php echo esc_attr( $custom_url ); ?>"
+                   placeholder="https://t.me/username"
+                   class="regular-text tap-chat-custom-url" />
+            <p class="description">
+                <?php esc_html_e( 'Paste the full link including https:// — no country code needed. Works with Telegram, Messenger, a contact page, or any URL. The pre-filled message below is not sent with a custom link (only WhatsApp supports it), so you may want to upload a matching Custom Icon.', 'tap-chat' ); ?>
+            </p>
+        </div>
         <?php
     }
 
@@ -255,7 +281,7 @@ class Admin_Fields {
             esc_attr__( 'Hello! I have a question…', 'tap-chat' ),
             esc_textarea( $this->get( 'message', '' ) )
         );
-        echo '<p class="description">' . esc_html__( 'Pre-filled message that appears when users click the button', 'tap-chat' ) . '</p>';
+        echo '<p class="description">' . esc_html__( 'Pre-filled message that appears when users click the button (WhatsApp only).', 'tap-chat' ) . ' ' . wp_kses_post( __( 'Variables: <code>{TITLE}</code> = site title, <code>{TAGLINE}</code> = tagline, <code>{URL}</code> = site URL.', 'tap-chat' ) ) . '</p>';
     }
 
     public function field_label() {

@@ -92,6 +92,34 @@ class Plugin {
         }
         return esc_url( $url );
     }
+
+    private function replace_variables( $text ) {
+        if ( '' === $text ) {
+            return $text;
+        }
+        return str_replace(
+            array( '{TITLE}', '{TAGLINE}', '{URL}' ),
+            array( get_bloginfo( 'name' ), get_bloginfo( 'description' ), home_url( '/' ) ),
+            $text
+        );
+    }
+
+    private function build_button_link() {
+        $link_type = $this->get_option( 'link_type', 'phone' );
+
+        if ( 'custom' === $link_type ) {
+            $url = trim( $this->get_option( 'custom_url', '' ) );
+            return $url ? esc_url( $url ) : '';
+        }
+
+        $full_phone = $this->get_full_phone_number();
+        if ( empty( $full_phone ) ) {
+            return '';
+        }
+
+        $message = $this->replace_variables( $this->get_option( 'message', '' ) );
+        return $this->build_whatsapp_url( $full_phone, $message );
+    }
     
     private function is_within_working_hours() {
         $enable_working_hours = $this->get_option( 'enable_working_hours', 'no' );
@@ -179,8 +207,8 @@ class Plugin {
 
         if ( ! $this->should_show_button() ) { return; }
 
-        $full_phone = $this->get_full_phone_number();
-        if ( empty( $full_phone ) ) { return; }
+        $href = $this->build_button_link();
+        if ( '' === $href ) { return; }
 
         $is_working_hours = $this->is_within_working_hours();
         $enable_working_hours = $this->get_option( 'enable_working_hours', 'no' );
@@ -196,7 +224,6 @@ class Plugin {
             return;
         }
 
-        $message = $this->get_option( 'message', '' );
         $label   = $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) );
         
         if ( empty( $label ) ) {
@@ -209,10 +236,8 @@ class Plugin {
         $color   = sanitize_hex_color( $this->get_option( 'color', '#25D366' ) );
         $hide_mb = $this->get_option( 'hide_label_mobile', 'yes' );
         $hide_dt = $this->get_option( 'hide_label_desktop', 'no' );
-        $append  = $this->get_option( 'append_page_context', 'no' );
+        $append  = ( $this->get_option( 'link_type', 'phone' ) === 'phone' ) ? $this->get_option( 'append_page_context', 'no' ) : 'no';
         $custom_icon = $this->get_option( 'custom_icon', '' );
-
-        $href = $this->build_whatsapp_url( $full_phone, $message );
 
         $classes = 'tapchat-fab tapchat-pos-' . esc_attr( $pos );
         if ( 'yes' === $hide_mb ) {
@@ -340,13 +365,23 @@ class Plugin {
             'label'   => $this->get_option( 'label', __( 'Chat with us', 'tap-chat' ) ),
         ], $atts, 'tapchat' );
 
+        if ( empty( $atts['phone'] ) && $this->get_option( 'link_type', 'phone' ) === 'custom' ) {
+            $custom = trim( $this->get_option( 'custom_url', '' ) );
+            if ( empty( $custom ) ) { return ''; }
+            return sprintf(
+                '<a class="tap-chat-inline" href="%s" target="_blank" rel="noopener">%s</a>',
+                esc_url( $custom ),
+                esc_html( $atts['label'] )
+            );
+        }
+
         if ( empty( $atts['phone'] ) ) {
             $atts['phone'] = $this->get_full_phone_number();
         }
 
         if ( empty( $atts['phone'] ) ) { return ''; }
 
-        $href = $this->build_whatsapp_url( $atts['phone'], $atts['message'] );
+        $href = $this->build_whatsapp_url( $atts['phone'], $this->replace_variables( $atts['message'] ) );
         return sprintf(
             '<a class="tap-chat-inline" href="%s" target="_blank" rel="noopener">%s</a>',
             esc_url( $href ),

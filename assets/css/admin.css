@@ -472,3 +472,20 @@
 .tap-chat-trigger-note strong {
     color: #856404;
 }
+/* Link type toggle (Phone vs Custom URL) */
+.tap-chat-link-type-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-bottom: 14px;
+}
+.tap-chat-link-type-toggle label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.tap-chat-link-panel .tap-chat-custom-url {
+    max-width: 420px;
+}

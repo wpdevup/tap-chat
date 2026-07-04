@@ -40,7 +40,7 @@ class Admin_Settings {
             array( $fields, 'field_phone' ), 'tap-chat-general', 'tapchat_general' );
         
         add_settings_field( 'message', __( 'Default Message', 'tap-chat' ), 
-            array( $fields, 'field_message' ), 'tap-chat-general', 'tapchat_general' );
+            array( $fields, 'field_message' ), 'tap-chat-general', 'tapchat_general', array( 'class' => 'tap-chat-message-row' ) );
         
         add_settings_field( 'label', __( 'Button Label', 'tap-chat' ), 
             array( $fields, 'field_label' ), 'tap-chat-general', 'tapchat_general' );
@@ -149,8 +149,10 @@ class Admin_Settings {
     private function get_defaults() {
         return array(
             'enable_floating' => 'yes',
+            'link_type' => 'phone',
             'country_code' => $this->get_default_country_code(),
             'phone' => '',
+            'custom_url' => '',
             'message' => '',
             'label' => __( 'Chat with us', 'tap-chat' ),
             'custom_icon' => '',
@@ -216,7 +218,9 @@ class Admin_Settings {
         
         // General tab
         $out['enable_floating'] = ( isset( $input['enable_floating'] ) && $input['enable_floating'] === 'yes' ) ? 'yes' : 'no';
+        $out['link_type'] = ( isset( $input['link_type'] ) && $input['link_type'] === 'custom' ) ? 'custom' : 'phone';
         $out['country_code'] = isset( $input['country_code'] ) ? sanitize_text_field( $input['country_code'] ) : $this->get_default_country_code();
+        $out['custom_url'] = isset( $input['custom_url'] ) ? esc_url_raw( trim( $input['custom_url'] ) ) : '';
         
         if ( isset( $input['phone'] ) ) {
             $phone = sanitize_text_field( $input['phone'] );

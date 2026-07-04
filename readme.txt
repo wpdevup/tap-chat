@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -252,6 +252,10 @@ Yes! Use the Visibility tab:
 8. **Advanced** - other options
 
 == Changelog ==
+
+= 1.7.0 - 2026-07-05 =
+* **Added** a Phone / Custom-link toggle in the General tab — pick Custom to use any URL (Telegram, Messenger, contact page) with no country code.
+* **Added** {TITLE}, {TAGLINE}, {URL} variables that get replaced in the default WhatsApp message with your site title, tagline, and URL.
 
 = 1.6.0 - 2025-11-27 =
 * **Improved:** Admin settings now use JavaScript tabs without page refresh

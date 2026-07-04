@@ -1,5 +1,5 @@
 === Tap Chat ===
-Contributors: iruserwp9
+Contributors: iruserwp9, wpdevup
 Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 6.8

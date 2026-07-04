@@ -4,7 +4,7 @@
  * Description: Lightweight WhatsApp click-to-chat button with custom icons, welcome bubble, working hours, page visibility controls, and smart country selector. GDPR-friendly with no tracking.
  * Version: 1.7.0
  * Author: iruserwp9
- * Author URI: https://profiles.wordpress.org/iruserwp9/
+ * Author URI: https://wpdevup.com/tap-chat/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tap-chat
@@ -12,7 +12,7 @@
  * 
  * Requires at least: 5.8
  * Requires PHP: 7.4
- * Tested up to: 6.8
+ * Tested up to: 7.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }

@@ -15,7 +15,6 @@ Lightweight WhatsApp chat button with welcome bubble, working hours, page contro
 **Tap Chat** adds a beautiful floating WhatsApp button with advanced features. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance - all while keeping your site fast and privacy-friendly.
 
 * **Website:** [Plugin Website](https://wpdevup.com/tap-chat/)
-* **Documentation:** [Plugin documentation](https://wordpress.org/plugins/tap-chat/)
 * **Support Forum:** [WordPress.org support](https://wordpress.org/support/plugin/tap-chat/)
 * **Bug Reports:** [GitHub issues](https://github.com/wpdevup/tap-chat/issues)
 
@@ -345,22 +344,6 @@ Improved phone number configuration with country selector and mobile optimizatio
 
 = 1.0.0 =
 Initial release of Tap Chat - the lightweight chat button for WordPress.
-
-== Privacy Policy ==
-
-Tap Chat does not:
-* Collect any user data
-* Use cookies or browser storage (except sessionStorage for bubble display)
-* Make external HTTP requests
-* Track or monitor user behavior
-* Share data with third parties
-
-The only data processed is:
-* Phone number (stored in WordPress database)
-* User preferences (stored in WordPress database)
-* Temporary session data for bubble display (sessionStorage, cleared when browser closes)
-
-When users click the chat button, they are redirected to the chosen messaging service, which is governed by that service's privacy policy.
 
 == Roadmap ==
 

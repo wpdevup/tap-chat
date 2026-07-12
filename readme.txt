@@ -1,4 +1,4 @@
-=== Tap Chat ===
+=== Tap Chat - WhatsApp Chat & Floating Chat Button ===
 Contributors: iruserwp9, wpdevup
 Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8

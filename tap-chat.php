@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Tap Chat
+ * Plugin Name: Tap Chat – WhatsApp Chat & Floating Chat Button
  * Description: Lightweight WhatsApp click-to-chat button with custom icons, welcome bubble, working hours, page visibility controls, and smart country selector. GDPR-friendly with no tracking.
- * Version: 1.7.0
- * Author: iruserwp9
+ * Version: 1.8.0
+ * Author: WPdevup
  * Author URI: https://wpdevup.com/tap-chat/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.7.0');
+define('TAP_CHAT_VERSION', '1.8.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -143,8 +143,21 @@ register_activation_hook( __FILE__, function(){
         $needs_update = true;
     }
     
+    if ( ! isset( $settings['button_animation'] ) ) {
+        $settings['button_animation'] = 'none';
+        $needs_update = true;
+    }
+    
     if ( $needs_update ) {
         update_option('tap_chat_settings', $settings);
+    }
+
+    // Review nudge bookkeeping (site-wide options, not part of settings array).
+    if ( ! get_option( 'tap_chat_installed_at' ) ) {
+        add_option( 'tap_chat_installed_at', time() );
+    }
+    if ( null === get_option( 'tap_chat_review_variant', null ) ) {
+        add_option( 'tap_chat_review_variant', wp_rand( 0, 2 ) );
     }
 });
 

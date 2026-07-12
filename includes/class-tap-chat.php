@@ -247,6 +247,11 @@ class Plugin {
             $classes .= ' tapchat-hide-label-desktop';
         }
 
+        $animation = $this->get_option( 'button_animation', 'none' );
+        if ( $animation && 'none' !== $animation ) {
+            $classes .= ' tapchat-anim-' . sanitize_html_class( $animation );
+        }
+
         $style = sprintf( 
             '--tapchat-color:%s;', 
             $color ? $color : '#25D366' 
@@ -261,6 +266,9 @@ class Plugin {
         }
         
         echo '<span class="tapchat-label">' . esc_html( $label ) . '</span>';
+        if ( 'attention' === $animation ) {
+            echo '<span class="tapchat-badge" aria-hidden="true">1</span>';
+        }
         echo '</a>';
         
         $this->render_welcome_bubble();

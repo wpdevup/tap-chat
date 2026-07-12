@@ -54,6 +54,9 @@ class Admin_Settings {
         add_settings_field( 'color', __( 'Button Color', 'tap-chat' ), 
             array( $fields, 'field_color' ), 'tap-chat-general', 'tapchat_general' );
         
+        add_settings_field( 'button_animation', __( 'Button Animation', 'tap-chat' ), 
+            array( $fields, 'field_button_animation' ), 'tap-chat-general', 'tapchat_general' );
+        
         add_settings_field( 'size', __( 'Desktop Size (px)', 'tap-chat' ), 
             array( $fields, 'field_size' ), 'tap-chat-general', 'tapchat_general' );
         
@@ -160,6 +163,7 @@ class Admin_Settings {
             'size' => 40,
             'mobile_size' => 40,
             'color' => '#25D366',
+            'button_animation' => 'none',
             'hide_label_mobile' => 'yes',
             'hide_label_desktop' => 'no',
             'append_page_context' => 'no',
@@ -238,6 +242,8 @@ class Admin_Settings {
         $out['size'] = isset( $input['size'] ) ? absint( $input['size'] ) : 40;
         $out['mobile_size'] = isset( $input['mobile_size'] ) ? absint( $input['mobile_size'] ) : 40;
         $out['color'] = isset( $input['color'] ) ? sanitize_hex_color( $input['color'] ) : '#25D366';
+        $allowed_anim = array( 'none', 'fade', 'slide', 'bounce', 'ring', 'attention' );
+        $out['button_animation'] = ( isset( $input['button_animation'] ) && in_array( $input['button_animation'], $allowed_anim, true ) ) ? $input['button_animation'] : 'none';
         $out['hide_label_mobile'] = ( isset( $input['hide_label_mobile'] ) && $input['hide_label_mobile'] === 'yes' ) ? 'yes' : 'no';
         $out['hide_label_desktop'] = ( isset( $input['hide_label_desktop'] ) && $input['hide_label_desktop'] === 'yes' ) ? 'yes' : 'no';
         

@@ -1,10 +1,10 @@
-=== Tap Chat - WhatsApp Chat & Floating Chat Button ===
+=== Tap Chat – WhatsApp Chat & Floating Chat Button ===
 Contributors: iruserwp9, wpdevup
 Tags: whatsapp, chat, click to chat, support, business hours
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.7.0
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,11 @@ Yes! Use the Visibility tab:
 6. **Advanced Options** - Advanced configuration options for power users.
 
 == Changelog ==
+= 1.8.0 - 2026-07-13 =
+* **Added** button animations in the General tab: fade in, slide in, bounce, ring/shake, and a "New message" style with an unread badge and pulsing ring. Motion is disabled for visitors who prefer reduced motion.
+* **Added** a dismissible review request notice with three randomized copy variants (A/B assignment per install), shown on the Dashboard, Plugins, and settings screens 1 day after install. Use the `tap_chat_review_delay_days` filter to change the delay.
+* **Changed** plugin name to "Tap Chat – WhatsApp Chat & Floating Chat Button".
+* **Fixed** invalid "Tested up to" header (was 7.0).
 
 = 1.7.0 - 2026-07-05 =
 * **Added** a Phone / Custom-link toggle in the General tab — pick Custom to use any URL (Telegram, Messenger, contact page) with no country code.

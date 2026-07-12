@@ -364,6 +364,24 @@ class Admin_Fields {
         echo '<p class="description">' . esc_html__( 'Background color of the floating button', 'tap-chat' ) . '</p>';
     }
 
+    public function field_button_animation() {
+        $val = $this->get( 'button_animation', 'none' );
+        $options = array(
+            'none'      => __( 'None', 'tap-chat' ),
+            'fade'      => __( 'Fade in (on load)', 'tap-chat' ),
+            'slide'     => __( 'Slide in (on load)', 'tap-chat' ),
+            'bounce'    => __( 'Bounce (looping)', 'tap-chat' ),
+            'ring'      => __( 'Ring / shake (looping)', 'tap-chat' ),
+            'attention' => __( 'New message – badge + pulse', 'tap-chat' ),
+        );
+        echo '<select name="tap_chat_settings[button_animation]">';
+        foreach ( $options as $key => $label ) {
+            printf( '<option value="%s"%s>%s</option>', esc_attr( $key ), selected( $val, $key, false ), esc_html( $label ) );
+        }
+        echo '</select>';
+        echo '<p class="description">' . esc_html__( 'Animate the floating button to catch attention. "New message" adds an unread badge and a pulsing ring. Motion is automatically disabled for visitors who prefer reduced motion.', 'tap-chat' ) . '</p>';
+    }
+
     public function field_hide_label_mobile() {
         $val = $this->get( 'hide_label_mobile', 'yes' );
         ?>

@@ -11,9 +11,11 @@ class Admin {
     public function __construct() {
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-settings.php';
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-fields.php';
+        require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-review.php';
         
         $this->settings = new Admin_Settings();
         $this->fields = new Admin_Fields();
+        new Review_Notice();
         
         add_action( 'admin_menu', array( $this, 'menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );

@@ -1,6 +1,6 @@
 # Tap Chat - WordPress Click-to-Chat Plugin
 
-**Version:** 1.6.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
+**Version:** 1.8.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)

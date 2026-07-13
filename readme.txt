@@ -142,10 +142,6 @@ Display chat link anywhere with: `[tapchat]`
 
 == Frequently Asked Questions ==
 
-= Is this plugin free? =
-
-Yes! Tap Chat is completely free with all features included. No premium version, no upsells.
-
 = Do I need a business account? =
 
 No. Tap Chat works with regular accounts or business accounts from supported messaging platforms.
@@ -153,10 +149,6 @@ No. Tap Chat works with regular accounts or business accounts from supported mes
 = Will it slow down my website? =
 
 No. Tap Chat is extremely lightweight (< 15KB total) and loads asynchronously. It won't affect your site speed.
-
-= Is it GDPR compliant? =
-
-Yes! Tap Chat doesn't use cookies, doesn't track users, and doesn't make external requests. It's 100% GDPR compliant.
 
 = Can I customize the button design? =
 
@@ -210,10 +202,6 @@ No. After a visitor closes the bubble or clicks it, they won't see it again duri
 
 Yes! Use: `[tapchat phone="+1234567890"]` to override the default number.
 
-= Does it support RTL languages? =
-
-Yes! Tap Chat is fully compatible with RTL (Right-to-Left) languages like Arabic and Hebrew.
-
 = Can I have different messages for different pages? =
 
 Yes! Use the shortcode with custom message parameter: `[tapchat message="Custom message for this page"]`
@@ -250,6 +238,9 @@ Yes! Use the Visibility tab:
 6. **Advanced Options** - Advanced configuration options for power users.
 
 == Changelog ==
+= 1.8.1 - 2026-07-13 =
+* **Fixed** Update name.
+
 = 1.8.0 - 2026-07-13 =
 * **Added** button animations in the General tab: fade in, slide in, bounce, ring/shake, and a "New message" style with an unread badge and pulsing ring. Motion is disabled for visitors who prefer reduced motion.
 * **Added** a dismissible review request notice with three randomized copy variants (A/B assignment per install), shown on the Dashboard, Plugins, and settings screens 1 day after install. Use the `tap_chat_review_delay_days` filter to change the delay.

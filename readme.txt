@@ -1,14 +1,14 @@
-=== Tap Chat – WhatsApp Chat & Floating Chat Button ===
+=== Tap Chat – Floating Contact Button ===
 Contributors: iruserwp9, wpdevup
 Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Lightweight WhatsApp chat button with welcome bubble, working hours, page controls. GDPR-friendly, no tracking.
+Lightweight chat button for WhatsApp with welcome bubble, working hours, page controls. GDPR-friendly, no tracking.
 
 == Description ==
 

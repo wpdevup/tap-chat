@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
  */
 class Review_Notice {
 
-    const REVIEW_URL  = 'https://wordpress.org/support/plugin/tap-chat/reviews/?filter=5#new-post';
+    const REVIEW_URL  = 'https://wordpress.org/support/plugin/tap-chat/reviews/';
     const DELAY_DAYS  = 1;   // wait this long after install before asking (set to 0 to test now)
     const SNOOZE_DAYS = 7;   // "Maybe later" pushes the notice out this far
 

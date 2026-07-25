@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -238,6 +238,10 @@ Yes! Use the Visibility tab:
 6. **Advanced Options** - Advanced configuration options for power users.
 
 == Changelog ==
+
+= 1.8.2 - 2026-07-13 =
+* **Fixed** Notice of Function _load_textdomain_just_in_time 
+
 = 1.8.1 - 2026-07-13 =
 * **Fixed** Update name.
 

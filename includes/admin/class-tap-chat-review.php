@@ -18,10 +18,18 @@ class Review_Notice {
     const DELAY_DAYS  = 1;   // wait this long after install before asking (set to 0 to test now)
     const SNOOZE_DAYS = 7;   // "Maybe later" pushes the notice out this far
 
-    private $variants;
-
     public function __construct() {
-        $this->variants = array(
+        add_action( 'admin_init', array( $this, 'handle_actions' ) );
+        add_action( 'admin_notices', array( $this, 'maybe_render' ) );
+    }
+
+    /**
+     * Build the copy variants. Called only at render time (admin_notices),
+     * which runs after `init`, so the translation functions are not invoked
+     * too early (avoids the WP 6.7 _load_textdomain_just_in_time notice).
+     */
+    private function get_variants() {
+        return array(
             array(
                 'title' => __( 'Enjoying Tap Chat?', 'tap-chat' ),
                 'body'  => __( 'You set up your chat button in just a few minutes. A quick 5-star review helps other small sites find the plugin — and it genuinely makes our day. 🙏', 'tap-chat' ),
@@ -38,19 +46,16 @@ class Review_Notice {
                 'cta'   => __( 'Leave my review', 'tap-chat' ),
             ),
         );
-
-        add_action( 'admin_init', array( $this, 'handle_actions' ) );
-        add_action( 'admin_notices', array( $this, 'maybe_render' ) );
     }
 
-    private function get_variant_index() {
+    private function get_variant_index( $count ) {
         $idx = get_option( 'tap_chat_review_variant', null );
         if ( null === $idx ) {
-            $idx = wp_rand( 0, count( $this->variants ) - 1 );
+            $idx = wp_rand( 0, $count - 1 );
             update_option( 'tap_chat_review_variant', $idx );
         }
         $idx = (int) $idx;
-        return isset( $this->variants[ $idx ] ) ? $idx : 0;
+        return ( $idx >= 0 && $idx < $count ) ? $idx : 0;
     }
 
     private function should_show() {
@@ -99,7 +104,8 @@ class Review_Notice {
             return;
         }
 
-        $v     = $this->variants[ $this->get_variant_index() ];
+        $variants = $this->get_variants();
+        $v     = $variants[ $this->get_variant_index( count( $variants ) ) ];
         $later = wp_nonce_url( add_query_arg( 'tap_chat_review', 'later' ), 'tap_chat_review' );
         $done  = wp_nonce_url( add_query_arg( 'tap_chat_review', 'done' ), 'tap_chat_review' );
         ?>

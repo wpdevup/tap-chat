@@ -2,7 +2,7 @@
 Contributors: iruserwp9, wpdevup
 Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.9.0
 License: GPLv2 or later

@@ -21,6 +21,7 @@ class Admin_Settings {
         $this->register_hours_settings();
         $this->register_visibility_settings();
         $this->register_advanced_settings();
+        $this->register_analytics_settings();
     }
 
     private function register_general_settings() {
@@ -129,6 +130,29 @@ class Admin_Settings {
             array( $fields, 'field_append_page_context' ), 'tap-chat-advanced', 'tapchat_advanced' );
     }
 
+    private function register_analytics_settings() {
+        add_settings_section(
+            'tapchat_analytics',
+            __( 'Google Analytics 4 / Tag Manager', 'tap-chat' ),
+            array( $this, 'analytics_section_callback' ),
+            'tap-chat-analytics'
+        );
+
+        $fields = new Admin_Fields();
+
+        add_settings_field( 'enable_analytics', __( 'Enable Event Tracking', 'tap-chat' ),
+            array( $fields, 'field_enable_analytics' ), 'tap-chat-analytics', 'tapchat_analytics' );
+
+        add_settings_field( 'analytics_method', __( 'Send Events Via', 'tap-chat' ),
+            array( $fields, 'field_analytics_method' ), 'tap-chat-analytics', 'tapchat_analytics' );
+
+        add_settings_field( 'analytics_event_name', __( 'Click Event Name', 'tap-chat' ),
+            array( $fields, 'field_analytics_event_name' ), 'tap-chat-analytics', 'tapchat_analytics' );
+
+        add_settings_field( 'analytics_track_triggers', __( 'Track Bubble Triggers', 'tap-chat' ),
+            array( $fields, 'field_analytics_track_triggers' ), 'tap-chat-analytics', 'tapchat_analytics' );
+    }
+
     public function general_section_callback() {
         echo '<p>' . esc_html__( 'Configure your WhatsApp button appearance and basic settings.', 'tap-chat' ) . '</p>';
     }
@@ -147,6 +171,10 @@ class Admin_Settings {
 
     public function advanced_section_callback() {
         echo '<p>' . esc_html__( 'Advanced configuration options for power users.', 'tap-chat' ) . '</p>';
+    }
+
+    public function analytics_section_callback() {
+        echo '<p>' . esc_html__( 'Track button clicks and welcome-bubble impressions as GA4 events. This uses the Google Analytics 4 or Google Tag Manager you already have on the site — the plugin never loads its own analytics library and never sends data anywhere else. If no GA4/GTM is present on a page, nothing is sent.', 'tap-chat' ) . '</p>';
     }
 
     private function get_defaults() {
@@ -188,6 +216,10 @@ class Admin_Settings {
             'trigger_time_delay' => 3,
             'trigger_idle_enabled' => 'no',
             'trigger_idle_time' => 60,
+            'enable_analytics' => 'no',
+            'analytics_method' => 'auto',
+            'analytics_event_name' => 'tapchat_click',
+            'analytics_track_triggers' => 'yes',
         );
     }
 
@@ -297,6 +329,28 @@ class Admin_Settings {
         // Advanced tab
         $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
         
+        // Analytics tab
+        $out['enable_analytics'] = ( isset( $input['enable_analytics'] ) && $input['enable_analytics'] === 'yes' ) ? 'yes' : 'no';
+        $allowed_method = array( 'auto', 'gtag', 'datalayer' );
+        $out['analytics_method'] = ( isset( $input['analytics_method'] ) && in_array( $input['analytics_method'], $allowed_method, true ) ) ? $input['analytics_method'] : 'auto';
+        $out['analytics_event_name'] = isset( $input['analytics_event_name'] ) ? $this->sanitize_event_name( $input['analytics_event_name'] ) : 'tapchat_click';
+        $out['analytics_track_triggers'] = ( isset( $input['analytics_track_triggers'] ) && $input['analytics_track_triggers'] === 'yes' ) ? 'yes' : 'no';
+        
         return $out;
+    }
+
+    /**
+     * Sanitize a GA4 event name: lowercase, letters/numbers/underscores only,
+     * must start with a letter, max 40 chars. Falls back to 'tapchat_click'.
+     */
+    private function sanitize_event_name( $name ) {
+        $name = strtolower( trim( (string) $name ) );
+        $name = preg_replace( '/[^a-z0-9_]/', '_', $name );
+        $name = preg_replace( '/_+/', '_', $name );
+        $name = ltrim( $name, '0123456789_' );
+        if ( '' === $name ) {
+            $name = 'tapchat_click';
+        }
+        return substr( $name, 0, 40 );
     }
 }

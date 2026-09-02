@@ -53,6 +53,13 @@ class Plugin {
         wp_localize_script( 'tap-chat', 'TapChatData', array(
             'whatsAppBase' => 'https://wa.me/',
             'triggers' => $trigger_data,
+            'analytics' => array(
+                'enabled'       => ( 'yes' === $this->get_option( 'enable_analytics', 'no' ) ),
+                'method'        => $this->get_option( 'analytics_method', 'auto' ),
+                'eventName'     => $this->get_option( 'analytics_event_name', 'tapchat_click' ),
+                'channel'       => ( 'custom' === $this->get_option( 'link_type', 'phone' ) ) ? 'custom' : 'whatsapp',
+                'trackTriggers' => ( 'yes' === $this->get_option( 'analytics_track_triggers', 'yes' ) ),
+            ),
         ));
     }
 

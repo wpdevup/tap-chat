@@ -418,6 +418,59 @@ class Admin_Fields {
         <?php
     }
 
+    public function field_enable_analytics() {
+        $val = $this->get( 'enable_analytics', 'no' );
+        ?>
+        <input type="hidden" name="tap_chat_settings[enable_analytics]" value="no" />
+        <label>
+            <input type="checkbox" name="tap_chat_settings[enable_analytics]" value="yes" <?php checked( $val, 'yes' ); ?> />
+            <?php esc_html_e( 'Send events to Google Analytics 4 / Google Tag Manager when visitors interact with the button', 'tap-chat' ); ?>
+        </label>
+        <p class="description">
+            <?php esc_html_e( 'Does not install Google Analytics for you — it sends events to the GA4 or GTM already on your site. If neither is present on a page, nothing happens (no errors).', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
+    public function field_analytics_method() {
+        $val = $this->get( 'analytics_method', 'auto' );
+        $options = array(
+            'auto'      => __( 'Auto-detect (recommended)', 'tap-chat' ),
+            'gtag'      => __( 'GA4 gtag.js only', 'tap-chat' ),
+            'datalayer' => __( 'Google Tag Manager (dataLayer) only', 'tap-chat' ),
+        );
+        echo '<select name="tap_chat_settings[analytics_method]">';
+        foreach ( $options as $key => $label ) {
+            printf( '<option value="%s"%s>%s</option>', esc_attr( $key ), selected( $val, $key, false ), esc_html( $label ) );
+        }
+        echo '</select>';
+        echo '<p class="description">' . esc_html__( 'Auto-detect sends via whichever is present on the page — gtag(), the GTM dataLayer, or both.', 'tap-chat' ) . '</p>';
+    }
+
+    public function field_analytics_event_name() {
+        $val = $this->get( 'analytics_event_name', 'tapchat_click' );
+        ?>
+        <input type="text" name="tap_chat_settings[analytics_event_name]" value="<?php echo esc_attr( $val ); ?>" class="regular-text" placeholder="tapchat_click" />
+        <p class="description">
+            <?php esc_html_e( 'GA4 event name sent on a button/link click. Lowercase letters, numbers and underscores only; must start with a letter (max 40 characters). In GA4 you can mark this event as a Key Event (Conversion) to measure which campaigns drive the most chats.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
+    public function field_analytics_track_triggers() {
+        $val = $this->get( 'analytics_track_triggers', 'yes' );
+        ?>
+        <input type="hidden" name="tap_chat_settings[analytics_track_triggers]" value="no" />
+        <label>
+            <input type="checkbox" name="tap_chat_settings[analytics_track_triggers]" value="yes" <?php checked( $val, 'yes' ); ?> />
+            <?php esc_html_e( 'Also send a "tapchat_bubble_shown" event when the welcome bubble appears', 'tap-chat' ); ?>
+        </label>
+        <p class="description">
+            <?php esc_html_e( 'Includes a trigger_type parameter (time, scroll, exit, idle) so you can compare in GA4 which Smart Trigger produces the most chats.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
     public function field_visibility_controls() {
         $enable_show_on = $this->get( 'enable_show_on', 'no' );
         $enable_hide_on = $this->get( 'enable_hide_on', 'no' );

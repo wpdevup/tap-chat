@@ -67,6 +67,7 @@ class Admin {
             'hours' => __( 'Working Hours', 'tap-chat' ),
             'visibility' => __( 'Visibility', 'tap-chat' ),
             'advanced' => __( 'Advanced', 'tap-chat' ),
+            'analytics' => __( 'Analytics', 'tap-chat' ),
         );
         ?>
         <div class="wrap tap-chat-admin-wrap">
@@ -103,6 +104,10 @@ class Admin {
                 
                 <div class="tap-chat-tab-content" id="tab-advanced" style="display: none;">
                     <?php do_settings_sections( 'tap-chat-advanced' ); ?>
+                </div>
+                
+                <div class="tap-chat-tab-content" id="tab-analytics" style="display: none;">
+                    <?php do_settings_sections( 'tap-chat-analytics' ); ?>
                 </div>
                 
                 <?php submit_button(); ?>

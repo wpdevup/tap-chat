@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tap Chat – Floating Contact Button
  * Description: Floating contact button with welcome bubble for whatsapp, working hours, page targeting and support for multiple messaging services.
- * Version: 1.8.2
+ * Version: 1.9.0
  * Author: WPdevup
  * Author URI: https://wpdevup.com/tap-chat/
  * License: GPLv2 or later
@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.8.2');
+define('TAP_CHAT_VERSION', '1.9.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -145,6 +145,14 @@ register_activation_hook( __FILE__, function(){
     
     if ( ! isset( $settings['button_animation'] ) ) {
         $settings['button_animation'] = 'none';
+        $needs_update = true;
+    }
+    
+    if ( ! isset( $settings['enable_analytics'] ) ) {
+        $settings['enable_analytics'] = 'no';
+        $settings['analytics_method'] = 'auto';
+        $settings['analytics_event_name'] = 'tapchat_click';
+        $settings['analytics_track_triggers'] = 'yes';
         $needs_update = true;
     }
     

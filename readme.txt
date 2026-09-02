@@ -14,7 +14,7 @@ Lightweight chat button for WhatsApp with welcome bubble, working hours, page co
 
 **Tap Chat** adds a beautiful floating WhatsApp button with advanced features. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance - all while keeping your site fast and privacy-friendly.
 
-* **Website:** [Plugin Website](https://wpdevup.com/tap-chat/)
+* **Demo:** [Plugin demo](https://wpdevup.com/tap-chat/)
 * **Support Forum:** [WordPress.org support](https://wordpress.org/support/plugin/tap-chat/)
 * **Bug Reports:** [GitHub issues](https://github.com/wpdevup/tap-chat/issues)
 

@@ -33,6 +33,7 @@ Lightweight chat button for WhatsApp with welcome bubble, working hours, page co
 * **Zero Tracking** - GDPR-friendly, no cookies, no external requests
 * **Translation Ready** - Fully translatable with .pot file included
 * **Performance First** - Minimal footprint, no jQuery dependencies in frontend
+* **Google Analytics 4 / Tag Manager Integration - Track chat button clicks and welcome-bubble impressions as GA4 events using the analytics already installed on your site
 
 = Welcome Bubble Features =
 
@@ -140,6 +141,12 @@ Display chat link anywhere with: `[tapchat]`
    * Enable page context appending
    * Additional customization options
 
+6. **Google Analytics 4 / Tag Manager:**
+   * Enable or disable event tracking
+   * Choose how events are sent: Auto-detect, GA4, or Google Tag Manager
+   * Customize the GA4 click event name
+   * Track welcome-bubble impressions with the trigger type
+
 == Frequently Asked Questions ==
 
 = Do I need a business account? =
@@ -228,6 +235,18 @@ Yes! Use the Visibility tab:
 - "Hide on specific pages" - button hidden where selected
 - Combine both for precise control
 
+= Can I track Tap Chat interactions in Google Analytics? =
+- Yes! Enable Event Tracking in the Google Analytics 4 / Tag Manager settings. Tap Chat can send chat button clicks and welcome-bubble impressions as events to the GA4 or GTM setup already installed on your site.
+
+= Does Tap Chat install Google Analytics or Google Tag Manager? =
+- No. Tap Chat does not install, load, or bundle any analytics library. It only sends events to GA4 or GTM that are already available on the page.
+
+= What events does Tap Chat send? =
+- By default, Tap Chat sends tapchat_click when a visitor clicks the chat button or link, and tapchat_bubble_shown when the welcome bubble appears. The bubble event includes a trigger_type parameter so you can compare which smart trigger generates the most interactions.
+
+= What happens if GA4 or Google Tag Manager is not installed? =
+- Nothing happens. Tap Chat detects whether GA4 or GTM is available on the page. If neither is present, no event is sent and no error is generated.
+
 == Screenshots ==
 
 1. **Floating Chat Button Demo** - Clean, professional button on your site
@@ -236,6 +255,7 @@ Yes! Use the Visibility tab:
 4. **Working Hours Settings** - Display button only during business hours with timezone supportn
 5. **Visibility Configuration** - Control where the WhatsApp button appears on your site.
 6. **Advanced Options** - Advanced configuration options for power users.
+7. **Google Analytics 4 / Tag Manager** - Event tracking settings for chat clicks and welcome-bubble impressions.
 
 == Changelog ==
 

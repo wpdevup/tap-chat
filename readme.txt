@@ -289,16 +289,14 @@ Yes. Enable "Exclude logged-in users" in Analytics → Settings and clicks or vi
 == Screenshots ==
 
 1. **Floating Chat Button Demo** - Clean, professional button on your site
-2. **Built-in Analytics — Overview** - First-party dashboard with Total / Today / This Week / This Month clicks and change vs. the previous period
-3. **Built-in Analytics — Top Pages & Devices** - See which pages drive the most chats and the mobile/desktop split, plus the CTR funnel
-4. **Built-in Analytics — Settings** - Privacy-first tracking options: click tracking, optional Traffic & CTR tracking, exclude logged-in users, retention and reset
-5. **Dashboard Widget** - At-a-glance clicks (today / last 7 days / all time) with a 14-day sparkline on your WordPress dashboard
-6. **General Settings** - Easy configuration with country selector
-7. **Welcome Bubble Settings** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
-8. **Working Hours Settings** - Display button only during business hours with timezone support
-9. **Visibility Configuration** - Control where the WhatsApp button appears on your site
-10. **Advanced Options** - Advanced configuration options for power users
-11. **Google Analytics 4 / Tag Manager** - Optional event forwarding for chat clicks and welcome-bubble impressions
+2. **General Settings** - Easy configuration with country selector
+3. **Welcome Bubble Settings** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
+4. **Working Hours Settings** - Display button only during business hours with timezone supportn
+5. **Visibility Configuration** - Control where the WhatsApp button appears on your site.
+6. **Advanced Options** - Advanced configuration options for power users.
+7. **Built-in Analytics — Overview** - First-party dashboard with Total / Today / This Week / This Month clicks and change vs. the previous period
+8. **Built-in Analytics and Google Analytics 4 / Tag Manager — Settings** - Privacy-first tracking options: click tracking, optional Traffic & CTR tracking, exclude logged-in users, retention and reset
+9. **Dashboard Widget** - At-a-glance clicks (today / last 7 days / all time) with a 14-day sparkline on your WordPress dashboard
 
 == Changelog ==
 

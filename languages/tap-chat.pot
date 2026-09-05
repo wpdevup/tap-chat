@@ -28,3 +28,211 @@ msgstr ""
 #: includes/admin/class-chatly-admin.php:101
 msgid "Append current page title & URL to message"
 msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Dashboard"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Integrations (GA4 / Tag Manager)"
+msgstr ""
+
+#: includes/admin/class-tap-chat-settings.php
+msgid "Data collection"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "Click tracking"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "Traffic & CTR tracking"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "Keep data for"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "days"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Date range:"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Last %d days"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Total Clicks"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Clicks Today"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Clicks This Week"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Clicks This Month"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Conversion funnel"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Visitors"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Button Views"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Clicks"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "CTR"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Clicks over time"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Top Pages by Clicks"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Clicks by Device"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Page"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Desktop"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Mobile"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Tablet"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Unknown"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Overview"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Tap Chat — chat clicks"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "today"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "last 7 days"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "all time"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "View full analytics"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Reset analytics data"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Permanently delete all recorded clicks, views and visitors. This cannot be undone. Your settings are kept."
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Delete all Tap Chat analytics data? This cannot be undone."
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Analytics data has been reset."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "Exclude logged-in users"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "Do not record clicks or views from logged-in users"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php
+msgid "Recommended. Keeps your own testing and staff activity out of the numbers."
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "No clicks recorded yet"
+msgstr ""
+
+#: includes/admin/class-tap-chat-dashboard.php
+msgid "Your chat button is live and tracking is on. As soon as a visitor taps it, their click will show up here — check back shortly."
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Today"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "7 days"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "All time"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Last 14 days"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "peak %s/day"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Tap Chat analytics"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "View full report"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "No chat clicks yet"
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Your button is live — clicks will appear here as visitors tap it."
+msgstr ""
+
+#: includes/admin/class-tap-chat-admin.php
+msgid "Open analytics"
+msgstr ""

@@ -21,7 +21,31 @@ class Admin_Settings {
         $this->register_hours_settings();
         $this->register_visibility_settings();
         $this->register_advanced_settings();
+        $this->register_collect_settings();
         $this->register_analytics_settings();
+    }
+
+    private function register_collect_settings() {
+        add_settings_section(
+            'tapchat_collect',
+            __( 'Data collection', 'tap-chat' ),
+            array( $this, 'collect_section_callback' ),
+            'tap-chat-analytics-collect'
+        );
+
+        $fields = new Admin_Fields();
+
+        add_settings_field( 'enable_click_analytics', __( 'Click tracking', 'tap-chat' ),
+            array( $fields, 'field_enable_click_analytics' ), 'tap-chat-analytics-collect', 'tapchat_collect' );
+
+        add_settings_field( 'enable_traffic_analytics', __( 'Traffic & CTR tracking', 'tap-chat' ),
+            array( $fields, 'field_enable_traffic_analytics' ), 'tap-chat-analytics-collect', 'tapchat_collect' );
+
+        add_settings_field( 'analytics_exclude_logged_in', __( 'Exclude logged-in users', 'tap-chat' ),
+            array( $fields, 'field_analytics_exclude_logged_in' ), 'tap-chat-analytics-collect', 'tapchat_collect' );
+
+        add_settings_field( 'analytics_retention_days', __( 'Keep data for', 'tap-chat' ),
+            array( $fields, 'field_analytics_retention_days' ), 'tap-chat-analytics-collect', 'tapchat_collect' );
     }
 
     private function register_general_settings() {
@@ -173,6 +197,10 @@ class Admin_Settings {
         echo '<p>' . esc_html__( 'Advanced configuration options for power users.', 'tap-chat' ) . '</p>';
     }
 
+    public function collect_section_callback() {
+        echo '<p>' . esc_html__( 'Built-in, privacy-first analytics stored on your own site. No cookies, no personal data, no external requests — your data never leaves your server. Click tracking is lightweight; traffic tracking adds one small request per page view to measure CTR.', 'tap-chat' ) . '</p>';
+    }
+
     public function analytics_section_callback() {
         echo '<p>' . esc_html__( 'Track button clicks and welcome-bubble impressions as GA4 events. This uses the Google Analytics 4 or Google Tag Manager you already have on the site — the plugin never loads its own analytics library and never sends data anywhere else. If no GA4/GTM is present on a page, nothing is sent.', 'tap-chat' ) . '</p>';
     }
@@ -220,6 +248,10 @@ class Admin_Settings {
             'analytics_method' => 'auto',
             'analytics_event_name' => 'tapchat_click',
             'analytics_track_triggers' => 'yes',
+            'enable_click_analytics' => 'yes',
+            'enable_traffic_analytics' => 'no',
+            'analytics_exclude_logged_in' => 'no',
+            'analytics_retention_days' => 365,
         );
     }
 
@@ -335,7 +367,14 @@ class Admin_Settings {
         $out['analytics_method'] = ( isset( $input['analytics_method'] ) && in_array( $input['analytics_method'], $allowed_method, true ) ) ? $input['analytics_method'] : 'auto';
         $out['analytics_event_name'] = isset( $input['analytics_event_name'] ) ? $this->sanitize_event_name( $input['analytics_event_name'] ) : 'tapchat_click';
         $out['analytics_track_triggers'] = ( isset( $input['analytics_track_triggers'] ) && $input['analytics_track_triggers'] === 'yes' ) ? 'yes' : 'no';
-        
+
+        // First-party analytics
+        $out['enable_click_analytics'] = ( isset( $input['enable_click_analytics'] ) && $input['enable_click_analytics'] === 'yes' ) ? 'yes' : 'no';
+        $out['enable_traffic_analytics'] = ( isset( $input['enable_traffic_analytics'] ) && $input['enable_traffic_analytics'] === 'yes' ) ? 'yes' : 'no';
+        $out['analytics_exclude_logged_in'] = ( isset( $input['analytics_exclude_logged_in'] ) && $input['analytics_exclude_logged_in'] === 'yes' ) ? 'yes' : 'no';
+        $retention = isset( $input['analytics_retention_days'] ) ? absint( $input['analytics_retention_days'] ) : 365;
+        $out['analytics_retention_days'] = max( 7, min( 3650, $retention ) );
+
         return $out;
     }
 

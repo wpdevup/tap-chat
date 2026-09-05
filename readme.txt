@@ -4,15 +4,15 @@ Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.0
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Lightweight chat button for WhatsApp with welcome bubble, working hours, page controls. GDPR-friendly, no tracking.
+WhatsApp chat button with welcome bubble, working hours, page rules, and privacy-first built-in click analytics. No cookies, no third parties.
 
 == Description ==
 
-**Tap Chat** adds a beautiful floating WhatsApp button with advanced features. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance - all while keeping your site fast and privacy-friendly.
+**Tap Chat** adds a beautiful floating WhatsApp button with advanced features — and now a **built-in, privacy-first analytics dashboard** so you can see exactly how many visitors tap to chat, from which pages and on which devices, without sending a single byte to Google or anyone else. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance — all while keeping your site fast and privacy-friendly.
 
 * **Demo:** [Plugin demo](https://wpdevup.com/tap-chat/)
 * **Support Forum:** [WordPress.org support](https://wordpress.org/support/plugin/tap-chat/)
@@ -20,6 +20,7 @@ Lightweight chat button for WhatsApp with welcome bubble, working hours, page co
 
 = Key Features =
 
+* **Built-in Privacy-First Analytics Dashboard (NEW)** - See Total / Today / This Week / This Month chat clicks, percentage change vs the previous period, Top Pages by clicks, and Clicks by Device — right inside wp-admin. Optionally measure button views, unique visitors and click-through rate (CTR). 100% first-party: no cookies, no personal data, no external requests, and your data never leaves your server.
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
 * **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
 * **Custom link** - Replace WhatsApp Link with Telegram, Messenger, a contact page, Phone, Email or any URL
@@ -30,10 +31,22 @@ Lightweight chat button for WhatsApp with welcome bubble, working hours, page co
 * **Page Visibility** - Show or hide button on specific pages/posts
 * **Fully Customizable** - Colors, sizes, positions, labels - make it yours
 * **Mobile Optimized** - Separate mobile/desktop configurations
-* **Zero Tracking** - GDPR-friendly, no cookies, no external requests
+* **Google Analytics 4 / Tag Manager Integration** - Optionally also forward chat clicks and welcome-bubble impressions as GA4 events using the analytics already installed on your site
 * **Translation Ready** - Fully translatable with .pot file included
 * **Performance First** - Minimal footprint, no jQuery dependencies in frontend
-* **Google Analytics 4 / Tag Manager Integration - Track chat button clicks and welcome-bubble impressions as GA4 events using the analytics already installed on your site
+
+= Built-in Analytics Features =
+
+Know what actually drives conversations — without handing your visitors' data to third parties. Everything is stored in your own WordPress database.
+
+* **Headline metrics at a glance:** Total, Today, This Week and This Month chat clicks, with a clear percentage change versus the previous period.
+* **Top Pages by Clicks:** discover which pages and products send the most people to chat.
+* **Clicks by Device:** see the mobile / desktop / tablet split at a glance.
+* **Click-through rate (CTR):** turn on optional traffic tracking to measure the Visitors → Button Views → Clicks → CTR funnel.
+* **At-a-glance dashboard widget:** today / last 7 days / all-time clicks with a 14-day sparkline, right on your WordPress dashboard.
+* **Privacy by design:** no cookies, no personal data (IP address and user agent are never stored), no external requests, and nothing shared with Google or any third party.
+* **You stay in control:** exclude logged-in users from tracking, choose how long data is kept (auto-pruned daily), and reset all analytics data at any time.
+* **Optional GA4 / Tag Manager:** if you prefer, also forward events to your existing GA4 or Google Tag Manager — kept completely separate from the built-in analytics.
 
 = Welcome Bubble Features =
 
@@ -141,11 +154,9 @@ Display chat link anywhere with: `[tapchat]`
    * Enable page context appending
    * Additional customization options
 
-6. **Google Analytics 4 / Tag Manager:**
-   * Enable or disable event tracking
-   * Choose how events are sent: Auto-detect, GA4, or Google Tag Manager
-   * Customize the GA4 click event name
-   * Track welcome-bubble impressions with the trigger type
+6. **Analytics Tab:**
+   * **Overview** sub-tab: view your first-party chat-click report (totals, top pages, devices, and CTR when traffic tracking is on)
+   * **Settings** sub-tab: turn click tracking on/off, enable optional Traffic & CTR tracking, exclude logged-in users, set data retention, reset data, and configure the optional GA4 / Tag Manager integration
 
 == Frequently Asked Questions ==
 
@@ -155,7 +166,7 @@ No. Tap Chat works with regular accounts or business accounts from supported mes
 
 = Will it slow down my website? =
 
-No. Tap Chat is extremely lightweight (< 15KB total) and loads asynchronously. It won't affect your site speed.
+No. Tap Chat is extremely lightweight and loads asynchronously, so it won't affect your site speed. The built-in analytics use a non-blocking beacon and a compact daily-aggregated table, and are fully compatible with page caching.
 
 = Can I customize the button design? =
 
@@ -235,6 +246,34 @@ Yes! Use the Visibility tab:
 - "Hide on specific pages" - button hidden where selected
 - Combine both for precise control
 
+= Does Tap Chat include built-in analytics? =
+
+Yes. As of version 2.0, Tap Chat records chat-button clicks and shows them in a built-in dashboard under Settings → Tap Chat → Analytics → Overview. You get Total / Today / This Week / This Month clicks, top pages, device breakdown and, optionally, click-through rate.
+
+= Is the built-in analytics GDPR-friendly? Does it use cookies? =
+
+It is designed to be privacy-first. It sets no cookies, stores no personal data (IP addresses and user agents are never saved), and makes no external requests. All data lives in your own WordPress database and is never shared with Google or any third party. Unique-visitor counting (only used when you enable optional Traffic & CTR tracking) uses a cookieless, first-party browser flag, not a tracking cookie.
+
+= Where is my analytics data stored? =
+
+In a single, compact table in your own WordPress database. Data is aggregated per day so the table stays small, older rows are pruned automatically based on your retention setting, and the table is removed if you uninstall the plugin.
+
+= What is the difference between the built-in analytics and the GA4 / Tag Manager integration? =
+
+They are independent. The **built-in analytics** stores clicks first-party on your own server and shows them inside wp-admin — no third parties involved. The optional **GA4 / Tag Manager** integration instead forwards events to the Google analytics you already have on your site. You can use either, both, or neither. They live in separate sub-tabs so they never get mixed up.
+
+= How do I measure click-through rate (CTR)? =
+
+CTR needs button impressions, so turn on **Traffic & CTR tracking** in Analytics → Settings. Once enabled, the dashboard shows the Visitors → Button Views → Clicks → CTR funnel. This adds one small, cookieless request per page view where the button is shown, which is why it is off by default. Plain click counts work without it.
+
+= Will analytics slow down my site or dashboard? =
+
+No. Click tracking uses a lightweight, non-blocking beacon and a single aggregated database row per day, and it is fully compatible with page caching. The WordPress dashboard widget caches its figures, so opening your dashboard adds no repeated queries. Optional Traffic & CTR tracking is the only feature that adds a request per page view, and it is off by default.
+
+= Can I keep my own testing out of the numbers? =
+
+Yes. Enable "Exclude logged-in users" in Analytics → Settings and clicks or views from any logged-in user (including you) are not recorded.
+
 = Can I track Tap Chat interactions in Google Analytics? =
 - Yes! Enable Event Tracking in the Google Analytics 4 / Tag Manager settings. Tap Chat can send chat button clicks and welcome-bubble impressions as events to the GA4 or GTM setup already installed on your site.
 
@@ -250,14 +289,30 @@ Yes! Use the Visibility tab:
 == Screenshots ==
 
 1. **Floating Chat Button Demo** - Clean, professional button on your site
-2. **General Settings** - Easy configuration with country selector
-3. **Welcome Bubble Settings** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
-4. **Working Hours Settings** - Display button only during business hours with timezone supportn
-5. **Visibility Configuration** - Control where the WhatsApp button appears on your site.
-6. **Advanced Options** - Advanced configuration options for power users.
-7. **Google Analytics 4 / Tag Manager** - Event tracking settings for chat clicks and welcome-bubble impressions.
+2. **Built-in Analytics — Overview** - First-party dashboard with Total / Today / This Week / This Month clicks and change vs. the previous period
+3. **Built-in Analytics — Top Pages & Devices** - See which pages drive the most chats and the mobile/desktop split, plus the CTR funnel
+4. **Built-in Analytics — Settings** - Privacy-first tracking options: click tracking, optional Traffic & CTR tracking, exclude logged-in users, retention and reset
+5. **Dashboard Widget** - At-a-glance clicks (today / last 7 days / all time) with a 14-day sparkline on your WordPress dashboard
+6. **General Settings** - Easy configuration with country selector
+7. **Welcome Bubble Settings** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
+8. **Working Hours Settings** - Display button only during business hours with timezone support
+9. **Visibility Configuration** - Control where the WhatsApp button appears on your site
+10. **Advanced Options** - Advanced configuration options for power users
+11. **Google Analytics 4 / Tag Manager** - Optional event forwarding for chat clicks and welcome-bubble impressions
 
 == Changelog ==
+
+= 2.0.0 - 2026-09-05 =
+Tap Chat 2.0 introduces a complete, privacy-first analytics suite — your data stays on your own server.
+
+* **New: Built-in Analytics dashboard** (Settings → Tap Chat → Analytics → Overview) showing Total / Today / This Week / This Month chat clicks, percentage change vs. the previous period, Top Pages by Clicks, and Clicks by Device, with a 7 / 30 / 90-day range selector.
+* **New: Optional Traffic & CTR tracking** that records button views and cookieless unique visitors to reveal the Visitors → Button Views → Clicks → CTR funnel. Off by default.
+* **New: WordPress dashboard widget** with today / last 7 days / all-time clicks and a 14-day sparkline, linking to the full report.
+* **New: Exclude logged-in users** option so your own testing and staff activity stay out of the numbers.
+* **New: Data controls** — configurable retention with automatic daily pruning, and a one-click "Reset analytics data" action.
+* **Privacy by design:** all analytics are stored in your own database. No cookies, no personal data (IP address and user agent are never stored), and no external requests. The data table is removed on uninstall.
+* **Improved:** the Analytics tab is now organized into two clear sub-tabs — "Overview" (the read-only report) and "Settings" (built-in tracking plus the existing GA4 / Tag Manager integration, which is unchanged and fully independent).
+* **Performance:** click tracking uses a non-blocking beacon and a compact daily-aggregated table that is cache-friendly; the dashboard widget caches its figures so the WordPress dashboard adds no repeated queries.
 
 = 1.9.0 - 2026-07-13 =
 * **Added** a new Analytics tab: send GA4 / Google Tag Manager events on chat clicks (tapchat_click) and welcome-bubble impressions (tapchat_bubble_shown, with trigger_type). Uses your existing GA4/GTM; loads no analytics library of its own.
@@ -347,6 +402,9 @@ Yes! Use the Visibility tab:
 
 == Upgrade Notice ==
 
+= 2.0.0 =
+Major update: built-in, privacy-first analytics. See chat clicks, top pages, devices and CTR right inside wp-admin — no cookies, no third parties, your data stays on your server. The GA4 / Tag Manager integration is unchanged.
+
 = 1.6.0 =
 Improved admin experience! Settings tabs now switch without page refresh, and all settings save together. Welcome bubble positioning now automatically adjusts to icon size.
 
@@ -372,8 +430,9 @@ Initial release of Tap Chat - the lightweight chat button for WordPress.
 
 Planned features for future versions:
 
+* Click source breakdown (button vs. welcome bubble vs. inline shortcode)
+* UTM / campaign attribution for chat clicks
+* CSV export of analytics reports
 * Multiple agents support with round-robin
-* Custom working hours per agent
-* Analytics dashboard (privacy-friendly)
 
 Want a specific feature? Let us know in the support forum!

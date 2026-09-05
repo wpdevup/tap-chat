@@ -15,6 +15,14 @@ class Plugin {
     }
 
     private function __construct() {
+        require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-analytics-store.php';
+        require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-rest.php';
+
+        // Make sure the stats table exists even after a silent update.
+        \Tap_Chat\Analytics_Store::maybe_upgrade();
+
+        new \Tap_Chat\Rest_Collector();
+
         if ( is_admin() ) {
             require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-admin.php';
             new \Tap_Chat\Admin();
@@ -23,7 +31,32 @@ class Plugin {
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_front' ] );
         add_action( 'wp_footer', [ $this, 'render_floating_button' ] );
 
+        add_action( 'tap_chat_prune_stats', [ $this, 'prune_stats' ] );
+
         add_shortcode('tapchat', [ $this, 'shortcode' ] );
+    }
+
+    /**
+     * Whether first-party analytics collection should be suppressed for the
+     * current request (e.g. logged-in users when exclusion is enabled).
+     */
+    private function analytics_suppressed() {
+        if ( 'yes' === $this->get_option( 'analytics_exclude_logged_in', 'no' ) && is_user_logged_in() ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Daily maintenance: drop stats rows older than the retention window.
+     */
+    public function prune_stats() {
+        $days = absint( $this->get_option( 'analytics_retention_days', 365 ) );
+        if ( $days < 7 ) {
+            $days = 7;
+        }
+        \Tap_Chat\Analytics_Store::prune( $days );
+        delete_transient( 'tap_chat_dw_summary' );
     }
 
     public function enqueue_front() {
@@ -59,6 +92,11 @@ class Plugin {
                 'eventName'     => $this->get_option( 'analytics_event_name', 'tapchat_click' ),
                 'channel'       => ( 'custom' === $this->get_option( 'link_type', 'phone' ) ) ? 'custom' : 'whatsapp',
                 'trackTriggers' => ( 'yes' === $this->get_option( 'analytics_track_triggers', 'yes' ) ),
+            ),
+            'collect' => array(
+                'clickEnabled'   => ( 'yes' === $this->get_option( 'enable_click_analytics', 'yes' ) ) && ! $this->analytics_suppressed(),
+                'trafficEnabled' => ( 'yes' === $this->get_option( 'enable_traffic_analytics', 'no' ) ) && ! $this->analytics_suppressed(),
+                'endpoint'       => esc_url_raw( rest_url( 'tapchat/v1/collect' ) ),
             ),
         ));
     }

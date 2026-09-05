@@ -418,6 +418,59 @@ class Admin_Fields {
         <?php
     }
 
+    public function field_enable_click_analytics() {
+        $val = $this->get( 'enable_click_analytics', 'yes' );
+        ?>
+        <input type="hidden" name="tap_chat_settings[enable_click_analytics]" value="no" />
+        <label>
+            <input type="checkbox" name="tap_chat_settings[enable_click_analytics]" value="yes" <?php checked( $val, 'yes' ); ?> />
+            <?php esc_html_e( 'Record chat button clicks in the built-in dashboard', 'tap-chat' ); ?>
+        </label>
+        <p class="description">
+            <?php esc_html_e( 'Lightweight and recommended. Powers Total / Today / Week / Month clicks, top pages and device breakdown.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
+    public function field_enable_traffic_analytics() {
+        $val = $this->get( 'enable_traffic_analytics', 'no' );
+        ?>
+        <input type="hidden" name="tap_chat_settings[enable_traffic_analytics]" value="no" />
+        <label>
+            <input type="checkbox" name="tap_chat_settings[enable_traffic_analytics]" value="yes" <?php checked( $val, 'yes' ); ?> />
+            <?php esc_html_e( 'Also record button views and unique visitors to measure click-through rate (CTR)', 'tap-chat' ); ?>
+        </label>
+        <p class="description">
+            <?php esc_html_e( 'Adds one small, cookieless request per page view where the button is shown. Enables the Visitors / Button Views / Clicks / CTR funnel. Leave off if you only need click counts.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
+    public function field_analytics_exclude_logged_in() {
+        $val = $this->get( 'analytics_exclude_logged_in', 'no' );
+        ?>
+        <input type="hidden" name="tap_chat_settings[analytics_exclude_logged_in]" value="no" />
+        <label>
+            <input type="checkbox" name="tap_chat_settings[analytics_exclude_logged_in]" value="yes" <?php checked( $val, 'yes' ); ?> />
+            <?php esc_html_e( 'Do not record clicks or views from logged-in users', 'tap-chat' ); ?>
+        </label>
+        <p class="description">
+            <?php esc_html_e( 'Recommended. Keeps your own testing and staff activity out of the numbers.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
+    public function field_analytics_retention_days() {
+        $val = absint( $this->get( 'analytics_retention_days', 365 ) );
+        ?>
+        <input type="number" min="7" max="3650" step="1" name="tap_chat_settings[analytics_retention_days]" value="<?php echo esc_attr( $val ); ?>" class="small-text" />
+        <?php esc_html_e( 'days', 'tap-chat' ); ?>
+        <p class="description">
+            <?php esc_html_e( 'Older analytics rows are deleted automatically once per day. Minimum 7, maximum 3650.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
     public function field_enable_analytics() {
         $val = $this->get( 'enable_analytics', 'no' );
         ?>

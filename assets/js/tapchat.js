@@ -42,7 +42,57 @@
   }
   // ----------------------------------------------------------------------
 
+  // --- First-party collector (privacy-first, cookieless) ----------------
+  function tapchatCollect(type, unique) {
+    var c = (window.TapChatData && window.TapChatData.collect) || {};
+    if (!c.endpoint) { return; }
+    if (type === 'click' && !c.clickEnabled) { return; }
+    if (type === 'view' && !c.trafficEnabled) { return; }
+
+    var payload = {
+      e: type,
+      p: window.location.pathname || '/',
+      t: document.title || ''
+    };
+    if (type === 'view') { payload.u = unique ? 1 : 0; }
+
+    try {
+      var body = JSON.stringify(payload);
+      if (navigator && typeof navigator.sendBeacon === 'function') {
+        var blob = new Blob([body], { type: 'application/json' });
+        navigator.sendBeacon(c.endpoint, blob);
+      } else if (window.fetch) {
+        window.fetch(c.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: body,
+          keepalive: true,
+          credentials: 'omit'
+        }).catch(function(){});
+      }
+    } catch (e) {}
+  }
+
+  // Cookieless daily-unique flag: one visitor per browser per day, no cookies.
+  function tapchatIsUniqueToday() {
+    try {
+      var key = 'tapchat_v_' + new Date().toISOString().slice(0, 10);
+      if (window.localStorage && localStorage.getItem(key)) { return false; }
+      if (window.localStorage) { localStorage.setItem(key, '1'); }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  // ----------------------------------------------------------------------
+
   $(function(){
+    // Button impression: only count the real, clickable floating button.
+    var cfg = (window.TapChatData && window.TapChatData.collect) || {};
+    if (cfg.trafficEnabled && $('a.tapchat-fab').length) {
+      tapchatCollect('view', tapchatIsUniqueToday());
+    }
+
     var $fab = $('.tapchat-fab[data-append-page="1"]');
     if ($fab.length) {
       try {
@@ -172,5 +222,6 @@
       wp.hooks.doAction('tapchat_click'); 
     }
     tapchatTrack(tapchatClickEventName(), { source: 'button' });
+    tapchatCollect('click');
   });
 })(jQuery);

@@ -1,32 +1,67 @@
 jQuery(document).ready(function($) {
     
-    // Tab switching without page refresh
-    $('.tap-chat-tabs .nav-tab').on('click', function(e) {
-        e.preventDefault();
-        
-        var tabId = $(this).data('tab');
-        
-        // Update active tab
+    // The Save button is not needed on the read-only Overview report.
+    function tapChatSyncAnalyticsChrome() {
+        var onAnalytics = $('.tap-chat-tabs .nav-tab-active').data('tab') === 'analytics';
+        var sub = $('.tap-chat-subtab.nav-tab-active').data('subtab');
+        var onOverview = (onAnalytics && sub === 'overview');
+        $('.tap-chat-settings-form p.submit').toggle(!onOverview);
+    }
+
+    function tapChatActivateSubtab(subId) {
+        var $target = $('.tap-chat-subtab-content[data-subtab-content="' + subId + '"]');
+        if (!$target.length) {
+            // Stale/unknown sub-tab (e.g. cached markup): fall back to the first one.
+            subId = $('.tap-chat-subtab').first().data('subtab');
+            $target = $('.tap-chat-subtab-content[data-subtab-content="' + subId + '"]');
+        }
+        $('.tap-chat-subtab').removeClass('nav-tab-active');
+        $('.tap-chat-subtab[data-subtab="' + subId + '"]').addClass('nav-tab-active');
+        $('.tap-chat-subtab-content').hide();
+        $target.show();
+        tapChatSyncAnalyticsChrome();
+    }
+
+    function tapChatActivateTab(tabId, subId) {
+        if (!$('#tab-' + tabId).length) { return; }
         $('.tap-chat-tabs .nav-tab').removeClass('nav-tab-active');
-        $(this).addClass('nav-tab-active');
-        
-        // Show/hide tab content
+        $('.tap-chat-tabs .nav-tab[data-tab="' + tabId + '"]').addClass('nav-tab-active');
         $('.tap-chat-tab-content').hide();
         $('#tab-' + tabId).show();
-        
-        // Update URL hash without scrolling
+        if (tabId === 'analytics') {
+            tapChatActivateSubtab(subId || 'overview');
+        } else {
+            tapChatSyncAnalyticsChrome();
+        }
+    }
+
+    // Main tab switching
+    $('.tap-chat-tabs .nav-tab').on('click', function(e) {
+        e.preventDefault();
+        var tabId = $(this).data('tab');
+        tapChatActivateTab(tabId);
         if (history.pushState) {
             history.pushState(null, null, '#' + tabId);
         }
     });
-    
-    // Handle initial tab from URL hash
-    var hash = window.location.hash.replace('#', '');
-    if (hash && $('#tab-' + hash).length) {
-        $('.tap-chat-tabs .nav-tab').removeClass('nav-tab-active');
-        $('.tap-chat-tabs .nav-tab[data-tab="' + hash + '"]').addClass('nav-tab-active');
-        $('.tap-chat-tab-content').hide();
-        $('#tab-' + hash).show();
+
+    // Sub-tab switching (Analytics: Overview / Settings)
+    $('.tap-chat-subtab').on('click', function(e) {
+        e.preventDefault();
+        var subId = $(this).data('subtab');
+        tapChatActivateSubtab(subId);
+        if (history.pushState) {
+            history.pushState(null, null, '#analytics/' + subId);
+        }
+    });
+
+    // Handle initial tab (and optional sub-tab) from URL hash: #tab or #analytics/sub
+    var rawHash = window.location.hash.replace('#', '');
+    if (rawHash) {
+        var parts = rawHash.split('/');
+        tapChatActivateTab(parts[0], parts[1]);
+    } else {
+        tapChatSyncAnalyticsChrome();
     }
     
     // Link type toggle (phone vs custom URL)

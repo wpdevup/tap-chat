@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tap Chat – Floating Contact Button
  * Description: Floating contact button with welcome bubble for whatsapp, working hours, page targeting and support for multiple messaging services.
- * Version: 1.9.0
+ * Version: 2.0.0
  * Author: WPdevup
  * Author URI: https://wpdevup.com/tap-chat/
  * License: GPLv2 or later
@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '1.9.0');
+define('TAP_CHAT_VERSION', '2.0.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -155,9 +155,24 @@ register_activation_hook( __FILE__, function(){
         $settings['analytics_track_triggers'] = 'yes';
         $needs_update = true;
     }
-    
+
+    if ( ! isset( $settings['enable_click_analytics'] ) ) {
+        $settings['enable_click_analytics'] = 'yes';
+        $settings['enable_traffic_analytics'] = 'no';
+        $settings['analytics_retention_days'] = 365;
+        $needs_update = true;
+    }
+
     if ( $needs_update ) {
         update_option('tap_chat_settings', $settings);
+    }
+
+    // First-party analytics storage + maintenance schedule.
+    require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-analytics-store.php';
+    \Tap_Chat\Analytics_Store::create_table();
+
+    if ( ! wp_next_scheduled( 'tap_chat_prune_stats' ) ) {
+        wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'tap_chat_prune_stats' );
     }
 
     // Review nudge bookkeeping (site-wide options, not part of settings array).

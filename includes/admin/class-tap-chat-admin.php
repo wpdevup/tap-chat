@@ -22,6 +22,125 @@ class Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
         add_action( 'admin_post_tap_chat_reset_analytics', array( $this, 'handle_reset_analytics' ) );
         add_action( 'wp_dashboard_setup', array( $this, 'register_dashboard_widget' ) );
+        add_action( 'admin_notices', array( $this, 'maybe_show_setup_notice' ) );
+        add_action( 'admin_init', array( $this, 'maybe_dismiss_setup_notice' ) );
+    }
+
+    /**
+     * URL of the plugin settings page.
+     */
+    private function settings_url() {
+        return admin_url( 'options-general.php?page=tap-chat' );
+    }
+
+    /**
+     * Whether a chat destination has been configured yet: a single number/link,
+     * or at least one enabled agent with a destination.
+     */
+    private function is_plugin_configured() {
+        $s = get_option( 'tap_chat_settings', array() );
+        if ( ! is_array( $s ) ) {
+            return false;
+        }
+
+        $mode = isset( $s['button_mode'] ) ? $s['button_mode'] : 'single';
+
+        if ( 'agents' === $mode ) {
+            if ( empty( $s['agents'] ) || ! is_array( $s['agents'] ) ) {
+                return false;
+            }
+            foreach ( $s['agents'] as $agent ) {
+                if ( ! is_array( $agent ) ) {
+                    continue;
+                }
+                if ( isset( $agent['enabled'] ) && 'yes' !== $agent['enabled'] ) {
+                    continue;
+                }
+                $type = isset( $agent['channel_type'] ) ? $agent['channel_type'] : 'phone';
+                if ( 'custom' === $type ) {
+                    if ( ! empty( $agent['custom_url'] ) ) {
+                        return true;
+                    }
+                } elseif ( ! empty( $agent['phone'] ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Single-button mode.
+        $type = isset( $s['link_type'] ) ? $s['link_type'] : 'phone';
+        if ( 'custom' === $type ) {
+            return ! empty( $s['custom_url'] );
+        }
+        return ! empty( $s['phone'] );
+    }
+
+    /**
+     * Show a setup reminder until the button is configured, pointing the user to
+     * the settings page so the chat button actually appears on the site.
+     */
+    public function maybe_show_setup_notice() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+        if ( get_option( 'tap_chat_setup_notice_dismissed' ) ) {
+            return;
+        }
+
+        // Don't show on the plugin's own settings screen (already there).
+        $screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+        if ( $screen && 'settings_page_tap-chat' === $screen->id ) {
+            return;
+        }
+
+        // Once a destination exists the button renders, so there's nothing to nag about.
+        if ( $this->is_plugin_configured() ) {
+            return;
+        }
+
+        $settings_url = $this->settings_url();
+        $dismiss_url  = wp_nonce_url(
+            add_query_arg( 'tap_chat_dismiss_setup', '1' ),
+            'tap_chat_dismiss_setup'
+        );
+        ?>
+        <div class="notice notice-info">
+            <p>
+                <strong><?php esc_html_e( 'Tap Chat', 'tap-chat' ); ?></strong>
+                &mdash;
+                <?php esc_html_e( 'Almost there! Your chat button is not visible yet. Add your WhatsApp number (or set up agents) to display it on your site.', 'tap-chat' ); ?>
+            </p>
+            <p>
+                <a href="<?php echo esc_url( $settings_url ); ?>" class="button button-primary">
+                    <?php esc_html_e( 'Set up the chat button', 'tap-chat' ); ?>
+                </a>
+                <a href="<?php echo esc_url( $dismiss_url ); ?>" style="margin-left:8px;">
+                    <?php esc_html_e( 'Dismiss', 'tap-chat' ); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Persist dismissal of the setup notice.
+     */
+    public function maybe_dismiss_setup_notice() {
+        if ( ! isset( $_GET['tap_chat_dismiss_setup'] ) ) {
+            return;
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+        $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'tap_chat_dismiss_setup' ) ) {
+            return;
+        }
+        update_option( 'tap_chat_setup_notice_dismissed', '1' );
+
+        wp_safe_redirect( remove_query_arg( array( 'tap_chat_dismiss_setup', '_wpnonce' ) ) );
+        exit;
     }
 
     /**
@@ -225,7 +344,7 @@ class Admin {
         wp_enqueue_script( 
             'tap-chat-admin', 
             TAP_CHAT_PLUGIN_URL . 'assets/js/admin.js', 
-            array('jquery', 'wp-color-picker'), 
+            array('jquery', 'wp-color-picker', 'jquery-ui-sortable'), 
             TAP_CHAT_VERSION, 
             true 
         );
@@ -238,6 +357,7 @@ class Admin {
         
         $tabs = array(
             'general' => __( 'General', 'tap-chat' ),
+            'agents' => __( 'Agents', 'tap-chat' ),
             'bubble' => __( 'Welcome Bubble', 'tap-chat' ),
             'hours' => __( 'Working Hours', 'tap-chat' ),
             'visibility' => __( 'Visibility', 'tap-chat' ),
@@ -265,6 +385,10 @@ class Admin {
                     <?php do_settings_sections( 'tap-chat-general' ); ?>
                 </div>
                 
+                <div class="tap-chat-tab-content" id="tab-agents" style="display: none;">
+                    <?php do_settings_sections( 'tap-chat-agents' ); ?>
+                </div>
+
                 <div class="tap-chat-tab-content" id="tab-bubble" style="display: none;">
                     <?php do_settings_sections( 'tap-chat-bubble' ); ?>
                 </div>

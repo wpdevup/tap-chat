@@ -4,15 +4,17 @@ Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WhatsApp chat button with welcome bubble, working hours, page rules, and privacy-first built-in click analytics. No cookies, no third parties.
+WhatsApp chat button with multiple agents, welcome bubble, working hours, page rules and privacy-first click analytics. No cookies, no third parties.
 
 == Description ==
 
 **Tap Chat** adds a beautiful floating WhatsApp button with advanced features — and now a **built-in, privacy-first analytics dashboard** so you can see exactly how many visitors tap to chat, from which pages and on which devices, without sending a single byte to Google or anyone else. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance — all while keeping your site fast and privacy-friendly.
+
+New in 2.1: **Multiple Agents** — turn the single button into a small picker panel with up to three team members, each with their own WhatsApp number or custom link, avatar, role and online status, so visitors always reach the right person.
 
 * **Demo:** [Plugin demo](https://wpdevup.com/tap-chat/)
 * **Support Forum:** [WordPress.org support](https://wordpress.org/support/plugin/tap-chat/)
@@ -20,7 +22,8 @@ WhatsApp chat button with welcome bubble, working hours, page rules, and privacy
 
 = Key Features =
 
-* **Built-in Privacy-First Analytics Dashboard (NEW)** - See Total / Today / This Week / This Month chat clicks, percentage change vs the previous period, Top Pages by clicks, and Clicks by Device — right inside wp-admin. Optionally measure button views, unique visitors and click-through rate (CTR). 100% first-party: no cookies, no personal data, no external requests, and your data never leaves your server.
+* **Multiple Agents (NEW)** - Route visitors to the right person: turn the floating button into a compact picker panel with up to 3 team members, each with their own WhatsApp number or custom link, avatar, role and manual online/offline status. Drag to reorder in the admin; the chosen agent's name is also sent to GA4 / Tag Manager.
+* **Built-in Privacy-First Analytics Dashboard** - See Total / Today / This Week / This Month chat clicks, percentage change vs the previous period, Top Pages by clicks, and Clicks by Device — right inside wp-admin. Optionally measure button views, unique visitors and click-through rate (CTR). 100% first-party: no cookies, no personal data, no external requests, and your data never leaves your server.
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
 * **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
 * **Custom link** - Replace WhatsApp Link with Telegram, Messenger, a contact page, Phone, Email or any URL
@@ -34,6 +37,19 @@ WhatsApp chat button with welcome bubble, working hours, page rules, and privacy
 * **Google Analytics 4 / Tag Manager Integration** - Optionally also forward chat clicks and welcome-bubble impressions as GA4 events using the analytics already installed on your site
 * **Translation Ready** - Fully translatable with .pot file included
 * **Performance First** - Minimal footprint, no jQuery dependencies in frontend
+
+= Multiple Agents =
+
+Let visitors pick who to talk to instead of guessing. Turn the floating button into a compact picker panel with up to three team members.
+
+* **Up to 3 agents** - each opens their own chat in a new tab.
+* **WhatsApp or custom link per agent** - use a WhatsApp number, or any URL (Telegram, Messenger, tel:, mailto:, a contact page).
+* **Per-agent details** - name, role/label, avatar image, and a pre-filled WhatsApp message.
+* **Manual online / offline** - show a green "online" dot per agent, or mark them offline.
+* **Custom panel title and subtitle** - set the heading visitors see when the panel opens.
+* **Drag-to-reorder** - arrange agents in the admin with a simple drag handle.
+* **Non-destructive** - existing single-button setups keep working; switch modes any time from Settings -> Tap Chat -> Agents.
+* **GA4 / Tag Manager aware** - the chosen agent's name is sent as a label on chat-click events.
 
 = Built-in Analytics Features =
 
@@ -133,28 +149,34 @@ Display chat link anywhere with: `[tapchat]`
    * Customize button appearance (color, size, position)
    * Set default message and label
 
-2. **Welcome Bubble Tab:**
+2. **Agents Tab:**
+   * Set **Button Mode** to "Multiple agents"
+   * Add up to 3 agents; for each, choose WhatsApp or a custom link
+   * Set name, role, avatar, and a manual online / offline status
+   * Optionally edit the panel title and subtitle
+
+3. **Welcome Bubble Tab:**
    * Enable welcome bubble
    * Choose style (Modern or Simple)
    * Customize message, name, and avatar
    * Configure smart triggers (Time on Page recommended)
 
-3. **Business Hours Tab:**
+4. **Business Hours Tab:**
    * Enable working hours if needed
    * Set schedule for each day
    * Choose timezone
    * Add optional offline message
 
-4. **Visibility Tab:**
+5. **Visibility Tab:**
    * Control where button appears
    * Show on specific pages only
    * Hide on specific pages (e.g., checkout)
 
-5. **Advanced Tab:**
+6. **Advanced Tab:**
    * Enable page context appending
    * Additional customization options
 
-6. **Analytics Tab:**
+7. **Analytics Tab:**
    * **Overview** sub-tab: view your first-party chat-click report (totals, top pages, devices, and CTR when traffic tracking is on)
    * **Settings** sub-tab: turn click tracking on/off, enable optional Traffic & CTR tracking, exclude logged-in users, set data retention, reset data, and configure the optional GA4 / Tag Manager integration
 
@@ -163,6 +185,14 @@ Display chat link anywhere with: `[tapchat]`
 = Do I need a business account? =
 
 No. Tap Chat works with regular accounts or business accounts from supported messaging platforms.
+
+= Can I add more than one WhatsApp number or agent? =
+
+Yes. Go to Settings -> Tap Chat -> Agents and set Button Mode to "Multiple agents". You can add up to 3 team members, each with their own WhatsApp number or custom link, avatar, role and online status. Visitors tap the button and choose who to chat with.
+
+= Do multiple agents change my existing button? =
+
+No. Updating keeps you in single-button mode, so your current button works exactly as before. Multiple agents is opt-in - switch to it whenever you like, and switch back at any time.
 
 = Will it slow down my website? =
 
@@ -297,8 +327,24 @@ Yes. Enable "Exclude logged-in users" in Analytics → Settings and clicks or vi
 7. **Built-in Analytics — Overview** - First-party dashboard with Total / Today / This Week / This Month clicks and change vs. the previous period
 8. **Built-in Analytics and Google Analytics 4 / Tag Manager — Settings** - Privacy-first tracking options: click tracking, optional Traffic & CTR tracking, exclude logged-in users, retention and reset
 9. **Dashboard Widget** - At-a-glance clicks (today / last 7 days / all time) with a 14-day sparkline on your WordPress dashboard
+10. **Multiple Agents panel** - Visitors pick a team member from a compact picker panel
+11. **Agents Settings** - Add up to 3 agents with WhatsApp or custom links, avatars and online status
 
 == Changelog ==
+
+= 2.1.0 - 2026-09-13 =
+Multiple agents: let visitors choose who to chat with.
+
+* **New: Multiple Agents mode** (Settings → Tap Chat → Agents). Switch the floating button from a single link to a small picker panel listing up to 3 team members, each opening their own chat.
+* **New:** Per-agent WhatsApp number or custom link (Telegram, Messenger, tel:, mailto:, any URL), optional avatar, role label, and pre-filled WhatsApp message.
+* **New:** Manual per-agent online / offline indicator (green dot), customizable panel title and subtitle, and drag-to-reorder in the admin.
+* **New:** Agent name is forwarded as a label on Google Analytics 4 / Tag Manager chat-click events, so you can see which agent visitors picked.
+* **New:** After activation, an admin notice links straight to the settings page until the chat button is configured, so it's clear how to make the button appear.
+* **Improved:** The button label is now hidden on desktop by default, for a cleaner icon-only button (you can turn it back on under Settings → Tap Chat → General).
+* **Improved:** Existing single-button setups are untouched — the plugin stays in Single mode after updating, and your current button keeps working exactly as before.
+* **Fixed:** On RTL sites, the "Side" welcome bubble now appears next to the button on the correct side (previously it was placed on the opposite side of the screen).
+* **Fixed:** The welcome-bubble close button now stays pinned to the corner even with themes (e.g. Woodmart) whose RTL stylesheet forces a global button reset, so the bubble no longer grows taller on RTL sites.
+* **Developer:** Cleaned up Plugin Check reports — REST server inputs are now sanitized, and the custom analytics table's direct queries are documented (values are always prepared; the table name is a trusted `$wpdb->prefix` identifier).
 
 = 2.0.0 - 2026-09-05 =
 Tap Chat 2.0 introduces a complete, privacy-first analytics suite — your data stays on your own server.
@@ -400,6 +446,9 @@ Tap Chat 2.0 introduces a complete, privacy-first analytics suite — your data 
 
 == Upgrade Notice ==
 
+= 2.1.0 =
+New: Multiple Agents. Turn the button into a picker panel with up to 3 team members, each with their own WhatsApp number or link, avatar and online status. Existing single-button setups are unaffected. Also includes RTL display fixes.
+
 = 2.0.0 =
 Major update: built-in, privacy-first analytics. See chat clicks, top pages, devices and CTR right inside wp-admin — no cookies, no third parties, your data stays on your server. The GA4 / Tag Manager integration is unchanged.
 
@@ -431,6 +480,8 @@ Planned features for future versions:
 * Click source breakdown (button vs. welcome bubble vs. inline shortcode)
 * UTM / campaign attribution for chat clicks
 * CSV export of analytics reports
-* Multiple agents support with round-robin
+* Per-agent analytics (clicks broken down by agent)
+* Round-robin / load-balanced agent routing
+* Departments and per-agent working hours
 
 Want a specific feature? Let us know in the support forum!

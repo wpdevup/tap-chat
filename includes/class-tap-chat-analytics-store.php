@@ -3,6 +3,17 @@ namespace Tap_Chat;
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+/*
+ * This file is Tap Chat's private analytics data layer. Every query targets a
+ * dedicated custom table, so direct $wpdb access is required (the options / post
+ * APIs do not apply). The table name is built from $wpdb->prefix and is a
+ * trusted identifier, while every user-supplied value is passed through
+ * $wpdb->prepare(). Rows are read live for the admin dashboard on purpose
+ * (higher-level caching is handled by the dashboard widget). The custom-table
+ * sniffs below are therefore disabled for this file only, with that rationale.
+ */
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
 /**
  * First-party analytics store.
  *
@@ -99,19 +110,21 @@ class Analytics_Store {
         $table = self::table();
 
         // Upsert: increment the daily bucket, keep the latest human-readable label.
-        $sql = $wpdb->prepare(
-            "INSERT INTO {$table} (stat_date, event_type, device, page_hash, page_key, page_title, hits)
-             VALUES (%s, %s, %s, %s, %s, %s, 1)
-             ON DUPLICATE KEY UPDATE hits = hits + 1, page_key = VALUES(page_key), page_title = VALUES(page_title)",
-            $stat_date,
-            $event_type,
-            $device,
-            $page_hash,
-            $page_key,
-            $page_title
+        $result = $wpdb->query(
+            $wpdb->prepare(
+                "INSERT INTO {$table} (stat_date, event_type, device, page_hash, page_key, page_title, hits)
+                 VALUES (%s, %s, %s, %s, %s, %s, 1)
+                 ON DUPLICATE KEY UPDATE hits = hits + 1, page_key = VALUES(page_key), page_title = VALUES(page_title)",
+                $stat_date,
+                $event_type,
+                $device,
+                $page_hash,
+                $page_key,
+                $page_title
+            )
         );
 
-        return false !== $wpdb->query( $sql );
+        return false !== $result;
     }
 
     /**
@@ -163,18 +176,22 @@ class Analytics_Store {
         $table = self::table();
 
         if ( $from && $to ) {
-            $sql = $wpdb->prepare(
-                "SELECT COALESCE(SUM(hits),0) FROM {$table} WHERE event_type = %s AND stat_date BETWEEN %s AND %s",
-                $event_type, $from, $to
+            $count = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT COALESCE(SUM(hits),0) FROM {$table} WHERE event_type = %s AND stat_date BETWEEN %s AND %s",
+                    $event_type, $from, $to
+                )
             );
         } else {
-            $sql = $wpdb->prepare(
-                "SELECT COALESCE(SUM(hits),0) FROM {$table} WHERE event_type = %s",
-                $event_type
+            $count = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT COALESCE(SUM(hits),0) FROM {$table} WHERE event_type = %s",
+                    $event_type
+                )
             );
         }
 
-        return (int) $wpdb->get_var( $sql );
+        return (int) $count;
     }
 
     /**

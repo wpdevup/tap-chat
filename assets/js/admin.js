@@ -348,4 +348,127 @@ jQuery(document).ready(function($) {
             $('#' + target).show();
         }
     });
+
+    // ----- Multiple agents -------------------------------------------------
+
+    // Show/hide the agents-only rows based on the selected button mode.
+    function applyButtonMode(mode) {
+        $('.tap-chat-agents-dependent').closest('tr').toggle(mode === 'agents');
+    }
+    $('.tap-chat-mode-radio').on('change', function() {
+        applyButtonMode($(this).val());
+    });
+    applyButtonMode($('.tap-chat-mode-radio:checked').val() || 'single');
+
+    var AGENT_MAX = 3;
+
+    // Renumber every card and rewrite input indices to sequential order.
+    function reindexAgents() {
+        $('.tap-chat-agents-items .tap-chat-agent-card').each(function(i) {
+            $(this).find('[name]').each(function() {
+                var n = $(this).attr('name');
+                if (n) {
+                    $(this).attr('name', n.replace(/\[agents\]\[[^\]]*\]/, '[agents][' + i + ']'));
+                }
+            });
+            $(this).find('.tap-chat-agent-number').first().text(i + 1);
+        });
+        updateAgentAddState();
+    }
+
+    function updateAgentAddState() {
+        var count = $('.tap-chat-agents-items .tap-chat-agent-card').length;
+        $('.tap-chat-add-agent').toggle(count < AGENT_MAX);
+        $('.tap-chat-agents-limit').toggle(count >= AGENT_MAX);
+    }
+
+    // Wire up channel toggle for a single card.
+    function initAgentCard($card) {
+        var val = $card.find('.tap-chat-agent-channel-radio:checked').val() || 'phone';
+        $card.find('.tap-chat-agent-panel').hide();
+        $card.find('.tap-chat-agent-panel[data-agent-panel="' + val + '"]').show();
+    }
+
+    $('.tap-chat-agent-card').each(function() {
+        initAgentCard($(this));
+    });
+
+    // Channel type toggle (delegated).
+    $(document).on('change', '.tap-chat-agent-channel-radio', function() {
+        initAgentCard($(this).closest('.tap-chat-agent-card'));
+    });
+
+    // Add a new agent from the template.
+    $('.tap-chat-add-agent').on('click', function(e) {
+        e.preventDefault();
+        var count = $('.tap-chat-agents-items .tap-chat-agent-card').length;
+        if (count >= AGENT_MAX) { return; }
+
+        var tpl = $('.tap-chat-agent-template').html();
+        if (!tpl) { return; }
+
+        var $card = $(tpl.replace(/__INDEX__/g, count));
+        $('.tap-chat-agents-items').append($card);
+        initAgentCard($card);
+        reindexAgents();
+    });
+
+    // Remove an agent (delegated).
+    $(document).on('click', '.tap-chat-agent-remove', function(e) {
+        e.preventDefault();
+        $(this).closest('.tap-chat-agent-card').remove();
+        reindexAgents();
+    });
+
+    // Per-card avatar upload (delegated).
+    $(document).on('click', '.tap-chat-agent-avatar-upload-btn', function(e) {
+        e.preventDefault();
+        if (typeof wp === 'undefined' || typeof wp.media === 'undefined') { return; }
+
+        var $card = $(this).closest('.tap-chat-agent-card');
+        var frame = wp.media({
+            title: 'Select or Upload Avatar',
+            button: { text: 'Select Avatar' },
+            multiple: false,
+            library: { type: 'image' }
+        });
+
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $card.find('.tap-chat-agent-avatar-url').val(attachment.url);
+            $card.find('.tap-chat-agent-avatar-preview img').attr('src', attachment.url);
+            $card.find('.tap-chat-agent-avatar-preview').addClass('has-image');
+        });
+
+        frame.open();
+    });
+
+    $(document).on('click', '.tap-chat-agent-avatar-remove', function(e) {
+        e.preventDefault();
+        var $card = $(this).closest('.tap-chat-agent-card');
+        $card.find('.tap-chat-agent-avatar-url').val('');
+        $card.find('.tap-chat-agent-avatar-preview img').attr('src', '');
+        $card.find('.tap-chat-agent-avatar-preview').removeClass('has-image');
+    });
+
+    // Drag-to-reorder.
+    if ($.fn.sortable) {
+        $('.tap-chat-agents-items').sortable({
+            handle: '.tap-chat-agent-drag',
+            items: '> .tap-chat-agent-card',
+            axis: 'y',
+            tolerance: 'pointer',
+            update: function() { reindexAgents(); }
+        });
+    }
+
+    // Guarantee sequential indices before the form is saved.
+    $('.tap-chat-settings-form').on('submit', function() {
+        reindexAgents();
+    });
+
+    // Initial pass.
+    if ($('.tap-chat-agents-items').length) {
+        reindexAgents();
+    }
 });

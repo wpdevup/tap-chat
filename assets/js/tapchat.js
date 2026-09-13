@@ -89,7 +89,7 @@
   $(function(){
     // Button impression: only count the real, clickable floating button.
     var cfg = (window.TapChatData && window.TapChatData.collect) || {};
-    if (cfg.trafficEnabled && $('a.tapchat-fab').length) {
+    if (cfg.trafficEnabled && $('.tapchat-fab').not('.tapchat-fab-offline').length) {
       tapchatCollect('view', tapchatIsUniqueToday());
     }
 
@@ -104,6 +104,57 @@
       } catch(e) {}
     }
     
+    // --- Multiple agents picker panel ------------------------------------
+    var $agentsPanel = $('#tapchat-agents-panel');
+    var $agentsTrigger = $('.tapchat-fab-trigger');
+
+    function tapchatCloseAgents() {
+      $agentsPanel.removeClass('open');
+      $agentsTrigger.attr('aria-expanded', 'false');
+    }
+    function tapchatOpenAgents() {
+      // Collapse the welcome bubble so it never overlaps the panel.
+      $('.tapchat-welcome-bubble').removeClass('visible').addClass('hidden');
+      $agentsPanel.addClass('open');
+      $agentsTrigger.attr('aria-expanded', 'true');
+      var $first = $agentsPanel.find('.tapchat-agent-link').first();
+      if ($first.length) { $first.trigger('focus'); }
+    }
+    function tapchatToggleAgents() {
+      if ($agentsPanel.hasClass('open')) { tapchatCloseAgents(); }
+      else { tapchatOpenAgents(); }
+    }
+
+    if ($agentsPanel.length && $agentsTrigger.length) {
+      $agentsTrigger.on('click', function(e) {
+        e.preventDefault();
+        tapchatToggleAgents();
+      });
+
+      $agentsPanel.on('click', '.tapchat-agents-close', function(e) {
+        e.preventDefault();
+        tapchatCloseAgents();
+        $agentsTrigger.trigger('focus');
+      });
+
+      // Close on outside click.
+      $(document).on('click', function(e) {
+        if (!$agentsPanel.hasClass('open')) { return; }
+        if ($(e.target).closest('#tapchat-agents-panel').length) { return; }
+        if ($(e.target).closest('.tapchat-fab-trigger').length) { return; }
+        tapchatCloseAgents();
+      });
+
+      // Close on Escape.
+      $(document).on('keydown', function(e) {
+        if ((e.key === 'Escape' || e.keyCode === 27) && $agentsPanel.hasClass('open')) {
+          tapchatCloseAgents();
+          $agentsTrigger.trigger('focus');
+        }
+      });
+    }
+    // ---------------------------------------------------------------------
+
     var $bubble = $('.tapchat-welcome-bubble');
     if ($bubble.length) {
       var bubbleId = 'tapchat_bubble_closed_' + window.location.pathname;
@@ -203,9 +254,14 @@
       
       $bubble.on('click', function(e) {
         if (!$(e.target).closest('.tapchat-bubble-close').length) {
-          tapchatTrack(tapchatClickEventName(), { source: 'bubble' });
-          $fab.trigger('click');
-          
+          if ($agentsPanel.length) {
+            // Agents mode: open the picker instead of following a single link.
+            tapchatOpenAgents();
+          } else {
+            tapchatTrack(tapchatClickEventName(), { source: 'bubble' });
+            $fab.trigger('click');
+          }
+
           $bubble.removeClass('visible');
           setTimeout(function() {
             $bubble.addClass('hidden');
@@ -217,11 +273,20 @@
     }
   });
   
-  $(document).on('click', '.tapchat-fab, .tapchat-inline', function(){
+  // The panel trigger only opens the picker, so it is excluded here — an actual
+  // conversion is a click on a single button, an inline link, or an agent row.
+  $(document).on('click', '.tapchat-fab:not(.tapchat-fab-trigger), .tapchat-inline, .tapchat-agent-link', function(){
     if (window.wp && wp.hooks) { 
       wp.hooks.doAction('tapchat_click'); 
     }
-    tapchatTrack(tapchatClickEventName(), { source: 'button' });
+    var $t = $(this);
+    var extra = { source: 'button' };
+    if ($t.hasClass('tapchat-agent-link')) {
+      extra.source = 'agent';
+      var agentName = $t.attr('data-agent-name');
+      if (agentName) { extra.label = agentName; }
+    }
+    tapchatTrack(tapchatClickEventName(), extra);
     tapchatCollect('click');
   });
 })(jQuery);

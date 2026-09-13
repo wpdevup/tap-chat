@@ -17,6 +17,7 @@ class Admin_Settings {
         ) );
 
         $this->register_general_settings();
+        $this->register_agents_settings();
         $this->register_bubble_settings();
         $this->register_hours_settings();
         $this->register_visibility_settings();
@@ -93,6 +94,26 @@ class Admin_Settings {
         
         add_settings_field( 'hide_label_desktop', __( 'Desktop Label', 'tap-chat' ), 
             array( $fields, 'field_hide_label_desktop' ), 'tap-chat-general', 'tapchat_general' );
+    }
+
+    private function register_agents_settings() {
+        add_settings_section(
+            'tapchat_agents',
+            __( 'Multiple Agents', 'tap-chat' ),
+            array( $this, 'agents_section_callback' ),
+            'tap-chat-agents'
+        );
+
+        $fields = new Admin_Fields();
+
+        add_settings_field( 'button_mode', __( 'Button Mode', 'tap-chat' ),
+            array( $fields, 'field_button_mode' ), 'tap-chat-agents', 'tapchat_agents' );
+
+        add_settings_field( 'agents_panel', __( 'Panel Text', 'tap-chat' ),
+            array( $fields, 'field_agents_panel' ), 'tap-chat-agents', 'tapchat_agents' );
+
+        add_settings_field( 'agents_list', __( 'Agents', 'tap-chat' ),
+            array( $fields, 'field_agents_repeater' ), 'tap-chat-agents', 'tapchat_agents' );
     }
 
     private function register_bubble_settings() {
@@ -181,6 +202,10 @@ class Admin_Settings {
         echo '<p>' . esc_html__( 'Configure your WhatsApp button appearance and basic settings.', 'tap-chat' ) . '</p>';
     }
 
+    public function agents_section_callback() {
+        echo '<p>' . esc_html__( 'Show a small panel where visitors choose which team member to chat with. Add up to 3 agents, each with their own WhatsApp number or custom link.', 'tap-chat' ) . '</p>';
+    }
+
     public function bubble_section_callback() {
         echo '<p>' . esc_html__( 'Display a friendly welcome message to encourage visitors to start a conversation. Use smart triggers to show the bubble at the perfect moment.', 'tap-chat' ) . '</p>';
     }
@@ -208,6 +233,10 @@ class Admin_Settings {
     private function get_defaults() {
         return array(
             'enable_floating' => 'yes',
+            'button_mode' => 'single',
+            'agents_panel_title' => __( 'Start a conversation', 'tap-chat' ),
+            'agents_panel_subtitle' => __( 'Choose someone to chat with', 'tap-chat' ),
+            'agents' => array(),
             'link_type' => 'phone',
             'country_code' => $this->get_default_country_code(),
             'phone' => '',
@@ -221,7 +250,7 @@ class Admin_Settings {
             'color' => '#25D366',
             'button_animation' => 'none',
             'hide_label_mobile' => 'yes',
-            'hide_label_desktop' => 'no',
+            'hide_label_desktop' => 'yes',
             'append_page_context' => 'no',
             'enable_show_on' => 'no',
             'enable_hide_on' => 'no',
@@ -286,6 +315,13 @@ class Admin_Settings {
         
         // General tab
         $out['enable_floating'] = ( isset( $input['enable_floating'] ) && $input['enable_floating'] === 'yes' ) ? 'yes' : 'no';
+
+        // Agents tab
+        $out['button_mode'] = ( isset( $input['button_mode'] ) && $input['button_mode'] === 'agents' ) ? 'agents' : 'single';
+        $out['agents_panel_title'] = isset( $input['agents_panel_title'] ) ? sanitize_text_field( $input['agents_panel_title'] ) : '';
+        $out['agents_panel_subtitle'] = isset( $input['agents_panel_subtitle'] ) ? sanitize_text_field( $input['agents_panel_subtitle'] ) : '';
+        $out['agents'] = $this->sanitize_agents( isset( $input['agents'] ) ? $input['agents'] : array() );
+
         $out['link_type'] = ( isset( $input['link_type'] ) && $input['link_type'] === 'custom' ) ? 'custom' : 'phone';
         $out['country_code'] = isset( $input['country_code'] ) ? sanitize_text_field( $input['country_code'] ) : $this->get_default_country_code();
         $out['custom_url'] = isset( $input['custom_url'] ) ? esc_url_raw( trim( $input['custom_url'] ) ) : '';
@@ -374,6 +410,63 @@ class Admin_Settings {
         $out['analytics_exclude_logged_in'] = ( isset( $input['analytics_exclude_logged_in'] ) && $input['analytics_exclude_logged_in'] === 'yes' ) ? 'yes' : 'no';
         $retention = isset( $input['analytics_retention_days'] ) ? absint( $input['analytics_retention_days'] ) : 365;
         $out['analytics_retention_days'] = max( 7, min( 3650, $retention ) );
+
+        return $out;
+    }
+
+    /**
+     * Sanitize the agents repeater: cap at 3, drop empty rows, and normalize
+     * every field. Preserves each row's stable id (or generates a new one).
+     */
+    private function sanitize_agents( $agents ) {
+        if ( ! is_array( $agents ) ) {
+            return array();
+        }
+
+        $out = array();
+
+        foreach ( $agents as $agent ) {
+            if ( ! is_array( $agent ) ) {
+                continue;
+            }
+
+            $name         = isset( $agent['name'] ) ? sanitize_text_field( $agent['name'] ) : '';
+            $channel_type = ( isset( $agent['channel_type'] ) && $agent['channel_type'] === 'custom' ) ? 'custom' : 'phone';
+
+            $phone = isset( $agent['phone'] ) ? sanitize_text_field( $agent['phone'] ) : '';
+            $phone = preg_replace( '/[\s\-\(\)]/', '', $phone );
+            $phone = ltrim( $phone, '0' );
+
+            $custom_url = isset( $agent['custom_url'] ) ? esc_url_raw( trim( $agent['custom_url'] ) ) : '';
+
+            // Skip rows the user left completely blank.
+            $has_contact = ( 'custom' === $channel_type ) ? ( '' !== $custom_url ) : ( '' !== $phone );
+            if ( '' === $name && ! $has_contact ) {
+                continue;
+            }
+
+            $id = ( isset( $agent['id'] ) && '' !== $agent['id'] )
+                ? sanitize_key( $agent['id'] )
+                : 'agent_' . substr( md5( uniqid( '', true ) ), 0, 8 );
+
+            $out[] = array(
+                'id'           => $id,
+                'name'         => $name,
+                'role'         => isset( $agent['role'] ) ? sanitize_text_field( $agent['role'] ) : '',
+                'avatar'       => isset( $agent['avatar'] ) ? esc_url_raw( $agent['avatar'] ) : '',
+                'channel_type' => $channel_type,
+                'country_code' => isset( $agent['country_code'] ) ? preg_replace( '/\D+/', '', sanitize_text_field( $agent['country_code'] ) ) : '',
+                'phone'        => $phone,
+                'custom_url'   => $custom_url,
+                'message'      => isset( $agent['message'] ) ? sanitize_textarea_field( $agent['message'] ) : '',
+                'online'       => ( isset( $agent['online'] ) && $agent['online'] === 'yes' ) ? 'yes' : 'no',
+                'enabled'      => ( isset( $agent['enabled'] ) && $agent['enabled'] === 'no' ) ? 'no' : 'yes',
+            );
+
+            if ( count( $out ) >= 3 ) {
+                break;
+            }
+        }
 
         return $out;
     }

@@ -255,9 +255,10 @@
 }
 
 .tapchat-bubble-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  left: auto !important;
   width: 28px !important;
   height: 28px !important;
   border: none !important;
@@ -267,7 +268,7 @@
   cursor: pointer;
   padding: 0 !important;
   margin: 0 !important;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   opacity: 0.4;
@@ -277,6 +278,7 @@
   line-height: 1 !important;
   font-family: Arial, sans-serif !important;
   font-weight: 400 !important;
+  vertical-align: baseline !important;
   z-index: 10;
   outline: none;
   min-width: 28px !important;
@@ -297,8 +299,8 @@
 }
 
 [dir="rtl"] .tapchat-bubble-close {
-  right: auto;
-  left: 10px;
+  right: auto !important;
+  left: 10px !important;
 }
 
 .tapchat-bubble-close:hover {
@@ -406,25 +408,13 @@
   right: auto;
 }
 
-[dir="rtl"] .tapchat-pos-right ~ .tapchat-welcome-bubble.position-side {
-  right: auto;
-  left: calc(18px + 150px + 20px);
-}
-
-[dir="rtl"] .tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-  left: auto;
-  right: calc(18px + 150px + 20px);
-}
-
-[dir="rtl"] .tapchat-hide-label-desktop ~ .tapchat-welcome-bubble.position-side {
-  left: calc(18px + var(--tapchat-size) + 20px + 15px);
-  right: auto;
-}
-
-[dir="rtl"] .tapchat-hide-label-desktop.tapchat-pos-left ~ .tapchat-welcome-bubble.position-side {
-  right: calc(18px + var(--tapchat-size) + 20px + 15px);
-  left: auto;
-}
+/*
+ * Note: the "side" bubble sits on the inner edge of the button, and the
+ * button's screen side is fixed by .tapchat-pos-right / .tapchat-pos-left
+ * (independent of text direction). So RTL must reuse the LTR placement above;
+ * flipping left/right here would push the bubble to the opposite side of the
+ * button. The arrow (::after) rules below already stay correct in RTL.
+ */
 
 .tapchat-welcome-bubble.position-side::after {
   top: 50%;
@@ -496,8 +486,8 @@
   }
   
   .tapchat-bubble-close {
-    top: 8px;
-    right: 8px;
+    top: 8px !important;
+    right: 8px !important;
     width: 26px !important;
     height: 26px !important;
     font-size: 18px !important;
@@ -512,8 +502,8 @@
   }
   
   [dir="rtl"] .tapchat-bubble-close {
-    right: auto;
-    left: 8px;
+    right: auto !important;
+    left: 8px !important;
   }
   
   .tapchat-welcome-bubble::after {
@@ -662,4 +652,247 @@
   .tapchat-anim-attention::after {
     animation: none !important;
   }
+}
+/* =========================================================================
+   Multiple agents - picker panel (added in 2.1.0)
+   ========================================================================= */
+
+/* The trigger reuses the .tapchat-fab anchor styling; the panel opens above it. */
+
+.tapchat-agents-panel {
+  position: fixed;
+  bottom: calc(var(--tapchat-size) + 69px);
+  display: none;
+  flex-direction: column;
+  width: 336px;
+  max-width: calc(100vw - 32px);
+  max-height: min(70vh, 560px);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  /* Above the welcome bubble (99998) and the FAB (99999). */
+  z-index: 100000;
+}
+
+.tapchat-agents-panel.tapchat-pos-right { right: 18px; }
+.tapchat-agents-panel.tapchat-pos-left { left: 18px; }
+
+.tapchat-agents-panel.open {
+  display: flex;
+  animation: tapchat-panel-in 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes tapchat-panel-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- Header ---- */
+.tapchat-agents-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--tapchat-color);
+  color: #fff;
+}
+
+.tapchat-agents-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tapchat-agents-title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+}
+
+.tapchat-agents-subtitle {
+  font-size: 12.5px;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.tapchat-agents-close {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  border: 0 !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.tapchat-agents-close:hover { background: rgba(255, 255, 255, 0.34) !important; transform: scale(1.06); }
+.tapchat-agents-close:active { transform: scale(0.96); }
+.tapchat-agents-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ---- Agent list ---- */
+.tapchat-agents-list {
+  padding: 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tapchat-agent-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+.tapchat-agent-link + .tapchat-agent-link { margin-top: 8px; }
+
+.tapchat-agent-link:hover {
+  background: #fbfbfb;
+  border-color: rgba(0, 0, 0, 0.14);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  transform: translateY(-1px);
+}
+
+.tapchat-agent-link:focus-visible {
+  outline: none;
+  border-color: var(--tapchat-color);
+  box-shadow: 0 0 0 2px var(--tapchat-color);
+}
+
+/* Avatar */
+.tapchat-agent-avatar {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tapchat-agent-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.tapchat-agent-avatar-icon { width: 24px; height: 24px; fill: #fff; }
+
+.tapchat-agent-dot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #25D366;
+  border: 2px solid #fff;
+}
+
+/* Text */
+.tapchat-agent-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: start;
+}
+
+.tapchat-agent-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1a1a1a;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tapchat-agent-role {
+  font-size: 12.5px;
+  color: #707070;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tapchat-agent-status {
+  font-size: 11.5px;
+  line-height: 1.25;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tapchat-agent-status.is-online { color: #1faa55; }
+.tapchat-agent-status.is-offline { color: #9a9a9a; }
+
+.tapchat-agent-link.is-offline .tapchat-agent-avatar { filter: grayscale(1); opacity: 0.7; }
+
+/* Trailing channel chip */
+.tapchat-agent-channel {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--tapchat-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.tapchat-agent-link:hover .tapchat-agent-channel { background: rgba(0, 0, 0, 0.07); }
+.tapchat-agent-link.is-offline .tapchat-agent-channel { color: #b0b0b0; }
+.tapchat-agent-channel-icon { width: 20px; height: 20px; fill: currentColor; }
+
+/* ---- RTL ---- */
+[dir="rtl"] .tapchat-agent-dot { right: auto; left: 0; }
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+  .tapchat-agents-panel {
+    bottom: calc(var(--tapchat-mobile-size) + 65px);
+    width: calc(100vw - 28px);
+    border-radius: 8px;
+  }
+  .tapchat-agents-header { padding: 15px 16px; }
+  .tapchat-agents-title { font-size: 15.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tapchat-agents-panel.open { animation: none !important; }
+  .tapchat-agent-link:hover { transform: none; }
+  .tapchat-agents-close:hover { transform: none; }
 }

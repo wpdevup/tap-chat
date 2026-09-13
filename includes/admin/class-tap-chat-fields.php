@@ -394,7 +394,7 @@ class Admin_Fields {
     }
 
     public function field_hide_label_desktop() {
-        $val = $this->get( 'hide_label_desktop', 'no' );
+        $val = $this->get( 'hide_label_desktop', 'yes' );
         ?>
         <input type="hidden" name="tap_chat_settings[hide_label_desktop]" value="no" />
         <label>
@@ -964,6 +964,229 @@ class Admin_Fields {
     
     <?php
 }
+
+    public function field_button_mode() {
+        $mode = $this->get( 'button_mode', 'single' );
+        ?>
+        <div class="tap-chat-mode-toggle">
+            <label>
+                <input type="radio" name="tap_chat_settings[button_mode]" value="single" class="tap-chat-mode-radio" <?php checked( $mode, 'single' ); ?> />
+                <?php esc_html_e( 'Single button', 'tap-chat' ); ?>
+            </label>
+            <label>
+                <input type="radio" name="tap_chat_settings[button_mode]" value="agents" class="tap-chat-mode-radio" <?php checked( $mode, 'agents' ); ?> />
+                <?php esc_html_e( 'Multiple agents (up to 3)', 'tap-chat' ); ?>
+            </label>
+        </div>
+        <p class="description">
+            <?php esc_html_e( '“Single button” uses the WhatsApp number / link from the General tab. “Multiple agents” shows a small panel where visitors pick who to chat with.', 'tap-chat' ); ?>
+        </p>
+        <?php
+    }
+
+    public function field_agents_panel() {
+        $title    = $this->get( 'agents_panel_title', __( 'Start a conversation', 'tap-chat' ) );
+        $subtitle = $this->get( 'agents_panel_subtitle', __( 'Choose someone to chat with', 'tap-chat' ) );
+        ?>
+        <div class="tap-chat-agents-dependent">
+            <p>
+                <label class="tap-chat-field-label"><?php esc_html_e( 'Panel Title', 'tap-chat' ); ?></label><br />
+                <input type="text" class="regular-text" name="tap_chat_settings[agents_panel_title]"
+                       value="<?php echo esc_attr( $title ); ?>"
+                       placeholder="<?php esc_attr_e( 'Start a conversation', 'tap-chat' ); ?>" />
+            </p>
+            <p>
+                <label class="tap-chat-field-label"><?php esc_html_e( 'Panel Subtitle', 'tap-chat' ); ?></label><br />
+                <input type="text" class="regular-text" name="tap_chat_settings[agents_panel_subtitle]"
+                       value="<?php echo esc_attr( $subtitle ); ?>"
+                       placeholder="<?php esc_attr_e( 'Choose someone to chat with', 'tap-chat' ); ?>" />
+            </p>
+            <p class="description"><?php esc_html_e( 'Shown at the top of the agent picker. Leave a field empty to hide it.', 'tap-chat' ); ?></p>
+        </div>
+        <?php
+    }
+
+    public function field_agents_repeater() {
+        $agents = $this->get( 'agents', array() );
+        if ( ! is_array( $agents ) || empty( $agents ) ) {
+            // Show one blank card so the fields are visible right away.
+            $agents = array( array() );
+        }
+
+        $default_cc = $this->get( 'country_code', '49' );
+        ?>
+        <div class="tap-chat-agents-dependent">
+            <div class="tap-chat-agents-repeater" data-max="3">
+                <div class="tap-chat-agents-items">
+                    <?php
+                    $i = 0;
+                    foreach ( $agents as $agent ) {
+                        if ( $i >= 3 ) {
+                            break;
+                        }
+                        $this->render_agent_card( $i, is_array( $agent ) ? $agent : array(), $default_cc );
+                        $i++;
+                    }
+                    ?>
+                </div>
+
+                <p class="tap-chat-agents-actions">
+                    <button type="button" class="button button-secondary tap-chat-add-agent">
+                        <span aria-hidden="true">+</span> <?php esc_html_e( 'Add agent', 'tap-chat' ); ?>
+                    </button>
+                    <span class="tap-chat-agents-limit description" style="display:none;">
+                        <?php esc_html_e( 'Maximum of 3 agents reached.', 'tap-chat' ); ?>
+                    </span>
+                </p>
+            </div>
+
+            <script type="text/html" class="tap-chat-agent-template">
+                <?php $this->render_agent_card( '__INDEX__', array(), $default_cc ); ?>
+            </script>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render a single agent card for the repeater.
+     *
+     * @param int|string $index      Numeric index, or '__INDEX__' for the JS template.
+     * @param array      $agent      Saved agent data (may be empty).
+     * @param string     $default_cc Fallback country code for new/blank agents.
+     */
+    private function render_agent_card( $index, $agent, $default_cc = '' ) {
+        $id           = isset( $agent['id'] ) ? $agent['id'] : '';
+        $name         = isset( $agent['name'] ) ? $agent['name'] : '';
+        $role         = isset( $agent['role'] ) ? $agent['role'] : '';
+        $avatar       = isset( $agent['avatar'] ) ? $agent['avatar'] : '';
+        $channel_type = ( isset( $agent['channel_type'] ) && 'custom' === $agent['channel_type'] ) ? 'custom' : 'phone';
+        $country_code = isset( $agent['country_code'] ) && '' !== $agent['country_code'] ? $agent['country_code'] : $default_cc;
+        $phone        = isset( $agent['phone'] ) ? $agent['phone'] : '';
+        $custom_url   = isset( $agent['custom_url'] ) ? $agent['custom_url'] : '';
+        $message      = isset( $agent['message'] ) ? $agent['message'] : '';
+        $online       = ! ( isset( $agent['online'] ) && 'no' === $agent['online'] );
+        $enabled      = ! ( isset( $agent['enabled'] ) && 'no' === $agent['enabled'] );
+
+        $base = 'tap_chat_settings[agents][' . $index . ']';
+        $num  = is_numeric( $index ) ? ( (int) $index + 1 ) : '';
+        ?>
+        <div class="tap-chat-agent-card">
+            <div class="tap-chat-agent-card-header">
+                <span class="tap-chat-agent-drag" title="<?php esc_attr_e( 'Drag to reorder', 'tap-chat' ); ?>" aria-hidden="true">&#8942;&#8942;</span>
+                <span class="tap-chat-agent-card-title">
+                    <?php esc_html_e( 'Agent', 'tap-chat' ); ?> #<span class="tap-chat-agent-number"><?php echo esc_html( $num ); ?></span>
+                </span>
+
+                <label class="tap-chat-agent-enabled">
+                    <input type="hidden" name="<?php echo esc_attr( $base ); ?>[enabled]" value="no" />
+                    <input type="checkbox" name="<?php echo esc_attr( $base ); ?>[enabled]" value="yes" <?php checked( $enabled ); ?> />
+                    <?php esc_html_e( 'Enabled', 'tap-chat' ); ?>
+                </label>
+
+                <button type="button" class="button-link tap-chat-agent-remove" aria-label="<?php esc_attr_e( 'Remove agent', 'tap-chat' ); ?>">
+                    <?php esc_html_e( 'Remove', 'tap-chat' ); ?>
+                </button>
+            </div>
+
+            <input type="hidden" name="<?php echo esc_attr( $base ); ?>[id]" value="<?php echo esc_attr( $id ); ?>" />
+
+            <div class="tap-chat-agent-body">
+                <div class="tap-chat-agent-avatar-upload">
+                    <div class="tap-chat-agent-avatar-preview<?php echo '' !== $avatar ? ' has-image' : ''; ?>">
+                        <img src="<?php echo esc_url( $avatar ); ?>" alt="" />
+                    </div>
+                    <div class="tap-chat-agent-avatar-controls">
+                        <input type="hidden" class="tap-chat-agent-avatar-url" name="<?php echo esc_attr( $base ); ?>[avatar]" value="<?php echo esc_url( $avatar ); ?>" />
+                        <button type="button" class="button tap-chat-agent-avatar-upload-btn"><?php esc_html_e( 'Avatar', 'tap-chat' ); ?></button>
+                        <button type="button" class="button tap-chat-agent-avatar-remove"><?php esc_html_e( 'Remove', 'tap-chat' ); ?></button>
+                    </div>
+                </div>
+
+                <div class="tap-chat-agent-fields">
+                    <div class="tap-chat-agent-row">
+                        <label class="tap-chat-agent-col">
+                            <span class="tap-chat-field-label"><?php esc_html_e( 'Name', 'tap-chat' ); ?></span>
+                            <input type="text" class="regular-text" name="<?php echo esc_attr( $base ); ?>[name]"
+                                   value="<?php echo esc_attr( $name ); ?>"
+                                   placeholder="<?php esc_attr_e( 'e.g. Sarah', 'tap-chat' ); ?>" />
+                        </label>
+                        <label class="tap-chat-agent-col">
+                            <span class="tap-chat-field-label"><?php esc_html_e( 'Role (optional)', 'tap-chat' ); ?></span>
+                            <input type="text" class="regular-text" name="<?php echo esc_attr( $base ); ?>[role]"
+                                   value="<?php echo esc_attr( $role ); ?>"
+                                   placeholder="<?php esc_attr_e( 'e.g. Sales', 'tap-chat' ); ?>" />
+                        </label>
+                    </div>
+
+                    <div class="tap-chat-agent-channel-toggle">
+                        <label>
+                            <input type="radio" class="tap-chat-agent-channel-radio" name="<?php echo esc_attr( $base ); ?>[channel_type]" value="phone" <?php checked( $channel_type, 'phone' ); ?> />
+                            <?php esc_html_e( 'WhatsApp', 'tap-chat' ); ?>
+                        </label>
+                        <label>
+                            <input type="radio" class="tap-chat-agent-channel-radio" name="<?php echo esc_attr( $base ); ?>[channel_type]" value="custom" <?php checked( $channel_type, 'custom' ); ?> />
+                            <?php esc_html_e( 'Custom link', 'tap-chat' ); ?>
+                        </label>
+                    </div>
+
+                    <div class="tap-chat-agent-panel" data-agent-panel="phone"<?php echo 'custom' === $channel_type ? ' style="display:none;"' : ''; ?>>
+                        <div class="tap-chat-agent-row">
+                            <label class="tap-chat-agent-col">
+                                <span class="tap-chat-field-label"><?php esc_html_e( 'Country', 'tap-chat' ); ?></span>
+                                <?php $this->render_country_select( $base . '[country_code]', $country_code ); ?>
+                            </label>
+                            <label class="tap-chat-agent-col">
+                                <span class="tap-chat-field-label"><?php esc_html_e( 'Phone number', 'tap-chat' ); ?></span>
+                                <input type="text" class="regular-text" name="<?php echo esc_attr( $base ); ?>[phone]"
+                                       value="<?php echo esc_attr( $phone ); ?>"
+                                       placeholder="123456789" />
+                            </label>
+                        </div>
+                        <label class="tap-chat-agent-col">
+                            <span class="tap-chat-field-label"><?php esc_html_e( 'Pre-filled message (optional)', 'tap-chat' ); ?></span>
+                            <textarea rows="2" class="large-text" name="<?php echo esc_attr( $base ); ?>[message]"
+                                      placeholder="<?php esc_attr_e( 'Hello! I have a question…', 'tap-chat' ); ?>"><?php echo esc_textarea( $message ); ?></textarea>
+                        </label>
+                    </div>
+
+                    <div class="tap-chat-agent-panel" data-agent-panel="custom"<?php echo 'phone' === $channel_type ? ' style="display:none;"' : ''; ?>>
+                        <label class="tap-chat-agent-col">
+                            <span class="tap-chat-field-label"><?php esc_html_e( 'Custom link', 'tap-chat' ); ?></span>
+                            <input type="url" class="regular-text" name="<?php echo esc_attr( $base ); ?>[custom_url]"
+                                   value="<?php echo esc_attr( $custom_url ); ?>"
+                                   placeholder="https://t.me/username" />
+                        </label>
+                        <p class="description"><?php esc_html_e( 'Telegram, Messenger, tel:, mailto:, or any URL. The pre-filled message is not sent with a custom link.', 'tap-chat' ); ?></p>
+                    </div>
+
+                    <label class="tap-chat-agent-online">
+                        <input type="hidden" name="<?php echo esc_attr( $base ); ?>[online]" value="no" />
+                        <input type="checkbox" name="<?php echo esc_attr( $base ); ?>[online]" value="yes" <?php checked( $online ); ?> />
+                        <?php esc_html_e( 'Show as online (green dot)', 'tap-chat' ); ?>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render a native country <select> built from the country list.
+     */
+    private function render_country_select( $name, $selected ) {
+        $countries = $this->get_countries();
+        echo '<select name="' . esc_attr( $name ) . '" class="tap-chat-agent-country">';
+        echo '<option value="">' . esc_html__( 'Select country…', 'tap-chat' ) . '</option>';
+        foreach ( $countries as $code => $data ) {
+            printf(
+                '<option value="%s"%s>%s</option>',
+                esc_attr( $code ),
+                selected( (string) $selected, (string) $code, false ),
+                esc_html( $data['flag'] . ' ' . $data['name'] . ' (+' . $code . ')' )
+            );
+        }
+        echo '</select>';
+    }
 
     private function render_page_selector( $field_name, $selected_pages ) {
         $pages = get_pages( array(

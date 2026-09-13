@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tap Chat – Floating Contact Button
  * Description: Floating contact button with welcome bubble for whatsapp, working hours, page targeting and support for multiple messaging services.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: WPdevup
  * Author URI: https://wpdevup.com/tap-chat/
  * License: GPLv2 or later
@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define('TAP_CHAT_VERSION', '2.0.0');
+define('TAP_CHAT_VERSION', '2.1.0');
 define( 'TAP_CHAT_PLUGIN_FILE', __FILE__ );
 define( 'TAP_CHAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TAP_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -163,9 +163,40 @@ register_activation_hook( __FILE__, function(){
         $needs_update = true;
     }
 
+    // Multiple agents (added in 2.1.0). Default to single-button mode and seed the
+    // first agent from the existing single-button config so switching modes later
+    // doesn't start from an empty list.
+    if ( ! isset( $settings['button_mode'] ) ) {
+        $settings['button_mode'] = 'single';
+        $settings['agents_panel_title'] = __( 'Start a conversation', 'tap-chat' );
+        $settings['agents_panel_subtitle'] = __( 'Choose someone to chat with', 'tap-chat' );
+
+        if ( empty( $settings['agents'] ) || ! is_array( $settings['agents'] ) ) {
+            $settings['agents'] = array(
+                array(
+                    'id'           => 'agent_' . substr( md5( uniqid( '', true ) ), 0, 8 ),
+                    'name'         => ! empty( $settings['welcome_bubble_name'] ) ? $settings['welcome_bubble_name'] : __( 'Support', 'tap-chat' ),
+                    'role'         => '',
+                    'avatar'       => isset( $settings['welcome_bubble_avatar'] ) ? $settings['welcome_bubble_avatar'] : '',
+                    'channel_type' => ( isset( $settings['link_type'] ) && 'custom' === $settings['link_type'] ) ? 'custom' : 'phone',
+                    'country_code' => isset( $settings['country_code'] ) ? $settings['country_code'] : '',
+                    'phone'        => isset( $settings['phone'] ) ? $settings['phone'] : '',
+                    'custom_url'   => isset( $settings['custom_url'] ) ? $settings['custom_url'] : '',
+                    'message'      => isset( $settings['message'] ) ? $settings['message'] : '',
+                    'online'       => 'yes',
+                    'enabled'      => 'yes',
+                ),
+            );
+        }
+        $needs_update = true;
+    }
+
     if ( $needs_update ) {
         update_option('tap_chat_settings', $settings);
     }
+
+    // Show the setup reminder again after a fresh (re)activation.
+    delete_option( 'tap_chat_setup_notice_dismissed' );
 
     // First-party analytics storage + maintenance schedule.
     require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-analytics-store.php';

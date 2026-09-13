@@ -103,7 +103,7 @@ class Rest_Collector {
      * stored — only one of desktop|mobile|tablet|unknown.
      */
     private function detect_device() {
-        $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? (string) wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) : '';
+        $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
         if ( '' === $ua ) {
             return 'unknown';
         }
@@ -137,7 +137,7 @@ class Rest_Collector {
      * the key only; it is not stored anywhere.
      */
     private function within_rate_limit() {
-        $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '';
+        $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
         if ( '' === $ip ) {
             return true;
         }

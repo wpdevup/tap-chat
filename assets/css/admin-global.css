@@ -1,0 +1,52 @@
+/*
+ * Tap Chat notices and dashboard widget.
+ * Loaded only on screens where one of them is printed.
+ */
+.tap-chat-notice,
+.tap-chat-dw {
+	--tc-ink: #1d2327;
+	--tc-muted: #50575e;
+	--tc-faint: #646970;
+	--tc-hair: #e7e7ea;
+	--tc-wash: #f6f7f7;
+	--tc-accent: var(--wp-admin-theme-color, #2271b1);
+	--tc-accent-hover: var(--wp-admin-theme-color-darker-10, #135e96);
+	--tc-accent-soft: rgba(var(--wp-admin-theme-color--rgb, 34, 113, 177), .08);
+}
+
+/* Notices */
+.notice.tap-chat-notice { display: flex; align-items: flex-start; gap: 16px; padding: 16px 18px; border: 1px solid var(--tc-hair); border-radius: 14px; background: #fff; box-shadow: none; }
+.tap-chat-notice__mark { display: grid; flex: none; place-items: center; inline-size: 42px; block-size: 42px; border-radius: 10px; background: var(--tc-accent-soft); color: var(--tc-accent); }
+.tap-chat-notice__mark svg { inline-size: 22px; block-size: 22px; }
+.tap-chat-notice__body { flex: 1; min-inline-size: 0; }
+.tap-chat-notice .tap-chat-notice__title { margin: 0 0 2px; padding: 0; color: var(--tc-ink); font-size: 15px; font-weight: 600; }
+.tap-chat-notice .tap-chat-notice__text { margin: 0; padding: 0; max-inline-size: 76ch; color: var(--tc-muted); font-size: 13px; }
+.tap-chat-notice .tap-chat-notice__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: 12px 0 0; padding: 0; }
+.tap-chat-notice a.tap-chat-notice__btn { display: inline-flex; align-items: center; gap: 8px; min-block-size: 34px; padding: 0 14px; border-radius: 8px; background: var(--tc-accent); color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; }
+.tap-chat-notice a.tap-chat-notice__btn:hover, .tap-chat-notice a.tap-chat-notice__btn:focus { background: var(--tc-accent-hover); color: #fff; }
+.tap-chat-notice a.tap-chat-notice__btn:focus-visible, .tap-chat-notice a.tap-chat-notice__link:focus-visible { outline: 2px solid var(--tc-accent); outline-offset: 2px; box-shadow: none; }
+.tap-chat-notice__stars { color: #ffd166; letter-spacing: 1px; }
+.tap-chat-notice a.tap-chat-notice__link { color: var(--tc-muted); font-size: 13px; text-decoration: none; }
+.tap-chat-notice a.tap-chat-notice__link:hover { color: var(--tc-ink); text-decoration: underline; }
+
+/* Dashboard widget */
+#tap_chat_summary .inside { margin: 0; padding: 0; }
+.tap-chat-dw { color: var(--tc-ink); }
+.tap-chat-dw__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block-end: 1px solid var(--tc-hair); }
+.tap-chat-dw__stat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 18px 8px 16px; }
+.tap-chat-dw__stat + .tap-chat-dw__stat { border-inline-start: 1px solid var(--tc-hair); }
+.tap-chat-dw__num { font-size: 24px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tap-chat-dw__lbl { color: var(--tc-faint); font-size: 12px; }
+.tap-chat-dw__spark { padding: 14px 16px 6px; color: var(--tc-accent); }
+.tap-chat-dw__spark-top { display: flex; justify-content: space-between; margin-block-end: 6px; color: var(--tc-faint); font-size: 12px; }
+.tap-chat-dw__svg { display: block; }
+.tap-chat-dw__foot { display: flex; justify-content: flex-end; padding: 10px 16px 16px; }
+.tap-chat-dw a.tap-chat-dw__cta { display: inline-flex; align-items: center; gap: 6px; min-block-size: 32px; padding: 0 14px; border: 1px solid var(--tc-accent); border-radius: 8px; color: var(--tc-accent); font-size: 13px; font-weight: 600; text-decoration: none; }
+.tap-chat-dw a.tap-chat-dw__cta:hover, .tap-chat-dw a.tap-chat-dw__cta:focus { background: var(--tc-accent-soft); color: var(--tc-accent-hover); }
+.tap-chat-dw a.tap-chat-dw__cta:focus-visible { outline: 2px solid var(--tc-accent); outline-offset: 2px; box-shadow: none; }
+.rtl .tap-chat-dw__arrow { display: inline-block; transform: scaleX(-1); }
+.tap-chat-dw__empty { display: flex; flex-direction: column; align-items: center; padding: 26px 20px; text-align: center; }
+.tap-chat-dw__empty-icon { display: grid; place-items: center; inline-size: 44px; block-size: 44px; margin-block-end: 10px; border-radius: 12px; background: var(--tc-wash); color: var(--tc-faint); }
+.tap-chat-dw__empty-icon svg { inline-size: 24px; block-size: 24px; }
+.tap-chat-dw .tap-chat-dw__empty-title { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+.tap-chat-dw .tap-chat-dw__empty-text { margin: 0 0 14px; color: var(--tc-muted); font-size: 12px; }

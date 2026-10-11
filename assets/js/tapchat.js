@@ -112,23 +112,30 @@
       $agentsPanel.removeClass('open');
       $agentsTrigger.attr('aria-expanded', 'false');
     }
-    function tapchatOpenAgents() {
+    // Focus moves into the panel only for keyboard users. Moving it on a
+    // mouse or touch click makes many themes paint their link :focus style
+    // (underline, grey fill) on the first agent.
+    function tapchatOpenAgents(fromKeyboard) {
       // Collapse the welcome bubble so it never overlaps the panel.
       $('.tapchat-welcome-bubble').removeClass('visible').addClass('hidden');
       $agentsPanel.addClass('open');
       $agentsTrigger.attr('aria-expanded', 'true');
-      var $first = $agentsPanel.find('.tapchat-agent-link').first();
-      if ($first.length) { $first.trigger('focus'); }
+      if (fromKeyboard) {
+        var $first = $agentsPanel.find('.tapchat-agent-link').first();
+        if ($first.length) { $first.trigger('focus'); }
+      }
     }
-    function tapchatToggleAgents() {
+    function tapchatToggleAgents(fromKeyboard) {
       if ($agentsPanel.hasClass('open')) { tapchatCloseAgents(); }
-      else { tapchatOpenAgents(); }
+      else { tapchatOpenAgents(fromKeyboard); }
     }
 
     if ($agentsPanel.length && $agentsTrigger.length) {
       $agentsTrigger.on('click', function(e) {
         e.preventDefault();
-        tapchatToggleAgents();
+        // A click fired by Enter or Space has no pointer position (detail 0).
+        var orig = e.originalEvent;
+        tapchatToggleAgents(!!orig && orig.detail === 0);
       });
 
       $agentsPanel.on('click', '.tapchat-agents-close', function(e) {

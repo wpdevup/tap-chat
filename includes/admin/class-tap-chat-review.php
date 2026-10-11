@@ -58,6 +58,13 @@ class Review_Notice {
         return ( $idx >= 0 && $idx < $count ) ? $idx : 0;
     }
 
+    /**
+     * Whether the notice will be printed on the current screen.
+     */
+    public function is_due() {
+        return $this->should_show();
+    }
+
     private function should_show() {
         if ( ! current_user_can( 'manage_options' ) ) {
             return false;
@@ -108,24 +115,22 @@ class Review_Notice {
         $v     = $variants[ $this->get_variant_index( count( $variants ) ) ];
         $later = wp_nonce_url( add_query_arg( 'tap_chat_review', 'later' ), 'tap_chat_review' );
         $done  = wp_nonce_url( add_query_arg( 'tap_chat_review', 'done' ), 'tap_chat_review' );
-        ?>
-        <div class="notice notice-info tap-chat-review-notice" style="border-left-color:#25D366;">
-            <p style="font-size:14px;margin:.7em 0 .2em;"><strong><?php echo esc_html( $v['title'] ); ?></strong></p>
-            <p style="margin:.2em 0 .9em;max-width:760px;"><?php echo esc_html( $v['body'] ); ?></p>
-            <p style="margin:.2em 0 1em;">
-                <a href="<?php echo esc_url( self::REVIEW_URL ); ?>" class="button button-primary" target="_blank" rel="noopener">
-                    <?php echo esc_html( $v['cta'] ); ?> &#9733;&#9733;&#9733;&#9733;&#9733;
-                </a>
-                <a href="<?php echo esc_url( $done ); ?>" class="button-link" style="margin-left:12px;">
-                    <?php esc_html_e( 'I already did', 'tap-chat' ); ?>
-                </a>
-                <span style="margin:0 6px;color:#ccc;">&middot;</span>
-                <a href="<?php echo esc_url( $later ); ?>" class="button-link">
-                    <?php esc_html_e( 'Maybe later', 'tap-chat' ); ?>
-                </a>
-            </p>
-        </div>
-        <?php
+
+        echo '<div class="notice tap-chat-notice tap-chat-review-notice"><span class="tap-chat-notice__mark">';
+        Admin_Icons::render( 'star' );
+        echo '</span><div class="tap-chat-notice__body">';
+        printf( '<p class="tap-chat-notice__title">%s</p>', esc_html( $v['title'] ) );
+        printf( '<p class="tap-chat-notice__text">%s</p>', esc_html( $v['body'] ) );
+        printf(
+            '<p class="tap-chat-notice__actions"><a class="tap-chat-notice__btn" href="%1$s" target="_blank" rel="noopener">%2$s <span class="tap-chat-notice__stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></a><a class="tap-chat-notice__link" href="%3$s">%4$s</a><a class="tap-chat-notice__link" href="%5$s">%6$s</a></p>',
+            esc_url( self::REVIEW_URL ),
+            esc_html( $v['cta'] ),
+            esc_url( $done ),
+            esc_html__( 'I already did', 'tap-chat' ),
+            esc_url( $later ),
+            esc_html__( 'Maybe later', 'tap-chat' )
+        );
+        echo '</div></div>';
     }
 
     public function handle_actions() {

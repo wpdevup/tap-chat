@@ -1,474 +1,485 @@
-jQuery(document).ready(function($) {
-    
-    // The Save button is not needed on the read-only Overview report.
-    function tapChatSyncAnalyticsChrome() {
-        var onAnalytics = $('.tap-chat-tabs .nav-tab-active').data('tab') === 'analytics';
-        var sub = $('.tap-chat-subtab.nav-tab-active').data('subtab');
-        var onOverview = (onAnalytics && sub === 'overview');
-        $('.tap-chat-settings-form p.submit').toggle(!onOverview);
-    }
+/* Tap Chat admin. */
+( function ( $ ) {
+	'use strict';
 
-    function tapChatActivateSubtab(subId) {
-        var $target = $('.tap-chat-subtab-content[data-subtab-content="' + subId + '"]');
-        if (!$target.length) {
-            // Stale/unknown sub-tab (e.g. cached markup): fall back to the first one.
-            subId = $('.tap-chat-subtab').first().data('subtab');
-            $target = $('.tap-chat-subtab-content[data-subtab-content="' + subId + '"]');
-        }
-        $('.tap-chat-subtab').removeClass('nav-tab-active');
-        $('.tap-chat-subtab[data-subtab="' + subId + '"]').addClass('nav-tab-active');
-        $('.tap-chat-subtab-content').hide();
-        $target.show();
-        tapChatSyncAnalyticsChrome();
-    }
+	var OPTION = 'tap_chat_settings';
+	var AGENT_MAX = 3;
+	var DESKTOP_SCALE = 0.72; // Matches the scale of .tap-chat-preview__dock in admin.css.
+	var settings = window.tapChatAdmin || {};
+	var i18n = settings.i18n || {};
 
-    function tapChatActivateTab(tabId, subId) {
-        if (!$('#tab-' + tabId).length) { return; }
-        $('.tap-chat-tabs .nav-tab').removeClass('nav-tab-active');
-        $('.tap-chat-tabs .nav-tab[data-tab="' + tabId + '"]').addClass('nav-tab-active');
-        $('.tap-chat-tab-content').hide();
-        $('#tab-' + tabId).show();
-        if (tabId === 'analytics') {
-            tapChatActivateSubtab(subId || 'overview');
-        } else {
-            tapChatSyncAnalyticsChrome();
-        }
-    }
+	$( function () {
+		var $form = $( '[data-tap-chat-form]' );
+		if ( ! $form.length ) {
+			return;
+		}
 
-    // Main tab switching
-    $('.tap-chat-tabs .nav-tab').on('click', function(e) {
-        e.preventDefault();
-        var tabId = $(this).data('tab');
-        tapChatActivateTab(tabId);
-        if (history.pushState) {
-            history.pushState(null, null, '#' + tabId);
-        }
-    });
+		initViews( $form );
+		initConditionals( $form );
+		initRanges( $form );
+		initColorPicker( $form );
+		initMedia( $form );
+		initPickers( $form );
+		initDays( $form );
+		initAgents( $form );
+		initPreview( $form );
 
-    // Sub-tab switching (Analytics: Overview / Settings)
-    $('.tap-chat-subtab').on('click', function(e) {
-        e.preventDefault();
-        var subId = $(this).data('subtab');
-        tapChatActivateSubtab(subId);
-        if (history.pushState) {
-            history.pushState(null, null, '#analytics/' + subId);
-        }
-    });
+		// admin.js is in charge now; drop the first-paint mark set by the boot script.
+		$( '[data-tap-chat-boot]' ).removeAttr( 'data-tap-chat-boot' );
 
-    // Handle initial tab (and optional sub-tab) from URL hash: #tab or #analytics/sub
-    var rawHash = window.location.hash.replace('#', '');
-    if (rawHash) {
-        var parts = rawHash.split('/');
-        tapChatActivateTab(parts[0], parts[1]);
-    } else {
-        tapChatSyncAnalyticsChrome();
-    }
-    
-    // Link type toggle (phone vs custom URL)
-    function tapChatApplyLinkType(val) {
-        $('.tap-chat-link-panel').hide();
-        $('.tap-chat-link-panel[data-link-panel="' + val + '"]').show();
-        // Default Message is WhatsApp-only, hide it for custom links
-        $('.tap-chat-message-row').toggle(val === 'phone');
-    }
-    $('.tap-chat-link-type-radio').on('change', function() {
-        tapChatApplyLinkType($(this).val());
-    });
-    tapChatApplyLinkType($('.tap-chat-link-type-radio:checked').val() || 'phone');
+		$( document ).on( 'click', '[data-tap-chat-confirm]', function ( event ) {
+			if ( ! window.confirm( $( this ).attr( 'data-tap-chat-confirm' ) ) ) {
+				event.preventDefault();
+			}
+		} );
+	} );
 
-    // Color picker
-    $('.tap-chat-color-picker').wpColorPicker();
-    
-    // Country selector
-    var selectedCode = $('input[name="tap_chat_settings[country_code]"]').val();
-    
-    function updateSelectedDisplay() {
-        var code = $('input[name="tap_chat_settings[country_code]"]').val();
-        var option = $('.tap-chat-country-option[data-code="' + code + '"]');
-        if (option.length) {
-            var flag = option.find('.tap-chat-country-flag').text();
-            var name = option.find('.tap-chat-country-name').text();
-            var codeText = option.find('.tap-chat-country-code').text();
-            $('.tap-chat-selected-country').html(
-                '<span class="tap-chat-country-flag">' + flag + '</span>' +
-                '<span>' + name + ' ' + codeText + '</span>'
-            );
-        }
-    }
-    
-    updateSelectedDisplay();
-    
-    $('.tap-chat-selected-country').on('click', function() {
-        $('.tap-chat-country-search').toggle().focus();
-        $('.tap-chat-country-select').toggle();
-    });
-    
-    $('.tap-chat-country-search').on('input', function() {
-        var search = $(this).val().toLowerCase();
-        $('.tap-chat-country-option').each(function() {
-            var text = $(this).text().toLowerCase();
-            if (text.indexOf(search) > -1) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    });
-    
-    $('.tap-chat-country-option').on('click', function() {
-        var code = $(this).data('code');
-        $('input[name="tap_chat_settings[country_code]"]').val(code);
-        $('.tap-chat-country-option').removeClass('selected');
-        $(this).addClass('selected');
-        $('.tap-chat-country-search').hide().val('');
-        $('.tap-chat-country-select').hide();
-        $('.tap-chat-country-option').show();
-        updateSelectedDisplay();
-    });
-    
-    $('.tap-chat-country-option[data-code="' + selectedCode + '"]').addClass('selected');
-    
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('.tap-chat-country-wrapper').length) {
-            $('.tap-chat-country-search').hide();
-            $('.tap-chat-country-select').hide();
-        }
-    });
-    
-    // Page search
-    $('.tap-chat-search-pages').on('input', function() {
-        var search = $(this).val().toLowerCase();
-        $(this).closest('.tap-chat-page-selector').find('.tap-chat-page-item').each(function() {
-            var title = $(this).find('.tap-chat-page-title').text().toLowerCase();
-            if (title.indexOf(search) > -1) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    });
-    
-    function updateSelectedCount(list) {
-        var count = $(list).find('input[type="checkbox"]:checked').length;
-        $(list).prev('.tap-chat-selected-count').text(count + ' selected');
-    }
-    
-    $('.tap-chat-pages-list input[type="checkbox"]').on('change', function() {
-        updateSelectedCount($(this).closest('.tap-chat-pages-list'));
-    });
-    
-    $('.tap-chat-pages-list').each(function() {
-        updateSelectedCount(this);
-    });
-    
-    // Visibility sections toggle
-    function toggleVisibilitySections() {
-        var showOnChecked = $('#enable_show_on').is(':checked');
-        var hideOnChecked = $('#enable_hide_on').is(':checked');
-        
-        $('#tap-chat-show-on-section').toggle(showOnChecked);
-        $('#tap-chat-hide-on-section').toggle(hideOnChecked);
-    }
-    
-    $('#enable_show_on, #enable_hide_on').on('change', function() {
-        var section = $(this).attr('id') === 'enable_show_on' ? '#tap-chat-show-on-section' : '#tap-chat-hide-on-section';
-        $(section).slideToggle(200);
-    });
-    
-    toggleVisibilitySections();
-    
-    // Working hours toggle
-    function toggleWorkingHoursSection() {
-        $('#tap-chat-working-hours-section').toggle($('#enable_working_hours').is(':checked'));
-    }
-    
-    $('#enable_working_hours').on('change', function() {
-        $('#tap-chat-working-hours-section').slideToggle(200);
-    });
-    
-    toggleWorkingHoursSection();
-    
-    // Day enabled toggle
-    $('.tap-chat-day-enabled').on('change', function() {
-        var row = $(this).closest('tr');
-        var timeInputs = row.find('input[type="time"]');
-        
-        if ($(this).is(':checked')) {
-            row.removeClass('disabled');
-            timeInputs.prop('disabled', false);
-        } else {
-            row.addClass('disabled');
-            timeInputs.prop('disabled', true);
-        }
-    });
-    
-    $('.tap-chat-day-enabled').each(function() {
-        $(this).trigger('change');
-    });
-    
-    // Welcome bubble toggle
-    function toggleWelcomeBubbleSection() {
-        if ($('#enable_welcome_bubble').is(':checked')) {
-            $('#tap-chat-welcome-bubble-section').slideDown(200);
-        } else {
-            $('#tap-chat-welcome-bubble-section').slideUp(200);
-        }
-    }
-    
-    $('#enable_welcome_bubble').on('change', function() {
-        $('#tap-chat-welcome-bubble-section').slideToggle(200);
-    });
-    
-    toggleWelcomeBubbleSection();
-    
-    // Bubble style toggle
-    function toggleBubbleStyleFields() {
-        var selectedStyle = $('input[name="tap_chat_settings[bubble_style]"]:checked').val();
-        
-        $('#bubble-name-field, #bubble-avatar-field').toggle(selectedStyle === 'modern');
-        $('#bubble-position-field').toggle(selectedStyle === 'simple');
-    }
-    
-    $('.tap-chat-bubble-style-option').on('click', function() {
-        $(this).find('input[type="radio"]').prop('checked', true);
-        $('.tap-chat-bubble-style-option').removeClass('selected');
-        $(this).addClass('selected');
-        
-        var selectedStyle = $(this).find('input[type="radio"]').val();
-        
-        if (selectedStyle === 'modern') {
-            $('#bubble-position-field').slideUp(200);
-            $('#bubble-name-field, #bubble-avatar-field').slideDown(200);
-        } else {
-            $('#bubble-name-field, #bubble-avatar-field').slideUp(200);
-            $('#bubble-position-field').slideDown(200);
-        }
-    });
-    
-    $('input[name="tap_chat_settings[bubble_style]"]').on('change', function() {
-        var selectedStyle = $(this).val();
-        $('.tap-chat-bubble-style-option').removeClass('selected');
-        $(this).closest('.tap-chat-bubble-style-option').addClass('selected');
-        
-        if (selectedStyle === 'modern') {
-            $('#bubble-position-field').slideUp(200);
-            $('#bubble-name-field, #bubble-avatar-field').slideDown(200);
-        } else {
-            $('#bubble-name-field, #bubble-avatar-field').slideUp(200);
-            $('#bubble-position-field').slideDown(200);
-        }
-    });
-    
-    var selectedStyle = $('input[name="tap_chat_settings[bubble_style]"]:checked').closest('.tap-chat-bubble-style-option');
-    if (selectedStyle.length) {
-        selectedStyle.addClass('selected');
-    }
-    
-    toggleBubbleStyleFields();
-    
-    // Avatar upload
-    $('#tap-chat-upload-avatar').on('click', function(e) {
-        e.preventDefault();
-        
-        if (typeof wp.media !== 'undefined') {
-            var frame = wp.media({
-                title: 'Select or Upload Avatar',
-                button: {
-                    text: 'Select Avatar'
-                },
-                multiple: false,
-                library: {
-                    type: 'image'
-                }
-            });
-            
-            frame.on('select', function() {
-                var attachment = frame.state().get('selection').first().toJSON();
-                $('#tap-chat-avatar-url').val(attachment.url);
-                $('#tap-chat-avatar-preview').attr('src', attachment.url);
-                $('.tap-chat-avatar-preview').addClass('has-image');
-            });
-            
-            frame.open();
-        }
-    });
-    
-    $('#tap-chat-remove-avatar').on('click', function(e) {
-        e.preventDefault();
-        $('#tap-chat-avatar-url').val('');
-        $('#tap-chat-avatar-preview').attr('src', '');
-        $('.tap-chat-avatar-preview').removeClass('has-image');
-    });
-    
-    // Icon upload
-    $('#tap-chat-upload-icon').on('click', function(e) {
-        e.preventDefault();
-        
-        if (typeof wp.media !== 'undefined') {
-            var frame = wp.media({
-                title: 'Select or Upload Icon',
-                button: {
-                    text: 'Select Icon'
-                },
-                multiple: false,
-                library: {
-                    type: 'image'
-                }
-            });
-            
-            frame.on('select', function() {
-                var attachment = frame.state().get('selection').first().toJSON();
-                $('#tap-chat-icon-url').val(attachment.url);
-                $('#tap-chat-icon-preview').attr('src', attachment.url);
-                $('.tap-chat-icon-preview').addClass('has-image');
-            });
-            
-            frame.open();
-        }
-    });
-    
-    $('#tap-chat-remove-icon').on('click', function(e) {
-        e.preventDefault();
-        $('#tap-chat-icon-url').val('');
-        $('#tap-chat-icon-preview').attr('src', '');
-        $('.tap-chat-icon-preview').removeClass('has-image');
-    });
-    
-    // Trigger options toggle
-    $('.tap-chat-trigger-checkbox').on('change', function() {
-        var target = $(this).data('target');
-        if (target) {
-            $('#' + target).slideToggle(200);
-        }
-    });
-    
-    $('.tap-chat-trigger-checkbox:checked').each(function() {
-        var target = $(this).data('target');
-        if (target) {
-            $('#' + target).show();
-        }
-    });
+	/* Current value of a setting, read from the form the way it would be saved. */
+	function settingValue( $form, key ) {
+		var $fields = $form.find( '[name="' + OPTION + '[' + key + ']"]' );
+		if ( ! $fields.length ) {
+			return '';
+		}
+		var $radios = $fields.filter( ':radio' );
+		if ( $radios.length ) {
+			return $radios.filter( ':checked' ).val() || '';
+		}
+		var $box = $fields.filter( ':checkbox' );
+		if ( $box.length ) {
+			return $box.is( ':checked' ) ? $box.val() : 'no';
+		}
+		return $fields.last().val();
+	}
 
-    // ----- Multiple agents -------------------------------------------------
+	/* ------------------------------------------------------------------
+	 * Views: one form, several sections, picked by the URL hash.
+	 * ---------------------------------------------------------------- */
+	function initViews( $form ) {
+		var aliases = {
+			'analytics': 'analytics',
+			'analytics/overview': 'analytics',
+			'analytics/settings': 'tracking',
+			'tracking': 'tracking'
+		};
+		var $referer = $form.find( 'input[name="_wp_http_referer"]' );
+		var refererBase = $referer.length ? String( $referer.val() ).split( '#' )[ 0 ] : '';
 
-    // Show/hide the agents-only rows based on the selected button mode.
-    function applyButtonMode(mode) {
-        $('.tap-chat-agents-dependent').closest('tr').toggle(mode === 'agents');
-    }
-    $('.tap-chat-mode-radio').on('change', function() {
-        applyButtonMode($(this).val());
-    });
-    applyButtonMode($('.tap-chat-mode-radio:checked').val() || 'single');
+		function viewFromHash() {
+			var hash = window.location.hash.replace( /^#/, '' );
+			var view = aliases[ hash ] || hash.split( '/' )[ 0 ];
+			return $form.find( '[data-tap-chat-view="' + view + '"]' ).length ? view : 'general';
+		}
 
-    var AGENT_MAX = 3;
+		function activate( view ) {
+			var $views = $form.find( '[data-tap-chat-view]' );
+			var $target = $views.filter( '[data-tap-chat-view="' + view + '"]' );
+			$views.prop( 'hidden', true );
+			$target.prop( 'hidden', false );
 
-    // Renumber every card and rewrite input indices to sequential order.
-    function reindexAgents() {
-        $('.tap-chat-agents-items .tap-chat-agent-card').each(function(i) {
-            $(this).find('[name]').each(function() {
-                var n = $(this).attr('name');
-                if (n) {
-                    $(this).attr('name', n.replace(/\[agents\]\[[^\]]*\]/, '[agents][' + i + ']'));
-                }
-            });
-            $(this).find('.tap-chat-agent-number').first().text(i + 1);
-        });
-        updateAgentAddState();
-    }
+			$( '[data-tap-chat-nav]' ).removeAttr( 'aria-current' )
+				.filter( '[data-tap-chat-nav="' + view + '"]' ).attr( 'aria-current', 'page' );
 
-    function updateAgentAddState() {
-        var count = $('.tap-chat-agents-items .tap-chat-agent-card').length;
-        $('.tap-chat-add-agent').toggle(count < AGENT_MAX);
-        $('.tap-chat-agents-limit').toggle(count >= AGENT_MAX);
-    }
+			$form.find( '[data-tap-chat-savebar]' ).prop( 'hidden', $target.is( '[data-tap-chat-no-save]' ) );
 
-    // Wire up channel toggle for a single card.
-    function initAgentCard($card) {
-        var val = $card.find('.tap-chat-agent-channel-radio:checked').val() || 'phone';
-        $card.find('.tap-chat-agent-panel').hide();
-        $card.find('.tap-chat-agent-panel[data-agent-panel="' + val + '"]').show();
-    }
+			var scene = $target.attr( 'data-tap-chat-scene' ) || '';
+			$form.find( '[data-tap-chat-workspace]' ).toggleClass( 'has-preview', '' !== scene );
+			if ( scene ) {
+				$form.trigger( 'tapchat:scene', scene );
+			}
 
-    $('.tap-chat-agent-card').each(function() {
-        initAgentCard($(this));
-    });
+			// After saving, options.php returns to this referer, so keep the open view in it.
+			if ( $referer.length && refererBase ) {
+				var hash = window.location.hash;
+				$referer.val( refererBase + ( hash && hash.length > 1 ? hash : '' ) );
+			}
+		}
 
-    // Channel type toggle (delegated).
-    $(document).on('change', '.tap-chat-agent-channel-radio', function() {
-        initAgentCard($(this).closest('.tap-chat-agent-card'));
-    });
+		$( window ).on( 'hashchange', function () {
+			activate( viewFromHash() );
+			window.scrollTo( 0, 0 );
+		} );
+		activate( viewFromHash() );
+	}
 
-    // Add a new agent from the template.
-    $('.tap-chat-add-agent').on('click', function(e) {
-        e.preventDefault();
-        var count = $('.tap-chat-agents-items .tap-chat-agent-card').length;
-        if (count >= AGENT_MAX) { return; }
+	/* ------------------------------------------------------------------
+	 * Show or hide parts that depend on another setting.
+	 * ---------------------------------------------------------------- */
+	function initConditionals( $form ) {
+		var $dependents = $form.find( '[data-tap-chat-show-if]' );
+		if ( ! $dependents.length ) {
+			return;
+		}
+		function refresh() {
+			$dependents.each( function () {
+				var rule = String( $( this ).attr( 'data-tap-chat-show-if' ) ).split( ':' );
+				$( this ).prop( 'hidden', settingValue( $form, rule[ 0 ] ) !== rule[ 1 ] );
+			} );
+		}
+		$form.on( 'change', 'input[type="radio"], input[type="checkbox"]', refresh );
+	}
 
-        var tpl = $('.tap-chat-agent-template').html();
-        if (!tpl) { return; }
+	/* ------------------------------------------------------------------
+	 * Range sliders show their value.
+	 * ---------------------------------------------------------------- */
+	function initRanges( $form ) {
+		var unit = i18n.px || 'px';
+		$form.on( 'input change', '.tap-chat-range__input', function () {
+			$( this ).siblings( '.tap-chat-range__value' ).text( this.value + ' ' + unit );
+		} );
+	}
 
-        var $card = $(tpl.replace(/__INDEX__/g, count));
-        $('.tap-chat-agents-items').append($card);
-        initAgentCard($card);
-        reindexAgents();
-    });
+	function initColorPicker( $form ) {
+		var $picker = $form.find( '.tap-chat-color-picker' );
+		if ( ! $picker.length || ! $.fn.wpColorPicker ) {
+			return;
+		}
+		$picker.wpColorPicker( {
+			change: function ( event, ui ) {
+				$form.trigger( 'tapchat:preview', { color: ui.color.toString() } );
+			},
+			clear: function () {
+				$form.trigger( 'tapchat:preview', { color: '' } );
+			}
+		} );
+	}
 
-    // Remove an agent (delegated).
-    $(document).on('click', '.tap-chat-agent-remove', function(e) {
-        e.preventDefault();
-        $(this).closest('.tap-chat-agent-card').remove();
-        reindexAgents();
-    });
+	/* ------------------------------------------------------------------
+	 * Media library pickers (custom icon, bubble avatar, agent avatars).
+	 * ---------------------------------------------------------------- */
+	function initMedia( $form ) {
+		function sync( $box ) {
+			var url = $.trim( $box.find( '[data-tap-chat-media-url]' ).val() || '' );
+			$box.find( '[data-tap-chat-media-img]' ).attr( 'src', url );
+			$box.find( '.tap-chat-media__preview' ).toggleClass( 'has-image', '' !== url );
+		}
 
-    // Per-card avatar upload (delegated).
-    $(document).on('click', '.tap-chat-agent-avatar-upload-btn', function(e) {
-        e.preventDefault();
-        if (typeof wp === 'undefined' || typeof wp.media === 'undefined') { return; }
+		$form.on( 'click', '[data-tap-chat-media-choose]', function ( event ) {
+			event.preventDefault();
+			if ( typeof wp === 'undefined' || ! wp.media ) {
+				return;
+			}
+			var $box = $( this ).closest( '[data-tap-chat-media]' );
+			var frame = wp.media( {
+				title: i18n.mediaTitle || '',
+				button: { text: i18n.mediaButton || '' },
+				multiple: false,
+				library: { type: 'image' }
+			} );
+			frame.on( 'select', function () {
+				var attachment = frame.state().get( 'selection' ).first().toJSON();
+				$box.find( '[data-tap-chat-media-url]' ).val( attachment.url ).trigger( 'change' );
+				sync( $box );
+			} );
+			frame.open();
+		} );
 
-        var $card = $(this).closest('.tap-chat-agent-card');
-        var frame = wp.media({
-            title: 'Select or Upload Avatar',
-            button: { text: 'Select Avatar' },
-            multiple: false,
-            library: { type: 'image' }
-        });
+		$form.on( 'click', '[data-tap-chat-media-clear]', function ( event ) {
+			event.preventDefault();
+			var $box = $( this ).closest( '[data-tap-chat-media]' );
+			$box.find( '[data-tap-chat-media-url]' ).val( '' ).trigger( 'change' );
+			sync( $box );
+		} );
 
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            $card.find('.tap-chat-agent-avatar-url').val(attachment.url);
-            $card.find('.tap-chat-agent-avatar-preview img').attr('src', attachment.url);
-            $card.find('.tap-chat-agent-avatar-preview').addClass('has-image');
-        });
+		$form.on( 'change', '[data-tap-chat-media-url]', function () {
+			sync( $( this ).closest( '[data-tap-chat-media]' ) );
+		} );
+	}
 
-        frame.open();
-    });
+	/* ------------------------------------------------------------------
+	 * Page pickers: search and selected count.
+	 * ---------------------------------------------------------------- */
+	function initPickers( $form ) {
+		function count( $picker ) {
+			var template = String( $picker.attr( 'data-count-template' ) || '%d' );
+			var n = $picker.find( '[data-tap-chat-picker-item] input:checked' ).length;
+			$picker.find( '[data-tap-chat-picker-count]' ).text( template.replace( '%d', n ) );
+		}
 
-    $(document).on('click', '.tap-chat-agent-avatar-remove', function(e) {
-        e.preventDefault();
-        var $card = $(this).closest('.tap-chat-agent-card');
-        $card.find('.tap-chat-agent-avatar-url').val('');
-        $card.find('.tap-chat-agent-avatar-preview img').attr('src', '');
-        $card.find('.tap-chat-agent-avatar-preview').removeClass('has-image');
-    });
+		$form.on( 'input', '[data-tap-chat-picker-search]', function () {
+			var term = $.trim( this.value ).toLowerCase();
+			$( this ).closest( '[data-tap-chat-picker]' ).find( '[data-tap-chat-picker-item]' ).each( function () {
+				var title = $( this ).find( '.tap-chat-picker__title' ).text().toLowerCase();
+				$( this ).prop( 'hidden', '' !== term && -1 === title.indexOf( term ) );
+			} );
+		} );
 
-    // Drag-to-reorder.
-    if ($.fn.sortable) {
-        $('.tap-chat-agents-items').sortable({
-            handle: '.tap-chat-agent-drag',
-            items: '> .tap-chat-agent-card',
-            axis: 'y',
-            tolerance: 'pointer',
-            update: function() { reindexAgents(); }
-        });
-    }
+		// Enter inside the search box must not submit the settings form.
+		$form.on( 'keydown', '[data-tap-chat-picker-search]', function ( event ) {
+			if ( 13 === event.which ) {
+				event.preventDefault();
+			}
+		} );
 
-    // Guarantee sequential indices before the form is saved.
-    $('.tap-chat-settings-form').on('submit', function() {
-        reindexAgents();
-    });
+		$form.on( 'change', '[data-tap-chat-picker-item] input', function () {
+			count( $( this ).closest( '[data-tap-chat-picker]' ) );
+		} );
+	}
 
-    // Initial pass.
-    if ($('.tap-chat-agents-items').length) {
-        reindexAgents();
-    }
-});
+	/* ------------------------------------------------------------------
+	 * Working hours: dim closed days. Times stay editable and are saved.
+	 * ---------------------------------------------------------------- */
+	function initDays( $form ) {
+		$form.on( 'change', '[data-tap-chat-day-open]', function () {
+			$( this ).closest( '[data-tap-chat-day]' ).toggleClass( 'is-closed', ! this.checked );
+		} );
+	}
+
+	/* ------------------------------------------------------------------
+	 * Agents repeater.
+	 * ---------------------------------------------------------------- */
+	function initAgents( $form ) {
+		var $root = $form.find( '[data-tap-chat-agents]' );
+		if ( ! $root.length ) {
+			return;
+		}
+		var $items = $root.find( '[data-tap-chat-agents-items]' );
+		var template = $root.find( '[data-tap-chat-agent-template]' ).html() || '';
+
+		function reindex() {
+			$items.children( '[data-tap-chat-agent]' ).each( function ( i ) {
+				var $card = $( this );
+				$card.find( '[name]' ).each( function () {
+					this.name = this.name.replace( /\[agents\]\[[^\]]*\]/, '[agents][' + i + ']' );
+				} );
+				$card.find( '[id]' ).each( function () {
+					this.id = this.id.replace( /^tap-chat-agent-[^-]+-/, 'tap-chat-agent-' + i + '-' );
+				} );
+				$card.find( 'label[for]' ).each( function () {
+					this.htmlFor = this.htmlFor.replace( /^tap-chat-agent-[^-]+-/, 'tap-chat-agent-' + i + '-' );
+				} );
+				$card.find( '[data-tap-chat-agent-number]' ).first().text( i + 1 );
+			} );
+			var total = $items.children( '[data-tap-chat-agent]' ).length;
+			$root.find( '[data-tap-chat-agent-add]' ).prop( 'hidden', total >= AGENT_MAX );
+			$root.find( '[data-tap-chat-agent-limit]' ).prop( 'hidden', total < AGENT_MAX );
+		}
+
+		$root.on( 'change', '[data-tap-chat-agent-channel]', function () {
+			var $card = $( this ).closest( '[data-tap-chat-agent]' );
+			var value = this.value;
+			$card.find( '[data-tap-chat-agent-panel]' ).each( function () {
+				$( this ).prop( 'hidden', $( this ).attr( 'data-tap-chat-agent-panel' ) !== value );
+			} );
+		} );
+
+		$root.on( 'change', '[data-tap-chat-agent-enabled]', function () {
+			$( this ).closest( '[data-tap-chat-agent]' ).toggleClass( 'is-disabled', ! this.checked );
+		} );
+
+		$root.on( 'click', '[data-tap-chat-agent-add]', function ( event ) {
+			event.preventDefault();
+			var total = $items.children( '[data-tap-chat-agent]' ).length;
+			if ( total >= AGENT_MAX || ! template ) {
+				return;
+			}
+			var $card = $( $.parseHTML( template.replace( /__INDEX__/g, String( total ) ) ) ).filter( '[data-tap-chat-agent]' );
+			$items.append( $card );
+			reindex();
+			$card.find( 'input[type="text"]' ).first().trigger( 'focus' );
+		} );
+
+		$root.on( 'click', '[data-tap-chat-agent-remove]', function ( event ) {
+			event.preventDefault();
+			$( this ).closest( '[data-tap-chat-agent]' ).remove();
+			reindex();
+		} );
+
+		if ( $.fn.sortable ) {
+			$items.sortable( {
+				handle: '[data-tap-chat-agent-drag]',
+				items: '> [data-tap-chat-agent]',
+				axis: 'y',
+				tolerance: 'pointer',
+				forcePlaceholderSize: true,
+				placeholder: 'tap-chat-agent ui-sortable-placeholder',
+				update: reindex
+			} );
+		}
+
+		// Guarantee sequential indices before the form is saved.
+		$form.on( 'submit', reindex );
+		reindex();
+	}
+
+	/* ------------------------------------------------------------------
+	 * Live preview: the button, the agent picker and the welcome bubble.
+	 * ---------------------------------------------------------------- */
+	function initPreview( $form ) {
+		var $preview = $form.find( '[data-tap-chat-preview]' );
+		if ( ! $preview.length ) {
+			return;
+		}
+		var $screen = $preview.find( '.tap-chat-preview__screen' );
+		var $fab = $preview.find( '[data-tap-chat-preview-fab]' );
+		var $dock = $preview.find( '[data-tap-chat-preview-dock]' );
+		var animations = [ 'fade', 'slide', 'bounce', 'ring', 'attention' ];
+		var $img = $fab.find( '.tap-chat-preview__img' );
+		var $label = $fab.find( '.tap-chat-preview__label' );
+		var $panel = $preview.find( '[data-tap-chat-preview-panel]' );
+		var $bubble = $preview.find( '[data-tap-chat-preview-bubble]' );
+		var $hint = $preview.find( '[data-tap-chat-preview-hint]' );
+		var glyph = $fab.find( '.tap-chat-preview__glyph' ).prop( 'outerHTML' ) || '';
+		var linkGlyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></svg>';
+		var state = {
+			device: 'desktop',
+			scene: 'button',
+			color: settingValue( $form, 'color' )
+		};
+
+		function text( value, fallback ) {
+			value = $.trim( value || '' );
+			return value || fallback || '';
+		}
+
+		/* Enabled agents, read from the repeater cards in their current order. */
+		function readAgents() {
+			var list = [];
+			$form.find( '[data-tap-chat-agent]' ).each( function ( i ) {
+				var $card = $( this );
+				if ( ! $card.find( '[data-tap-chat-agent-enabled]' ).is( ':checked' ) ) {
+					return;
+				}
+				list.push( {
+					name: text( $card.find( 'input[name$="[name]"]' ).val(), String( i18n.agentName || '%d' ).replace( '%d', i + 1 ) ),
+					role: text( $card.find( 'input[name$="[role]"]' ).val() ),
+					avatar: text( $card.find( 'input[name$="[avatar]"]' ).val() ),
+					online: $card.find( 'input[type="checkbox"][name$="[online]"]' ).is( ':checked' ),
+					custom: 'custom' === $card.find( '[data-tap-chat-agent-channel]:checked' ).val()
+				} );
+			} );
+			return list.slice( 0, AGENT_MAX );
+		}
+
+		function renderAgents() {
+			var $list = $panel.find( '[data-tap-chat-preview-agents]' ).empty();
+			var agents = readAgents();
+			$panel.find( '[data-tap-chat-preview-panel-title]' ).text( text( settingValue( $form, 'agents_panel_title' ) ) );
+			$panel.find( '[data-tap-chat-preview-panel-sub]' ).text( text( settingValue( $form, 'agents_panel_subtitle' ) ) );
+			if ( ! agents.length ) {
+				$list.append( $( '<span class="tap-chat-preview__empty"></span>' ).text( i18n.noAgents || '' ) );
+				return;
+			}
+			$.each( agents, function ( i, agent ) {
+				var $row = $( '<span class="tap-chat-preview__agent"></span>' ).toggleClass( 'is-offline', ! agent.online );
+				var $avatar = $( '<span class="tap-chat-preview__agent-avatar"></span>' );
+				if ( agent.avatar ) {
+					$avatar.append( $( '<img alt="">' ).attr( 'src', agent.avatar ) );
+				} else {
+					$avatar.append( glyph );
+				}
+				if ( agent.online ) {
+					$avatar.append( '<span class="tap-chat-preview__dot"></span>' );
+				}
+				var $info = $( '<span class="tap-chat-preview__agent-info"></span>' )
+					.append( $( '<span class="tap-chat-preview__agent-name"></span>' ).text( agent.name ) );
+				if ( agent.role ) {
+					$info.append( $( '<span class="tap-chat-preview__agent-role"></span>' ).text( agent.role ) );
+				}
+				$info.append( $( '<span class="tap-chat-preview__agent-status"></span>' ).text( agent.online ? i18n.online : i18n.offline ) );
+				$row.append( $avatar, $info, $( '<span class="tap-chat-preview__agent-channel"></span>' ).append( agent.custom ? linkGlyph : glyph ) );
+				$list.append( $row );
+			} );
+		}
+
+		function renderBubble() {
+			var simple = 'simple' === settingValue( $form, 'bubble_style' );
+			var avatar = text( settingValue( $form, 'welcome_bubble_avatar' ) );
+			$bubble.toggleClass( 'is-simple', simple )
+				.toggleClass( 'is-side', simple && 'side' === settingValue( $form, 'bubble_position' ) );
+			$bubble.find( '[data-tap-chat-preview-bubble-msg]' ).text( text( settingValue( $form, 'welcome_bubble_message' ), i18n.bubbleText ) );
+			$bubble.find( '[data-tap-chat-preview-bubble-name]' ).text( text( settingValue( $form, 'welcome_bubble_name' ), i18n.bubbleName ) );
+			$bubble.find( '[data-tap-chat-preview-bubble-img]' ).prop( 'hidden', ! avatar ).attr( 'src', avatar );
+			$bubble.find( '.tap-chat-preview__bubble-avatar' ).toggleClass( 'has-img', !! avatar );
+		}
+
+		function render() {
+			var mobile = 'mobile' === state.device;
+			var size = parseInt( settingValue( $form, mobile ? 'mobile_size' : 'size' ), 10 ) || 40;
+			var iconOnly = 'yes' === settingValue( $form, mobile ? 'hide_label_mobile' : 'hide_label_desktop' );
+			var icon = text( settingValue( $form, 'custom_icon' ) );
+			var left = 'left' === settingValue( $form, 'position' );
+			var agentsOn = 'agents' === settingValue( $form, 'button_mode' );
+			var bubbleOn = 'yes' === settingValue( $form, 'enable_welcome_bubble' );
+			var showPanel = 'agents' === state.scene && agentsOn;
+			var showBubble = 'bubble' === state.scene && bubbleOn;
+			var hint = '';
+
+			$preview.attr( { 'data-device': state.device, 'data-scene': state.scene } );
+			$screen.toggleClass( 'is-left', left ).toggleClass( 'is-right', ! left ).css( {
+				'--tap-chat-fab-color': state.color || '#25D366',
+				'--tap-chat-fab-size': size + 'px'
+			} );
+			var animation = settingValue( $form, 'button_animation' );
+			$fab.toggleClass( 'is-icon-only', iconOnly )
+				.toggleClass( 'has-img', '' !== icon )
+				.toggleClass( 'has-badge', 'attention' === animation );
+			$.each( animations, function ( i, name ) {
+				$fab.toggleClass( 'is-anim-' + name, name === animation );
+			} );
+			$img.prop( 'hidden', '' === icon ).attr( 'src', icon );
+			$label.text( text( settingValue( $form, 'label' ), i18n.defaultLabel ) );
+
+			// The panel and the bubble sit next to the button, so expose its size in the
+			// screen's own units: scaled down on desktop, real size inside the zoomed phone.
+			var fabEl = $fab[ 0 ];
+			if ( fabEl.offsetHeight ) {
+				var factor = mobile ? 1 : DESKTOP_SCALE;
+				$screen.css( {
+					'--tap-chat-fab-h': Math.round( fabEl.offsetHeight * factor ) + 'px',
+					'--tap-chat-fab-w': Math.round( fabEl.offsetWidth * factor ) + 'px'
+				} );
+			}
+
+			if ( showPanel ) {
+				renderAgents();
+			}
+			if ( showBubble ) {
+				renderBubble();
+			}
+			$panel.prop( 'hidden', ! showPanel );
+			$bubble.prop( 'hidden', ! showBubble );
+
+			if ( 'agents' === state.scene && ! agentsOn ) {
+				hint = i18n.agentsOff;
+			} else if ( 'bubble' === state.scene && ! bubbleOn ) {
+				hint = i18n.bubbleOff;
+			}
+			$hint.text( hint || '' ).prop( 'hidden', ! hint );
+		}
+
+		$preview.on( 'click', '[data-tap-chat-device]', function () {
+			state.device = $( this ).attr( 'data-tap-chat-device' );
+			$preview.find( '[data-tap-chat-device]' ).attr( 'aria-pressed', 'false' );
+			$( this ).attr( 'aria-pressed', 'true' );
+			render();
+		} );
+
+		$form.on( 'tapchat:scene', function ( event, scene ) {
+			state.scene = scene;
+			render();
+		} );
+
+		$form.on( 'tapchat:preview', function ( event, data ) {
+			if ( data && Object.prototype.hasOwnProperty.call( data, 'color' ) ) {
+				state.color = data.color;
+			}
+			render();
+		} );
+
+		// Any edit may change the preview; rendering is cheap, so re-render on every input.
+		$form.on( 'input change', 'input, select, textarea', function () {
+			if ( this.name === OPTION + '[color]' ) {
+				state.color = this.value;
+			}
+			render();
+		} );
+		// Adding, removing or reordering agents.
+		$form.on( 'click', '[data-tap-chat-agent-add], [data-tap-chat-agent-remove]', function () {
+			window.setTimeout( render, 0 );
+		} );
+		$form.find( '[data-tap-chat-agents-items]' ).on( 'sortupdate', render );
+
+		state.scene = $form.find( '[data-tap-chat-view]:not([hidden])' ).attr( 'data-tap-chat-scene' ) || 'button';
+		render();
+	}
+}( jQuery ) );

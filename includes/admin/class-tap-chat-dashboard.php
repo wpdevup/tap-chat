@@ -4,7 +4,7 @@ namespace Tap_Chat;
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 /**
- * Renders the first-party analytics dashboard (the "Dashboard" sub-tab).
+ * Renders the first-party analytics report (the "Analytics" view).
  *
  * Read-only report built entirely from Analytics_Store aggregate queries.
  * Server-rendered so it works without JavaScript; the only interactivity is a
@@ -29,7 +29,7 @@ class Analytics_Dashboard {
     }
 
     /**
-     * Build the URL for a range preset while preserving the analytics tab hash.
+     * URL of a range preset, keeping the analytics view in the hash.
      */
     private function range_url( $days ) {
         $url = add_query_arg( 'tc_range', (int) $days, admin_url( 'options-general.php?page=tap-chat' ) );
@@ -37,126 +37,111 @@ class Analytics_Dashboard {
     }
 
     public function render() {
-        $settings = get_option( 'tap_chat_settings', array() );
+        $settings        = get_option( 'tap_chat_settings', array() );
         $click_enabled   = isset( $settings['enable_click_analytics'] ) ? ( 'yes' === $settings['enable_click_analytics'] ) : true;
         $traffic_enabled = isset( $settings['enable_traffic_analytics'] ) ? ( 'yes' === $settings['enable_traffic_analytics'] ) : false;
+        $has_data        = Analytics_Store::has_data();
+        $range_days      = $this->current_range();
 
-        $range_days = $this->current_range();
+        Admin_UI::page_header(
+            __( 'Analytics', 'tap-chat' ),
+            __( 'Chat button activity recorded on this site. No cookies, and the data never leaves your server.', 'tap-chat' ),
+            $has_data ? $this->range_selector_html( $range_days ) : ''
+        );
+
+        // First-run empty state: nothing recorded yet.
+        if ( ! $has_data ) {
+            $this->render_empty_state( $click_enabled );
+            return;
+        }
 
         // Site-timezone "today" so ranges line up with how events are bucketed.
         $today      = current_time( 'Y-m-d' );
         $range_from = gmdate( 'Y-m-d', strtotime( $today ) - ( ( $range_days - 1 ) * DAY_IN_SECONDS ) );
 
         // Previous equal-length period, immediately before the current one.
-        $prev_to    = gmdate( 'Y-m-d', strtotime( $range_from ) - DAY_IN_SECONDS );
-        $prev_from  = gmdate( 'Y-m-d', strtotime( $prev_to ) - ( ( $range_days - 1 ) * DAY_IN_SECONDS ) );
+        $prev_to   = gmdate( 'Y-m-d', strtotime( $range_from ) - DAY_IN_SECONDS );
+        $prev_from = gmdate( 'Y-m-d', strtotime( $prev_to ) - ( ( $range_days - 1 ) * DAY_IN_SECONDS ) );
 
         // Fixed calendar buckets for the small cards.
         $week_start  = gmdate( 'Y-m-d', strtotime( 'monday this week', strtotime( $today ) ) );
         $month_start = gmdate( 'Y-m-01', strtotime( $today ) );
 
-        $clicks_range   = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $range_from, $today );
-        $clicks_prev    = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $prev_from, $prev_to );
-        $clicks_total   = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK );
-        $clicks_today   = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $today, $today );
-        $clicks_week    = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $week_start, $today );
-        $clicks_month   = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $month_start, $today );
-
-        echo '<div class="tap-chat-analytics-dashboard">';
-
-        // First-run empty state: nothing recorded yet.
-        if ( ! Analytics_Store::has_data() ) {
-            $this->render_empty_state( $click_enabled );
-            echo '</div>';
-            return;
-        }
-
-        $this->render_range_selector( $range_days );
+        $clicks_range = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $range_from, $today );
+        $clicks_prev  = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $prev_from, $prev_to );
+        $clicks_total = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK );
+        $clicks_today = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $today, $today );
+        $clicks_week  = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $week_start, $today );
+        $clicks_month = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $month_start, $today );
 
         if ( ! $click_enabled ) {
-            $this->render_notice(
-                __( 'Click tracking is currently turned off. Turn it on in the Settings sub-tab to keep collecting data.', 'tap-chat' )
-            );
+            Admin_UI::alert( 'warning', esc_html__( 'Click tracking is currently turned off. Turn it on under Tracking to keep collecting data.', 'tap-chat' ) );
         }
 
-        // Hero + small cards.
-        echo '<div class="tc-cards">';
+        echo '<div class="tap-chat-stats">';
         $this->render_hero_card( $clicks_range, $clicks_prev, $range_days );
+        echo '<div class="tap-chat-stats__grid">';
         $this->render_stat_card( __( 'Total Clicks', 'tap-chat' ), $clicks_total, __( 'all time', 'tap-chat' ) );
-        $this->render_stat_card( __( 'Clicks Today', 'tap-chat' ), $clicks_today, $today );
+        $this->render_stat_card( __( 'Clicks Today', 'tap-chat' ), $clicks_today, date_i18n( get_option( 'date_format' ), strtotime( $today ) ) );
         $this->render_stat_card( __( 'Clicks This Week', 'tap-chat' ), $clicks_week, __( 'since Monday', 'tap-chat' ) );
-        $this->render_stat_card( __( 'Clicks This Month', 'tap-chat' ), $clicks_month, gmdate( 'F Y', strtotime( $today ) ) );
-        echo '</div>';
+        $this->render_stat_card( __( 'Clicks This Month', 'tap-chat' ), $clicks_month, date_i18n( 'F Y', strtotime( $today ) ) );
+        echo '</div></div>';
 
-        // CTR funnel.
         $this->render_funnel( $traffic_enabled, $range_from, $today, $range_days );
-
-        // Trend.
         $this->render_trend( $range_from, $today );
 
-        echo '<div class="tc-two-col">';
+        echo '<div class="tap-chat-report-grid">';
         $this->render_top_pages( $range_from, $today );
         $this->render_by_device( $range_from, $today );
-        echo '</div>';
-
         echo '</div>';
     }
 
     private function render_empty_state( $click_enabled ) {
-        echo '<div class="tc-empty-state">';
-        echo '<div class="tc-empty-icon" aria-hidden="true"><span class="dashicons dashicons-chart-bar"></span></div>';
-        echo '<h3 class="tc-empty-title">' . esc_html__( 'No clicks recorded yet', 'tap-chat' ) . '</h3>';
-
+        echo '<div class="tap-chat-card tap-chat-empty"><span class="tap-chat-empty__icon">';
+        Admin_Icons::render( 'chart' );
+        echo '</span>';
+        echo '<h2 class="tap-chat-empty__title">' . esc_html__( 'No clicks recorded yet', 'tap-chat' ) . '</h2>';
         if ( $click_enabled ) {
-            echo '<p class="tc-empty-text">' . esc_html__( 'Your chat button is live and tracking is on. As soon as a visitor taps it, their click will show up here — check back shortly.', 'tap-chat' ) . '</p>';
+            echo '<p class="tap-chat-empty__text">' . esc_html__( 'Your chat button is live and tracking is on. As soon as a visitor taps it, their click will show up here — check back shortly.', 'tap-chat' ) . '</p>';
         } else {
-            echo '<p class="tc-empty-text">' . esc_html__( 'Click tracking is currently turned off, so nothing is being recorded. Turn it on in the Settings sub-tab to start collecting data.', 'tap-chat' ) . '</p>';
+            echo '<p class="tap-chat-empty__text">' . esc_html__( 'Click tracking is currently turned off, so nothing is being recorded. Turn it on under Tracking to start collecting data.', 'tap-chat' ) . '</p>';
+            printf( '<a class="tap-chat-btn tap-chat-btn--ghost" href="#analytics/settings" data-tap-chat-goto="tracking">%s</a>', esc_html__( 'Open tracking settings', 'tap-chat' ) );
         }
-
         echo '</div>';
     }
 
-    private function render_range_selector( $active ) {
-        echo '<div class="tc-range-selector">';
-        echo '<span class="tc-range-label">' . esc_html__( 'Date range:', 'tap-chat' ) . '</span>';
+    private function range_selector_html( $active ) {
+        $html = '<span class="tap-chat-seg tap-chat-seg--text" role="group" aria-label="' . esc_attr__( 'Date range:', 'tap-chat' ) . '">';
         foreach ( $this->ranges() as $days ) {
-            $class = ( $days === $active ) ? 'tc-range active' : 'tc-range';
-            printf(
-                '<a href="%s" class="%s">%s</a>',
+            $html .= sprintf(
+                '<a href="%1$s" class="tap-chat-seg__btn"%2$s>%3$s</a>',
                 esc_url( $this->range_url( $days ) ),
-                esc_attr( $class ),
-                sprintf(
-                    /* translators: %d: number of days */
-                    esc_html__( 'Last %d days', 'tap-chat' ),
-                    (int) $days
-                )
+                $days === $active ? ' aria-current="true"' : '',
+                /* translators: %d: number of days */
+                esc_html( sprintf( __( 'Last %d days', 'tap-chat' ), (int) $days ) )
             );
         }
-        echo '</div>';
-    }
-
-    private function render_notice( $message ) {
-        echo '<div class="tc-inline-notice">' . esc_html( $message ) . '</div>';
+        return $html . '</span>';
     }
 
     private function render_hero_card( $current, $previous, $range_days ) {
-        echo '<div class="tc-card tc-card-hero">';
-        echo '<div class="tc-card-value">' . esc_html( $this->fmt( $current ) ) . '</div>';
-        echo '<div class="tc-card-label">' . sprintf(
+        echo '<div class="tap-chat-stat tap-chat-stat--hero">';
+        printf(
+            '<span class="tap-chat-stat__label">%s</span>',
             /* translators: %d: number of days */
-            esc_html__( 'Chat Clicks (last %d days)', 'tap-chat' ),
-            (int) $range_days
-        ) . '</div>';
-        echo $this->change_badge_html( $current, $previous ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_html internally
+            esc_html( sprintf( __( 'Chat Clicks (last %d days)', 'tap-chat' ), (int) $range_days ) )
+        );
+        echo '<span class="tap-chat-stat__value">' . esc_html( $this->fmt( $current ) ) . '</span>';
+        $this->render_change_badge( $current, $previous );
         echo '</div>';
     }
 
     private function render_stat_card( $label, $value, $sub ) {
-        echo '<div class="tc-card">';
-        echo '<div class="tc-card-value">' . esc_html( $this->fmt( $value ) ) . '</div>';
-        echo '<div class="tc-card-label">' . esc_html( $label ) . '</div>';
+        echo '<div class="tap-chat-stat">';
+        echo '<span class="tap-chat-stat__label">' . esc_html( $label ) . '</span>';
+        echo '<span class="tap-chat-stat__value">' . esc_html( $this->fmt( $value ) ) . '</span>';
         if ( $sub ) {
-            echo '<div class="tc-card-sub">' . esc_html( $sub ) . '</div>';
+            echo '<span class="tap-chat-stat__sub">' . esc_html( $sub ) . '</span>';
         }
         echo '</div>';
     }
@@ -164,40 +149,37 @@ class Analytics_Dashboard {
     /**
      * Percentage-change badge vs the previous period.
      */
-    private function change_badge_html( $current, $previous ) {
+    private function render_change_badge( $current, $previous ) {
         if ( $previous <= 0 ) {
             if ( $current <= 0 ) {
-                return '<div class="tc-change tc-change-flat">' . esc_html__( 'No data yet', 'tap-chat' ) . '</div>';
+                echo '<span class="tap-chat-change">' . esc_html__( 'No data yet', 'tap-chat' ) . '</span>';
+                return;
             }
-            return '<div class="tc-change tc-change-up">' . esc_html__( 'New activity', 'tap-chat' ) . '</div>';
+            echo '<span class="tap-chat-change tap-chat-change--up">' . esc_html__( 'New activity', 'tap-chat' ) . '</span>';
+            return;
         }
 
-        $pct = ( ( $current - $previous ) / $previous ) * 100;
+        $pct     = ( ( $current - $previous ) / $previous ) * 100;
         $rounded = round( abs( $pct ) );
 
         if ( 0 === (int) $rounded ) {
-            return '<div class="tc-change tc-change-flat">' . esc_html__( 'No change vs previous period', 'tap-chat' ) . '</div>';
+            echo '<span class="tap-chat-change">' . esc_html__( 'No change vs previous period', 'tap-chat' ) . '</span>';
+            return;
         }
 
         $up = $pct > 0;
-        $class = $up ? 'tc-change tc-change-up' : 'tc-change tc-change-down';
-        $arrow = $up ? '&#8593;' : '&#8595;';
-
-        return '<div class="' . esc_attr( $class ) . '">'
-            . $arrow . ' ' . esc_html( $rounded ) . '% '
-            . esc_html__( 'compared to previous period', 'tap-chat' )
-            . '</div>';
+        printf( '<span class="tap-chat-change tap-chat-change--%s">', $up ? 'up' : 'down' );
+        Admin_Icons::render( $up ? 'arrow-up' : 'arrow-down' );
+        echo esc_html( number_format_i18n( $rounded ) . '% ' . __( 'compared to previous period', 'tap-chat' ) ) . '</span>';
     }
 
     private function render_funnel( $traffic_enabled, $from, $to, $range_days ) {
-        echo '<div class="tc-panel">';
-        echo '<h3 class="tc-panel-title">' . esc_html__( 'Conversion funnel', 'tap-chat' ) . '</h3>';
+        echo '<section class="tap-chat-card tap-chat-panel">';
+        echo '<h2 class="tap-chat-card__title">' . esc_html__( 'Conversion funnel', 'tap-chat' ) . '</h2>';
 
         if ( ! $traffic_enabled ) {
-            echo '<div class="tc-inline-notice">'
-                . esc_html__( 'Turn on "Traffic & CTR tracking" in the Settings sub-tab to measure button views, unique visitors and click-through rate. Click totals keep working without it.', 'tap-chat' )
-                . '</div>';
-            echo '</div>';
+            Admin_UI::alert( 'info', esc_html__( 'Turn on "Traffic & CTR tracking" under Tracking to measure button views, unique visitors and click-through rate. Click totals keep working without it.', 'tap-chat' ) );
+            echo '</section>';
             return;
         }
 
@@ -206,27 +188,28 @@ class Analytics_Dashboard {
         $clicks   = Analytics_Store::get_total( Analytics_Store::EVENT_CLICK, $from, $to );
         $ctr      = ( $views > 0 ) ? ( $clicks / $views ) * 100 : 0;
 
-        echo '<div class="tc-funnel">';
-        $this->render_funnel_item( __( 'Visitors', 'tap-chat' ), $this->fmt( $visitors ) );
-        $this->render_funnel_item( __( 'Button Views', 'tap-chat' ), $this->fmt( $views ) );
-        $this->render_funnel_item( __( 'Clicks', 'tap-chat' ), $this->fmt( $clicks ) );
-        $this->render_funnel_item( __( 'CTR', 'tap-chat' ), number_format_i18n( $ctr, 2 ) . '%' );
-        echo '</div>';
+        echo '<ol class="tap-chat-funnel">';
+        $this->render_funnel_item( 'users', __( 'Visitors', 'tap-chat' ), $this->fmt( $visitors ) );
+        $this->render_funnel_item( 'eye', __( 'Button Views', 'tap-chat' ), $this->fmt( $views ) );
+        $this->render_funnel_item( 'chat', __( 'Clicks', 'tap-chat' ), $this->fmt( $clicks ) );
+        $this->render_funnel_item( 'activity', __( 'CTR', 'tap-chat' ), number_format_i18n( $ctr, 2 ) . '%', true );
+        echo '</ol>';
 
-        echo '<p class="tc-panel-note">' . sprintf(
-            /* translators: %d: number of days */
-            esc_html__( 'Based on the last %d days. CTR = Clicks ÷ Button Views.', 'tap-chat' ),
-            (int) $range_days
+        echo '<p class="tap-chat-card__note">' . esc_html(
+            sprintf(
+                /* translators: %d: number of days */
+                __( 'Based on the last %d days. CTR = Clicks ÷ Button Views.', 'tap-chat' ),
+                (int) $range_days
+            )
         ) . '</p>';
-
-        echo '</div>';
+        echo '</section>';
     }
 
-    private function render_funnel_item( $label, $value ) {
-        echo '<div class="tc-funnel-item">';
-        echo '<div class="tc-funnel-value">' . esc_html( $value ) . '</div>';
-        echo '<div class="tc-funnel-label">' . esc_html( $label ) . '</div>';
-        echo '</div>';
+    private function render_funnel_item( $icon, $label, $value, $highlight = false ) {
+        echo '<li class="tap-chat-funnel__item' . ( $highlight ? ' is-result' : '' ) . '"><span class="tap-chat-funnel__label">';
+        Admin_Icons::render( $icon );
+        echo esc_html( $label ) . '</span>';
+        echo '<span class="tap-chat-funnel__value">' . esc_html( $value ) . '</span></li>';
     }
 
     private function render_trend( $from, $to ) {
@@ -237,91 +220,97 @@ class Analytics_Dashboard {
 
         $max = max( 1, max( $series ) );
 
-        echo '<div class="tc-panel">';
-        echo '<h3 class="tc-panel-title">' . esc_html__( 'Clicks over time', 'tap-chat' ) . '</h3>';
-        echo '<div class="tc-bars">';
+        echo '<section class="tap-chat-card tap-chat-panel">';
+        echo '<div class="tap-chat-panel__head"><h2 class="tap-chat-card__title">' . esc_html__( 'Clicks over time', 'tap-chat' ) . '</h2>';
+        /* translators: %s: peak clicks in a day */
+        echo '<span class="tap-chat-panel__meta">' . esc_html( sprintf( __( 'peak %s/day', 'tap-chat' ), $this->fmt( max( $series ) ) ) ) . '</span></div>';
+        echo '<div class="tap-chat-bars">';
         foreach ( $series as $date => $hits ) {
             $height = max( 2, (int) round( ( $hits / $max ) * 100 ) );
-            $title = sprintf(
+            $title  = sprintf(
                 /* translators: 1: date, 2: click count */
-                esc_attr__( '%1$s: %2$s clicks', 'tap-chat' ),
-                esc_attr( $date ),
-                esc_attr( $this->fmt( $hits ) )
+                __( '%1$s: %2$s clicks', 'tap-chat' ),
+                date_i18n( get_option( 'date_format' ), strtotime( $date ) ),
+                $this->fmt( $hits )
             );
             printf(
-                '<span class="tc-bar" style="height:%d%%" title="%s"><span class="tc-bar-fill"></span></span>',
-                (int) $height,
-                esc_attr( $title )
+                '<span class="tap-chat-bars__bar" title="%1$s"><span class="tap-chat-bars__fill" style="height:%2$d%%"></span></span>',
+                esc_attr( $title ),
+                (int) $height
             );
         }
         echo '</div>';
-        echo '</div>';
+        $dates = array_keys( $series );
+        printf(
+            '<div class="tap-chat-bars__axis"><span>%1$s</span><span>%2$s</span></div>',
+            esc_html( date_i18n( get_option( 'date_format' ), strtotime( reset( $dates ) ) ) ),
+            esc_html( date_i18n( get_option( 'date_format' ), strtotime( end( $dates ) ) ) )
+        );
+        echo '</section>';
     }
 
     private function render_top_pages( $from, $to ) {
         $rows = Analytics_Store::get_top_pages( Analytics_Store::EVENT_CLICK, $from, $to, 10 );
 
-        echo '<div class="tc-panel">';
-        echo '<h3 class="tc-panel-title">' . esc_html__( 'Top Pages by Clicks', 'tap-chat' ) . '</h3>';
+        echo '<section class="tap-chat-card tap-chat-panel">';
+        echo '<h2 class="tap-chat-card__title">' . esc_html__( 'Top Pages by Clicks', 'tap-chat' ) . '</h2>';
 
         if ( empty( $rows ) ) {
-            echo '<p class="tc-empty">' . esc_html__( 'No clicks recorded in this range yet.', 'tap-chat' ) . '</p>';
-            echo '</div>';
+            echo '<p class="tap-chat-panel__empty">' . esc_html__( 'No clicks recorded in this range yet.', 'tap-chat' ) . '</p>';
+            echo '</section>';
             return;
         }
 
-        echo '<table class="tc-table"><thead><tr>';
-        echo '<th>' . esc_html__( 'Page', 'tap-chat' ) . '</th>';
-        echo '<th class="tc-num">' . esc_html__( 'Clicks', 'tap-chat' ) . '</th>';
+        echo '<div class="tap-chat-table-wrap"><table class="tap-chat-table"><thead><tr>';
+        echo '<th scope="col">' . esc_html__( 'Page', 'tap-chat' ) . '</th>';
+        echo '<th scope="col" class="tap-chat-num">' . esc_html__( 'Clicks', 'tap-chat' ) . '</th>';
         echo '</tr></thead><tbody>';
 
         foreach ( $rows as $row ) {
-            $label = $row['page_key'];
-            echo '<tr>';
-            echo '<td><span class="tc-page-path">' . esc_html( $label ) . '</span>';
+            echo '<tr><td>';
             if ( ! empty( $row['page_title'] ) ) {
-                echo '<span class="tc-page-title">' . esc_html( $row['page_title'] ) . '</span>';
+                echo '<span class="tap-chat-table__title">' . esc_html( $row['page_title'] ) . '</span>';
             }
-            echo '</td>';
-            echo '<td class="tc-num">' . esc_html( $this->fmt( $row['hits'] ) ) . '</td>';
-            echo '</tr>';
+            echo '<span class="tap-chat-table__path">' . esc_html( $row['page_key'] ) . '</span>';
+            echo '</td><td class="tap-chat-num">' . esc_html( $this->fmt( $row['hits'] ) ) . '</td></tr>';
         }
 
-        echo '</tbody></table>';
-        echo '</div>';
+        echo '</tbody></table></div>';
+        echo '</section>';
     }
 
     private function render_by_device( $from, $to ) {
         $data = Analytics_Store::get_by_device( Analytics_Store::EVENT_CLICK, $from, $to );
 
-        echo '<div class="tc-panel">';
-        echo '<h3 class="tc-panel-title">' . esc_html__( 'Clicks by Device', 'tap-chat' ) . '</h3>';
+        echo '<section class="tap-chat-card tap-chat-panel">';
+        echo '<h2 class="tap-chat-card__title">' . esc_html__( 'Clicks by Device', 'tap-chat' ) . '</h2>';
 
         if ( empty( $data ) ) {
-            echo '<p class="tc-empty">' . esc_html__( 'No clicks recorded in this range yet.', 'tap-chat' ) . '</p>';
-            echo '</div>';
+            echo '<p class="tap-chat-panel__empty">' . esc_html__( 'No clicks recorded in this range yet.', 'tap-chat' ) . '</p>';
+            echo '</section>';
             return;
         }
 
-        $total = array_sum( $data );
+        $total  = array_sum( $data );
         $labels = array(
-            'desktop' => __( 'Desktop', 'tap-chat' ),
-            'mobile'  => __( 'Mobile', 'tap-chat' ),
-            'tablet'  => __( 'Tablet', 'tap-chat' ),
-            'unknown' => __( 'Unknown', 'tap-chat' ),
+            'desktop' => array( __( 'Desktop', 'tap-chat' ), 'monitor' ),
+            'mobile'  => array( __( 'Mobile', 'tap-chat' ), 'phone' ),
+            'tablet'  => array( __( 'Tablet', 'tap-chat' ), 'tablet' ),
+            'unknown' => array( __( 'Unknown', 'tap-chat' ), 'help' ),
         );
 
-        echo '<ul class="tc-device-list">';
+        echo '<ul class="tap-chat-devices">';
         foreach ( $data as $device => $hits ) {
-            $label = isset( $labels[ $device ] ) ? $labels[ $device ] : ucfirst( $device );
-            $pct = ( $total > 0 ) ? round( ( $hits / $total ) * 100 ) : 0;
-            echo '<li class="tc-device-row">';
-            echo '<span class="tc-device-name">' . esc_html( $label ) . '</span>';
-            echo '<span class="tc-device-bar"><span class="tc-device-fill" style="width:' . (int) $pct . '%"></span></span>';
-            echo '<span class="tc-device-val">' . esc_html( $this->fmt( $hits ) ) . ' (' . (int) $pct . '%)</span>';
+            $meta = isset( $labels[ $device ] ) ? $labels[ $device ] : array( ucfirst( $device ), 'help' );
+            $pct  = ( $total > 0 ) ? round( ( $hits / $total ) * 100 ) : 0;
+            echo '<li class="tap-chat-devices__row"><span class="tap-chat-devices__name">';
+            Admin_Icons::render( $meta[1] );
+            echo esc_html( $meta[0] ) . '</span>';
+            echo '<span class="tap-chat-devices__val">' . esc_html( $this->fmt( $hits ) ) . ' <span class="tap-chat-devices__pct">' . esc_html( number_format_i18n( $pct ) . '%' ) . '</span></span>';
+            echo '<span class="tap-chat-devices__bar"><span class="tap-chat-devices__fill" style="width:' . (int) $pct . '%"></span></span>';
             echo '</li>';
         }
         echo '</ul>';
-        echo '</div>';
+        echo '</section>';
     }
 }

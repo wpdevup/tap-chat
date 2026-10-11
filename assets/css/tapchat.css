@@ -189,8 +189,13 @@
   left: 18px;
 }
 
+/*
+ * RTL: the bubble inherits direction: rtl, so a normal row already puts the
+ * avatar on the right and the text after it. Reversing the row moved the avatar
+ * back to the left, under the close button (which sits top-left in RTL).
+ */
 [dir="rtl"] .tapchat-welcome-bubble {
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .tapchat-bubble-avatar {
@@ -782,6 +787,20 @@
   outline: none;
   border-color: var(--tapchat-color);
   box-shadow: 0 0 0 2px var(--tapchat-color);
+}
+
+/* Keep theme link styles (a:hover / a:focus underline, colour or fill) off the agent rows. */
+.tapchat-agent-link,
+.tapchat-agent-link:hover,
+.tapchat-agent-link:focus,
+.tapchat-agent-link:active,
+.tapchat-agent-link:visited,
+.tapchat-agent-link * {
+  text-decoration: none !important;
+}
+.tapchat-agent-link:focus {
+  outline: none;
+  background: #fff;
 }
 
 /* Avatar */

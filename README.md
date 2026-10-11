@@ -1,525 +1,409 @@
-# Tap Chat - WordPress Click-to-Chat Plugin
+# Tap Chat – Floating Contact Button
 
-**Version:** 1.8.0 | **Requires:** WordPress 5.8+ | **PHP:** 7.4+
+**Version:** 2.2.0 | **Requires:** WordPress 5.8+ | **Tested up to:** 7.1 | **PHP:** 7.4+
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
-Lightweight WordPress plugin for adding a professional floating chat button to your website. Connect with visitors instantly through popular messaging platforms with zero configuration complexity.
+![Tap Chat](screenshot/banner-1544x500.png)
+
+WhatsApp chat button for WordPress with multiple agents, a welcome bubble, working hours, page rules and privacy-first click analytics. No cookies, no third parties.
+
+**New in 2.2:** a redesigned settings screen with a side menu, clear sections and a **live preview** that shows the button, the agent picker and the welcome bubble on desktop and mobile as you edit. It follows your WordPress admin colour scheme and works in right-to-left languages.
+
+- 🔗 [WordPress.org plugin page](https://wordpress.org/plugins/tap-chat/)
+- 🎬 [Demo](https://wpdevup.com/tap-chat/)
+- 💬 [Support forum](https://wordpress.org/support/plugin/tap-chat/)
+
+## 📸 Screenshots
+
+| The button on your site | Live preview while you edit |
+| --- | --- |
+| ![Chat button with welcome bubble and agent picker](screenshot/screenshot-1.png) | ![General settings with live preview](screenshot/screenshot-2.png) |
+| **Multiple agents** | **Built-in analytics** |
+| ![Agents settings](screenshot/screenshot-4.png) | ![Analytics report](screenshot/screenshot-11.png) |
 
 ## 🚀 Features
 
 ### Core Features
-- ✨ **Floating Chat Button** - Beautiful, customizable button that sticks to your site
-- 🎨 **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
-- 💬 **Welcome Bubble** - Friendly greeting message with Modern & Simple styles
-- 🎯 **Smart Triggers** - Show bubble at the perfect moment based on visitor behavior
+- 👀 **Live Preview** - See the button, the agent picker and the welcome bubble change as you edit, on desktop and mobile
+- 👥 **Multiple Agents** - Up to 3 team members in a compact picker panel, each with their own WhatsApp number or link, avatar, role and online status
+- 📊 **Built-in Analytics** - First-party chat-click report inside wp-admin: no cookies, no personal data, no external requests
+- ✨ **Floating Chat Button** - Customizable button that stays in the corner of your site, icon-only or with a label
+- 🔗 **Custom Link** - Use Telegram, Messenger, a contact page, `tel:`, `mailto:` or any URL instead of WhatsApp
+- 🎨 **Custom Icon Upload** - Replace the WhatsApp icon with your own logo
+- 💬 **Welcome Bubble** - Friendly greeting in Modern or Simple style
+- 🎯 **Smart Triggers** - Show the bubble on time on page, scroll depth, exit intent or idle
+- 🌀 **Button Animations** - Fade in, slide in, bounce, ring, or a "New message" badge with a pulsing ring (respects reduced-motion)
 - 🌍 **Country Selector** - 150+ country codes with flags
-- ⏰ **Working Hours** - Display button only during business hours
-- 👁️ **Page Visibility** - Control where button appears
-- 🎨 **Fully Customizable** - Colors, sizes, positions, labels
-- 📱 **Mobile Optimized** - Separate mobile/desktop configurations
-- 🔒 **GDPR Compliant** - Zero tracking, no cookies
-- 🌐 **Translation Ready** - Fully translatable with .pot file
+- ⏰ **Working Hours** - Show the button only during business hours, in your time zone, with an optional offline message
+- 👁️ **Page Visibility** - Show only on selected pages, or hide on selected pages
+- 📈 **GA4 / Tag Manager** - Optionally forward chat clicks and bubble impressions to the analytics you already use
+- 📱 **Mobile Optimized** - Separate desktop and mobile sizes and label settings
+- ↔️ **RTL Ready** - Admin and front end lay out correctly in right-to-left languages
+- 🌐 **Translation Ready** - Fully translatable with the included `.pot` file
 
-### Custom Icon Upload (New in 1.5.0)
+### Multiple Agents
 
-Replace the default WhatsApp icon with your own branding:
+Let visitors pick who to talk to instead of guessing.
 
-- 🖼️ **Upload Your Logo** - Use WordPress Media Library to select any image
-- ⭕ **Perfect Circle Display** - Icons automatically sized and styled as perfect circles
-- 📱 **Fully Responsive** - Works perfectly on all devices and screen sizes
-- 🔄 **Easy Fallback** - Restore default WhatsApp icon with one click
-- 🎯 **Multiple Uses** - Works in floating button, offline button, and bubble avatar
-- 📏 **Format Support** - PNG, JPG, SVG formats supported
+- **Up to 3 agents**, each opening their own chat in a new tab
+- **WhatsApp number or custom link per agent** (Telegram, Messenger, `tel:`, `mailto:`, any URL)
+- **Per-agent details**: name, role, avatar and a pre-filled WhatsApp message
+- **Manual online / offline** status with a green dot
+- **Custom panel title and subtitle**
+- **Drag to reorder** in the admin
+- **GA4 / Tag Manager aware**: the chosen agent's name is sent as the event label
+- **Non-destructive**: single-button setups keep working; switch modes any time under **Settings → Tap Chat → Agents**
 
-**How it works:**
-1. Go to General Settings
-2. Click "Choose Icon" button
-3. Select image from WordPress Media Library
-4. Icon automatically displays as perfect circle
-5. Click "Use Default" to restore WhatsApp icon anytime
+### Built-in Analytics
 
-### Smart Triggers (New in 1.4.0)
+Everything is stored in your own WordPress database.
 
-Control when the welcome bubble appears based on visitor behavior:
+- **Headline metrics**: Total, Today, This Week and This Month chat clicks, with the change versus the previous period
+- **Top pages** by clicks and **clicks by device** (mobile / desktop / tablet)
+- **Optional traffic tracking** for the Visitors → Button Views → Clicks → CTR funnel (off by default)
+- **Dashboard widget** with today / last 7 days / all-time clicks and a 14-day trend
+- **Privacy by design**: no cookies, IP addresses and user agents are never stored, no external requests
+- **You stay in control**: exclude logged-in users, choose how long data is kept (pruned daily), reset all data at any time
 
-- ⏱️ **Time on Page** - After visitor stays for X seconds (enabled by default, recommended)
-- 📜 **Scroll Depth** - When visitor scrolls to X% of page
-- 🚪 **Exit Intent** - When visitor moves mouse to close tab
-- 💤 **Idle Detection** - When visitor is inactive for X seconds
+### Welcome Bubble
 
-**How it works:** When multiple triggers are enabled, the bubble shows when ANY condition is met first. This gives you flexible control over user engagement.
+**Modern style:** avatar, name, online indicator and message, shown above the button.
 
-### Welcome Bubble Styles
+**Simple style:** message only, shown above or beside the button.
 
-**Modern Style:**
-- Avatar image
-- Agent/team name
-- Online status indicator
-- Positioned above button
+**Smart Triggers** (when several are enabled, the first condition met shows the bubble):
+- ⏱️ **Time on Page** - after the visitor stays X seconds (recommended)
+- 📜 **Scroll Depth** - when the visitor scrolls to X% of the page
+- 🚪 **Exit Intent** - when the mouse moves to close the tab
+- 💤 **Idle Detection** - when the visitor is inactive for X seconds
 
-**Simple Style:**
-- Clean, minimal design
-- Message only
-- Positioned above or beside button
-- Faster configuration
+A closed bubble stays closed for the rest of the session.
 
 ## 📦 Installation
 
 ### From WordPress.org
 
-1. Go to **WordPress Dashboard → Plugins → Add New**
+1. Go to **Dashboard → Plugins → Add New**
 2. Search for "**Tap Chat**"
-3. Click **Install Now** and then **Activate**
+3. Click **Install Now**, then **Activate**
 4. Go to **Settings → Tap Chat** to configure
 
 ### Manual Installation
 
 1. Download the latest release from [WordPress.org](https://wordpress.org/plugins/tap-chat/)
-2. Upload to `/wp-content/plugins/` directory
-3. Activate through the **Plugins** menu in WordPress
-4. Configure via **Settings → Tap Chat**
+2. Upload the `tap-chat` folder to `/wp-content/plugins/`
+3. Activate it from the **Plugins** screen
+4. Configure it under **Settings → Tap Chat**
 
 ### For Developers
+
 ```bash
-# Clone the repository
 git clone https://github.com/wpdevup/tap-chat.git
-
-# Navigate to plugin directory
-cd tap-chat
-
-# Link to WordPress plugins directory
-ln -s $(pwd) /path/to/wordpress/wp-content/plugins/tap-chat
+ln -s "$(pwd)/tap-chat" /path/to/wordpress/wp-content/plugins/tap-chat
 ```
 
 ## ⚙️ Configuration
 
-### Basic Setup
+All settings live on one screen, **Settings → Tap Chat**, with a side menu. Each section has its own link (for example `#agents`), and after saving you stay on the section you were editing. The General, Agents and Welcome Bubble sections show a live preview for desktop and mobile.
 
-1. **General Tab:**
-   - Select country code
-   - Enter phone number (without country code)
-   - **Upload custom icon (optional)** - Replace WhatsApp icon with your logo
-   - Customize appearance (color, size, position)
-   - Set default message and label
+1. **General**
+   - Destination: WhatsApp number (country + phone) or any custom link
+   - Pre-filled message, with `{TITLE}`, `{TAGLINE}` and `{URL}` placeholders
+   - Appearance: label, colour, position, animation, custom icon, separate desktop and mobile sizes
+2. **Agents**
+   - Single button or multiple agents
+   - Panel title and subtitle, up to 3 agents with their own channel, avatar, role and status
+3. **Welcome Bubble**
+   - Modern or Simple style, message, name and avatar
+   - Smart Triggers
+4. **Working Hours**
+   - Schedule per day, time zone, optional offline message
+5. **Visibility**
+   - Show only on selected pages, or hide on selected pages
+6. **Advanced**
+   - Append the page title and URL to every message
+7. **Analytics**
+   - The built-in report with a 7 / 30 / 90-day range
+8. **Tracking**
+   - Built-in click and traffic tracking, data retention, reset
+   - Optional Google Analytics 4 / Tag Manager events
 
-2. **Welcome Bubble Tab:**
-   - Enable welcome bubble
-   - Choose style (Modern or Simple)
-   - Customize message, name, avatar
-   - **Configure smart triggers:**
-     - Time on Page (default: 3 seconds)
-     - Scroll Depth (customize percentage)
-     - Exit Intent (mouse leaves viewport)
-     - Idle Detection (no activity timeout)
+## 🧩 Shortcode
 
-3. **Business Hours Tab:**
-   - Set working hours per day
-   - Choose timezone
-   - Add optional offline message
+Display a chat link anywhere:
 
-4. **Visibility Tab:**
-   - Show on specific pages only
-   - Hide on specific pages
-   - Combine rules for precise control
-
-5. **Advanced Tab:**
-   - Page context appending
-   - Additional options
-
-### Shortcode Usage
-
-Basic shortcode:
-```php
+```text
 [tapchat]
 ```
 
 With custom parameters:
-```php
+
+```text
 [tapchat phone="+1234567890" message="Hello!" label="Contact us"]
-```
-
-### Programmatic Usage
-```php
-// Get plugin instance
-$tap_chat = \Tap_Chat\Plugin::instance();
-
-// Hooks available
-add_action( 'tapchat_click', 'my_custom_function' );
-```
-
-## 🎯 Smart Triggers Usage
-
-### Best Practices
-
-**For E-commerce Sites:**
-```
-Recommended: Scroll Depth + Exit Intent
-- Enable Scroll Depth: 50%
-- Enable Exit Intent
-```
-
-**For Service/Support Sites:**
-```
-Recommended: Time on Page (default)
-- Enable Time on Page: 3-5 seconds
-```
-
-**For High-Traffic Blogs:**
-```
-Recommended: Scroll Depth + Idle
-- Enable Scroll Depth: 30%
-- Enable Idle Detection: 30 seconds
-```
-
-### Trigger Priority
-
-When multiple triggers are enabled:
-1. Whichever condition is met **first** will trigger the bubble
-2. Once shown, bubble won't show again in the same session
-3. User can manually close bubble at any time
-4. Closed bubbles are remembered for the current session only
-
-### Testing Triggers
-```javascript
-// Clear session storage to reset bubble
-sessionStorage.clear();
-
-// Reload page to test triggers again
-location.reload();
 ```
 
 ## 🎨 Customization
 
-### CSS Customization
+### CSS
 
-Override default styles in your theme:
+Override styles in your theme:
+
 ```css
-/* Custom button color */
+/* Button colour */
 .tapchat-fab {
-    --tapchat-color: #your-color !important;
+    --tapchat-color: #128c7e;
 }
 
-/* Custom bubble style */
+/* Welcome bubble */
 .tapchat-welcome-bubble {
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-/* Custom positioning */
+/* Button offset */
 .tapchat-fab.tapchat-pos-right {
     bottom: 30px;
     right: 30px;
 }
-
-/* Custom icon styling */
-.tapchat-fab img.tapchat-icon {
-    border-radius: 50%;
-    object-fit: cover;
-}
 ```
 
-### JavaScript Hooks
+### PHP Filters
+
+```php
+// Hide the floating button on any view you choose, e.g. all blog posts.
+add_filter( 'tap_chat_suppress_button', function ( $suppress ) {
+    return is_singular( 'post' ) ? true : $suppress;
+} );
+
+// Keep other plugins' admin notices visible on the Tap Chat settings screen.
+add_filter( 'tap_chat_quiet_admin_notices', '__return_false' );
+
+// Change the number of days before the review request notice appears.
+add_filter( 'tap_chat_review_delay_days', function () {
+    return 14;
+} );
+```
+
+### JavaScript
+
 ```javascript
-// Listen for button clicks
-jQuery(document).on('click', '.tapchat-fab', function() {
-    console.log('Tap Chat button clicked!');
-});
-
-// WordPress hook (if wp.hooks available)
-wp.hooks.addAction('tapchat_click', 'myNamespace', function() {
-    // Custom tracking or analytics
-});
+// Runs when the chat button is clicked (requires wp.hooks on the page).
+wp.hooks.addAction( 'tapchat_click', 'my-namespace', function () {
+    // Your own tracking.
+} );
 ```
+
+### Google Analytics 4 / Tag Manager Events
+
+When enabled under **Tracking**, Tap Chat sends events through the `gtag` or `dataLayer` already on your site (it never loads an analytics library itself):
+
+- `tapchat_click` (the event name can be changed) - chat button, bubble or agent clicks; the agent name is sent as the label
+- `tapchat_bubble_shown` - welcome bubble impressions, with the `trigger_type` that showed it
 
 ## 🛠️ Development
 
 ### Requirements
 - WordPress 5.8 or higher
 - PHP 7.4 or higher
-- Modern browser with ES6 support
 
 ### File Structure
-```
+
+```text
 tap-chat/
 ├── assets/
 │   ├── css/
-│   │   ├── tapchat.css          # Frontend styles
-│   │   └── admin.css            # Admin styles
-│   ├── js/
-│   │   ├── tapchat.js           # Frontend scripts
-│   │   └── admin.js             # Admin scripts
-│   └── images/
+│   │   ├── tapchat.css                       # Front-end styles
+│   │   ├── admin.css                         # Settings screen
+│   │   └── admin-global.css                  # Notices and dashboard widget
+│   └── js/
+│       ├── tapchat.js                        # Front-end script
+│       └── admin.js                          # Settings screen and live preview
 ├── includes/
-│   ├── class-tap-chat.php       # Main plugin class
+│   ├── class-tap-chat.php                    # Main plugin class (front end)
+│   ├── class-tap-chat-analytics-store.php    # Analytics table and queries
+│   ├── class-tap-chat-rest.php               # Click and view collector endpoint
 │   └── admin/
-│       ├── class-tap-chat-admin.php      # Admin controller
-│       ├── class-tap-chat-settings.php   # Settings handler
-│       └── class-tap-chat-fields.php     # Field renderer
+│       ├── class-tap-chat-admin.php          # Settings screen shell, notices, dashboard widget
+│       ├── class-tap-chat-settings.php       # Option registration, defaults and sanitizing
+│       ├── class-tap-chat-fields.php         # Section views and live preview
+│       ├── class-tap-chat-dashboard.php      # Analytics report
+│       ├── class-tap-chat-review.php         # Review request notice
+│       ├── class-tap-chat-ui.php             # Shared admin UI helpers
+│       └── class-tap-chat-icons.php          # Admin icon set
 ├── languages/
-│   └── tap-chat.pot             # Translation template
-├── tap-chat.php                 # Plugin entry point
-└── readme.txt                   # WordPress.org readme
+│   └── tap-chat.pot                          # Translation template
+├── tap-chat.php                              # Plugin entry point
+├── uninstall.php                             # Cleanup on uninstall
+└── readme.txt                                # WordPress.org readme
 ```
 
 ### Coding Standards
 
-This plugin follows:
 - [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/)
 - [WordPress Plugin Handbook](https://developer.wordpress.org/plugins/)
 - [WordPress Security Best Practices](https://developer.wordpress.org/plugins/security/)
 
 ### Building for Production
+
 ```bash
-# Run WordPress coding standards check
+# Coding standards
 phpcs --standard=WordPress tap-chat.php includes/
 
-# Check for translation strings
-wp i18n make-pot . languages/tap-chat.pot
+# Translation template
+wp i18n make-pot . languages/tap-chat.pot --slug=tap-chat
 
-# Create release package
-zip -r tap-chat.zip . -x "*.git*" "node_modules/*" "*.DS_Store"
+# Release package
+zip -r tap-chat.zip tap-chat -x "*.git*" "*.DS_Store"
 ```
 
-## 🧪 Testing
+## 🧪 Testing Checklist
 
-### Manual Testing Checklist
+- [ ] Button shows on the front end, single and multiple-agents modes
+- [ ] Live preview matches the front end on desktop and mobile
+- [ ] Welcome bubble appears with each enabled trigger
+- [ ] Working hours and offline message behave correctly
+- [ ] Visibility rules work as expected
+- [ ] Analytics record clicks (and views when traffic tracking is on)
+- [ ] Settings save and you stay on the same section
+- [ ] Left-to-right and right-to-left layouts
+- [ ] No JavaScript console errors, no PHP notices with `WP_DEBUG`
 
-- [ ] Button displays correctly on frontend
-- [ ] Custom icon uploads and displays properly
-- [ ] Custom icon shows as perfect circle
-- [ ] Custom icon works on mobile devices
-- [ ] Welcome bubble shows with enabled triggers
-- [ ] Smart triggers work as expected (Time, Scroll, Exit, Idle)
-- [ ] Country selector works properly
-- [ ] Phone number validation works
-- [ ] Working hours logic is correct
-- [ ] Visibility controls work as expected
-- [ ] Mobile responsiveness is good
-- [ ] Shortcode works in posts/pages
-- [ ] Settings save correctly
-- [ ] No JavaScript console errors
-- [ ] No PHP errors in debug mode
+## 🔒 Privacy & Performance
 
-### Browser Compatibility
+- **No external requests** - nothing is loaded from third parties
+- **Small footprint** - one stylesheet and one script on the front end, using the jQuery bundled with WordPress
+- **First-party analytics** - daily-aggregated counts in your own database, sent with a non-blocking beacon; no cookies and no personal data
+- **Clean uninstall** - the analytics table and settings are removed on uninstall
 
-Tested and working on:
-- ✅ Chrome/Edge (latest)
-- ✅ Firefox (latest)
-- ✅ Safari (latest)
-- ✅ Mobile Safari (iOS)
-- ✅ Chrome Mobile (Android)
+## 🛡️ Security
+
+- All inputs sanitized and validated, all output escaped
+- Nonces and capability checks for admin actions
+- Prepared database queries
+
+Found a security issue? Please report it privately through the [WordPress.org support forum](https://wordpress.org/support/plugin/tap-chat/).
 
 ## 🌍 Translations
 
-Tap Chat is translation-ready! We welcome translations in all languages.
-
-### How to Translate
-
-1. Download [POEdit](https://poedit.net/)
-2. Open `languages/tap-chat.pot`
-3. Create translation for your language
-4. Save as `tap-chat-{locale}.po` and `tap-chat-{locale}.mo`
-5. Submit via [WordPress.org translation system](https://translate.wordpress.org/)
-
-### Available Translations
-
-- 🇬🇧 English (default)
-- 🇩🇪 German (coming soon)
-- 🇪🇸 Spanish (coming soon)
-- 🇫🇷 French (coming soon)
-
-Want to contribute a translation? [Contact us](https://wordpress.org/support/plugin/tap-chat/)!
-
-## 📊 Performance
-
-Tap Chat is optimized for performance:
-
-- **Tiny Footprint:** < 15KB total (CSS + JS)
-- **No External Requests:** Everything loads locally
-- **Async Loading:** Scripts load asynchronously
-- **No jQuery Dependency:** Vanilla JavaScript on frontend
-- **Optimized CSS:** Minimal, modern CSS3
-- **No Database Queries on Frontend:** Settings cached
-
-### Performance Metrics
-
-- ✅ GTmetrix Grade: A
-- ✅ Google PageSpeed: 95+/100
-- ✅ Pingdom Speed: A
-- ✅ Load Time: < 50ms
-
-## 🔒 Security
-
-Security is our priority:
-
-- ✅ All inputs sanitized and validated
-- ✅ Nonces for all form submissions
-- ✅ Capability checks for admin actions
-- ✅ SQL injection prevention
-- ✅ XSS attack prevention
-- ✅ CSRF protection
-- ✅ No external dependencies
-- ✅ Regular security audits
-
-Found a security issue? Please report privately to [WordPress.org](https://wordpress.org/support/plugin/tap-chat/)
+Tap Chat is translation-ready. Contribute a translation on [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/tap-chat/), or use `languages/tap-chat.pot` with [Poedit](https://poedit.net/).
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how you can help:
-
-### Ways to Contribute
-
-1. **Code Contributions**
-   - Fork the repository
-   - Create a feature branch (`git checkout -b feature/amazing-feature`)
-   - Commit your changes (`git commit -m 'Add amazing feature'`)
-   - Push to the branch (`git push origin feature/amazing-feature`)
-   - Open a Pull Request
-
-2. **Bug Reports**
-   - Use GitHub Issues
-   - Provide detailed description
-   - Include steps to reproduce
-   - Add screenshots if applicable
-
-3. **Feature Requests**
-   - Open an issue with [FEATURE] prefix
-   - Explain the use case
-   - Describe expected behavior
-
-4. **Documentation**
-   - Improve README
-   - Add code comments
-   - Write tutorials or guides
-
-5. **Translations**
-   - Translate to your language
-   - Submit via WordPress.org
-
-### Development Setup
-```bash
-# Clone repository
-git clone https://github.com/wpdevup/tap-chat.git
-cd tap-chat
-
-# Create development branch
-git checkout -b feature/your-feature-name
-
-# Make changes and test
-
-# Follow WordPress coding standards
-phpcs --standard=WordPress .
-
-# Commit with clear message
-git commit -m "Add: Description of your changes"
-```
+1. **Code** - fork the repository, create a feature branch, and open a pull request
+2. **Bug reports** - open a [GitHub issue](https://github.com/wpdevup/tap-chat/issues) with steps to reproduce and screenshots
+3. **Feature requests** - open an issue with the `[FEATURE]` prefix and describe the use case
+4. **Translations** - via translate.wordpress.org
 
 ## 📝 Changelog
 
-### [1.6.0] - 2025-11-27
+### [2.2.0] - 2026-10-08
+A redesigned settings screen: calmer, clearer, and easier to scan.
+
+**New:**
+- Redesigned admin: one screen with a side navigation, card sections, switches and option cards
+- Live preview of the button, the agent picker and the welcome bubble on desktop and mobile
+- Notices from other plugins are hidden on the Tap Chat screen (filter: `tap_chat_quiet_admin_notices`)
+- Admin follows your WordPress admin colour scheme and supports right-to-left languages
+- You stay on the section you were editing after saving; section links open directly
+
 **Improved:**
-- 🚀 Admin settings now use JavaScript tabs without page refresh
-- 💾 All settings from all tabs save together in one submission
-- 📐 Dynamic bubble positioning - automatically adjusts to icon size changes
-- 📱 Better responsive behavior for welcome bubble on all screen sizes
+- Analytics report, dashboard widget and notices share the same visual style
+- Analytics settings moved to their own "Tracking" section
 
 **Fixed:**
-- Bubble alignment issues when changing icon sizes
+- Welcome-bubble avatar no longer falls back to the Custom Icon
+- Modern welcome bubble avatar position on right-to-left sites
+- Button no longer appears inside block widget editor previews or counts them as views
+- Opening the agent picker with a mouse no longer highlights the first agent with the theme's focus style
+- Times of a day switched off under Working Hours are kept when saving
 
-**Performance:**
-- Smoother admin experience with no page reloads between tabs
+**Developer:**
+- Admin markup without inline styles, rendered by dedicated view classes; option format unchanged
+
+### [2.1.0] - 2026-09-13
+**New:**
+- Multiple Agents mode with up to 3 team members, each with their own WhatsApp number or link, avatar, role and pre-filled message
+- Per-agent online / offline indicator, panel title and subtitle, drag-to-reorder
+- Agent name forwarded to GA4 / Tag Manager
+- Setup notice after activation that links to the settings
+
+**Improved:**
+- Button label hidden on desktop by default for new installs
+- Existing single-button setups are untouched
+
+**Fixed:**
+- RTL "Side" welcome bubble position and close-button layout with some themes
+
+### [2.0.0] - 2026-09-05
+**New:**
+- Built-in, privacy-first analytics dashboard (Total / Today / This Week / This Month, top pages, devices, 7 / 30 / 90-day range)
+- Optional traffic and CTR tracking with cookieless unique visitors
+- WordPress dashboard widget
+- Exclude logged-in users, data retention with daily pruning, and a reset action
+
+### [1.9.0] - 2026-07-13
+- GA4 / Google Tag Manager events for chat clicks and welcome-bubble impressions
+
+### [1.8.0] - 2026-07-13
+- Button animations: fade in, slide in, bounce, ring and "New message" badge
+- Review request notice (filter: `tap_chat_review_delay_days`)
+
+### [1.7.0] - 2026-07-05
+- Phone / Custom-link toggle for any URL
+- `{TITLE}`, `{TAGLINE}` and `{URL}` placeholders in the default message
+
+### [1.6.0] - 2025-11-27
+- JavaScript tabs in the admin and single-submission saving
+- Dynamic bubble positioning that follows the icon size
 
 ### [1.5.0] - 2025-11-25
-**Added:**
-- 🎨 Custom Icon Upload feature
-  - Replace WhatsApp icon with your own brand logo
-  - WordPress Media Library integration
-  - Perfect circular icon display with automatic sizing
-  - Supports PNG, JPG, SVG formats
-  - Works in floating button, offline button, and bubble avatar
-  - Easy fallback to default icon with "Use Default" button
-
-**Improved:**
-- Enhanced icon display with responsive sizing across all devices
-- Better CSS styling for custom icons with border-radius and object-fit
-- Separate icon handling for SVG vs IMG elements
-- Mobile-optimized icon rendering
-
-**Fixed:**
-- Icon sizing issues on mobile devices
-- Border spacing around custom icons in hide-label mode
-- Icon display inconsistencies across different themes
-
-**Performance:**
-- Optimized icon rendering with efficient CSS
-- Reduced layout shifts during icon loading
+- Custom Icon Upload with the WordPress Media Library
 
 ### [1.4.0] - 2025-11-21
-**Added:**
-- 🎯 Smart Triggers system for welcome bubble
-  - Time on Page trigger (enabled by default, 3 seconds)
-  - Scroll Depth trigger (show after X% scroll)
-  - Exit Intent trigger (show on exit attempt)
-  - Idle Detection trigger (show after inactivity)
-- Improved trigger configuration interface
-
-**Improved:**
-- Simplified UX for trigger settings
-- Better default settings for new installations (Time on Page auto-enabled)
-- Enhanced performance for trigger detection algorithms
-- Optimized JavaScript for multiple trigger combinations
-
-**Fixed:**
-- Removed duplicate Display Delay field
-- Fixed trigger priority when multiple conditions met
-- Improved session storage handling for bubble display
-- Various minor bug fixes and stability improvements
+- Smart Triggers: time on page, scroll depth, exit intent, idle detection
 
 ### [1.3.0] - 2025-08-15
-**Added:**
-- Welcome Bubble feature with Modern & Simple styles
-- Bubble customization options (message, name, avatar)
-- Session-based display control
-
-**Improved:**
-- Better mobile experience
-- Optimized CSS animations
-
-**Fixed:**
-- Avatar upload functionality
+- Welcome Bubble with Modern and Simple styles
 
 ### [1.2.0] - 2025-06-10
-**Added:**
-- Business Hours with timezone support
-- Page visibility controls
-- Offline message option
-
-**Improved:**
-- Settings organization with tabs
-- Enhanced admin UI
+- Business hours with time zone support, offline message, page visibility controls
 
 ### [1.1.0] - 2025-04-20
-**Added:**
-- Country selector (150+ countries)
-- Separate mobile/desktop controls
-- Page context appending
-
-**Improved:**
-- Phone number validation
-- URL encoding for messages
+- Country selector, separate mobile and desktop sizes, page context appending
 
 ### [1.0.0] - 2025-03-01
 - Initial release
 
+The full changelog is in [readme.txt](readme.txt).
+
+## 🗺️ Roadmap
+
+### Completed ✅
+- ✅ Redesigned admin with live preview (v2.2.0)
+- ✅ Multiple agents (v2.1.0)
+- ✅ Built-in privacy-first analytics (v2.0.0)
+- ✅ GA4 / Tag Manager events (v1.9.0)
+- ✅ Button animations (v1.8.0)
+- ✅ Custom links (v1.7.0)
+- ✅ Custom icon upload (v1.5.0)
+- ✅ Smart triggers (v1.4.0)
+- ✅ Welcome bubble (v1.3.0)
+- ✅ Working hours (v1.2.0)
+
+### Ideas 🚀
+- [ ] More bubble styles
+- [ ] Pre-chat form
+- [ ] Quick reply templates
+
 ## 📜 License
 
-This project is licensed under the GPL v2 or later.
-```
-Tap Chat - WordPress Click-to-Chat Plugin
-Copyright (C) 2025 iruserwp9
+GPL v2 or later.
+
+```text
+Tap Chat – Floating Contact Button
+Copyright (C) 2025-2026 WPdevup
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -532,54 +416,15 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 ```
 
-## 🙏 Credits
-
-- Icons from messaging platform brand resources
-- Country flags from Unicode emoji standard
-- Developed with ❤️ by [iruserwp9](https://profiles.wordpress.org/iruserwp9/)
-
 ## 📞 Support
 
-Need help? We're here for you!
-
 - 📖 [Documentation](https://wordpress.org/plugins/tap-chat/)
-- 💬 [Support Forum](https://wordpress.org/support/plugin/tap-chat/)
-- 🐛 [Report Bug](https://github.com/wpdevup/tap-chat/issues)
-- ✨ [Request Feature](https://github.com/wpdevup/tap-chat/issues)
-- ⭐ [Rate Plugin](https://wordpress.org/support/plugin/tap-chat/reviews/)
-
-## 🗺️ Roadmap
-
-### Completed ✅
-- ✅ Improved Admin UX (v1.6.0)
-- ✅ Custom Icon Upload (v1.5.0)
-- ✅ Smart Triggers (v1.4.0)
-- ✅ Welcome Bubble (v1.3.0)
-- ✅ Working Hours (v1.2.0)
-- ✅ Country Selector (v1.1.0)
-
-### Coming Soon 🚀
-- [ ] Multiple agents support with round-robin
-- [ ] Analytics dashboard (privacy-friendly)
-- [ ] More bubble styles and animations
-- [ ] Pre-chat form integration
-- [ ] Quick replies templates
-- [ ] Team chat widget
-- [ ] A/B testing for triggers
-- [ ] Advanced trigger combinations
-- [ ] Custom trigger scheduling
-
-## ⭐ Show Your Support
-
-If you find this plugin helpful, please:
-
-- ⭐ Star this repository
-- 🔄 Share with others
-- ✍️ Write a review on [WordPress.org](https://wordpress.org/support/plugin/tap-chat/reviews/)
-- 🐛 Report bugs and help improve
+- 💬 [Support forum](https://wordpress.org/support/plugin/tap-chat/)
+- 🐛 [Report a bug](https://github.com/wpdevup/tap-chat/issues)
+- ⭐ [Rate the plugin](https://wordpress.org/support/plugin/tap-chat/reviews/)
 
 ---
 
-Made with ❤️ for the WordPress community
+Made with ❤️ by [WPdevup](https://wpdevup.com/tap-chat/) and [iruserwp9](https://profiles.wordpress.org/iruserwp9/) for the WordPress community.
 
-[WordPress.org](https://wordpress.org/plugins/tap-chat/) | [GitHub](https://github.com/yourusername/tap-chat) | [Support](https://wordpress.org/support/plugin/tap-chat/)
+[WordPress.org](https://wordpress.org/plugins/tap-chat/) | [GitHub](https://github.com/wpdevup/tap-chat) | [Support](https://wordpress.org/support/plugin/tap-chat/)

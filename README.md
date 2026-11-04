@@ -1,6 +1,6 @@
 # Tap Chat – Floating Contact Button
 
-**Version:** 2.2.0 | **Requires:** WordPress 5.8+ | **Tested up to:** 7.1 | **PHP:** 7.4+
+**Version:** 2.3.0 | **Requires:** WordPress 5.8+ | **Tested up to:** 7.1 | **PHP:** 7.4+
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
@@ -10,7 +10,9 @@
 
 WhatsApp chat button for WordPress with multiple agents, a welcome bubble, working hours, page rules and privacy-first click analytics. No cookies, no third parties.
 
-**New in 2.2:** a redesigned settings screen with a side menu, clear sections and a **live preview** that shows the button, the agent picker and the welcome bubble on desktop and mobile as you edit. It follows your WordPress admin colour scheme and works in right-to-left languages.
+**New in 2.3:** hide the button on whole content types (every blog post at once) or by device, start chats on WooCommerce product pages with the product already named, close on holidays, and override the button per page right from the post editor.
+
+**Since 2.2:** a redesigned settings screen with a side menu and a **live preview** of the button, the agent picker and the welcome bubble on desktop and mobile.
 
 - 🔗 [WordPress.org plugin page](https://wordpress.org/plugins/tap-chat/)
 - 🎬 [Demo](https://wpdevup.com/tap-chat/)
@@ -38,7 +40,11 @@ WhatsApp chat button for WordPress with multiple agents, a welcome bubble, worki
 - 🌀 **Button Animations** - Fade in, slide in, bounce, ring, or a "New message" badge with a pulsing ring (respects reduced-motion)
 - 🌍 **Country Selector** - 150+ country codes with flags
 - ⏰ **Working Hours** - Show the button only during business hours, in your time zone, with an optional offline message
-- 👁️ **Page Visibility** - Show only on selected pages, or hide on selected pages
+- 🏖️ **Holidays** - Closed dates and ranges, one-off or every year
+- 👁️ **Page Visibility** - Show only on selected pages, hide on selected pages, or hide on whole content types and archives (e.g. every blog post)
+- 📱 **Device Visibility** - All devices, phones only, or tablets and desktops only
+- 🛒 **WooCommerce Product Message** - Chats from a product page start with the product name, price, SKU and link
+- 📝 **Per-Page Settings** - Hide, always show, or set a custom message for any page from the post editor
 - 📈 **GA4 / Tag Manager** - Optionally forward chat clicks and bubble impressions to the analytics you already use
 - 📱 **Mobile Optimized** - Separate desktop and mobile sizes and label settings
 - ↔️ **RTL Ready** - Admin and front end lay out correctly in right-to-left languages
@@ -54,6 +60,7 @@ Let visitors pick who to talk to instead of guessing.
 - **Manual online / offline** status with a green dot
 - **Custom panel title and subtitle**
 - **Drag to reorder** in the admin
+- **One button to open and close**: while the picker is open the button turns into a × with a smooth rotating transition
 - **GA4 / Tag Manager aware**: the chosen agent's name is sent as the event label
 - **Non-destructive**: single-button setups keep working; switch modes any time under **Settings → Tap Chat → Agents**
 
@@ -112,6 +119,7 @@ All settings live on one screen, **Settings → Tap Chat**, with a side menu. Ea
 1. **General**
    - Destination: WhatsApp number (country + phone) or any custom link
    - Pre-filled message, with `{TITLE}`, `{TAGLINE}` and `{URL}` placeholders
+   - Product pages (WooCommerce): a separate message for single product pages
    - Appearance: label, colour, position, animation, custom icon, separate desktop and mobile sizes
 2. **Agents**
    - Single button or multiple agents
@@ -121,7 +129,10 @@ All settings live on one screen, **Settings → Tap Chat**, with a side menu. Ea
    - Smart Triggers
 4. **Working Hours**
    - Schedule per day, time zone, optional offline message
+   - Holidays and closed dates (single days or ranges, optionally every year)
 5. **Visibility**
+   - Devices: all, phones only, or tablets and desktops
+   - Hide by content type: post types and archives, with exceptions
    - Show only on selected pages, or hide on selected pages
 6. **Advanced**
    - Append the page title and URL to every message
@@ -130,6 +141,27 @@ All settings live on one screen, **Settings → Tap Chat**, with a side menu. Ea
 8. **Tracking**
    - Built-in click and traffic tracking, data retention, reset
    - Optional Google Analytics 4 / Tag Manager events
+
+### Per-Page Settings
+
+Every post, page and product has a **Tap Chat** box in the editor sidebar:
+
+- **Chat button on this page** - follow the Visibility settings, always show, or hide. This overrides the page, content type and selected-page rules; working hours still apply.
+- **Message for this page** - used for WhatsApp links on that page, for the button and every agent.
+
+### Message Variables
+
+| Variable | Replaced with |
+| --- | --- |
+| `{TITLE}` | Site title |
+| `{TAGLINE}` | Site tagline |
+| `{URL}` | Site URL |
+| `{PRODUCT}` | Product name (WooCommerce product pages) |
+| `{PRICE}` | Product price |
+| `{SKU}` | Product SKU |
+| `{PRODUCT_URL}` | Product link |
+
+Product variables are empty outside single product pages. Message priority on a page: the page's own message, then the product message on product pages, then the default or agent message.
 
 ## 🧩 Shortcode
 
@@ -180,6 +212,11 @@ add_filter( 'tap_chat_suppress_button', function ( $suppress ) {
 // Keep other plugins' admin notices visible on the Tap Chat settings screen.
 add_filter( 'tap_chat_quiet_admin_notices', '__return_false' );
 
+// Choose which post types get the Tap Chat box in the editor.
+add_filter( 'tap_chat_meta_box_post_types', function ( $types ) {
+    return array( 'post', 'page', 'product' );
+} );
+
 // Change the number of days before the review request notice appears.
 add_filter( 'tap_chat_review_delay_days', function () {
     return 14;
@@ -229,6 +266,7 @@ tap-chat/
 │       ├── class-tap-chat-settings.php       # Option registration, defaults and sanitizing
 │       ├── class-tap-chat-fields.php         # Section views and live preview
 │       ├── class-tap-chat-dashboard.php      # Analytics report
+│       ├── class-tap-chat-meta-box.php       # Tap Chat box in the post editor
 │       ├── class-tap-chat-review.php         # Review request notice
 │       ├── class-tap-chat-ui.php             # Shared admin UI helpers
 │       └── class-tap-chat-icons.php          # Admin icon set
@@ -264,7 +302,11 @@ zip -r tap-chat.zip tap-chat -x "*.git*" "*.DS_Store"
 - [ ] Live preview matches the front end on desktop and mobile
 - [ ] Welcome bubble appears with each enabled trigger
 - [ ] Working hours and offline message behave correctly
-- [ ] Visibility rules work as expected
+- [ ] Visibility rules work as expected (pages, content types, devices)
+- [ ] Per-page box in the editor hides, shows and overrides the message
+- [ ] Product message on WooCommerce product pages
+- [ ] Holidays switch the button to the offline state
+- [ ] Agent picker button turns into × and back
 - [ ] Analytics record clicks (and views when traffic tracking is on)
 - [ ] Settings save and you stay on the same section
 - [ ] Left-to-right and right-to-left layouts
@@ -275,7 +317,8 @@ zip -r tap-chat.zip tap-chat -x "*.git*" "*.DS_Store"
 - **No external requests** - nothing is loaded from third parties
 - **Small footprint** - one stylesheet and one script on the front end, using the jQuery bundled with WordPress
 - **First-party analytics** - daily-aggregated counts in your own database, sent with a non-blocking beacon; no cookies and no personal data
-- **Clean uninstall** - the analytics table and settings are removed on uninstall
+- **Cache friendly** - the device rule is applied with CSS, so it works with full-page caching
+- **Clean uninstall** - the analytics table, settings and per-page choices are removed on uninstall
 
 ## 🛡️ Security
 
@@ -297,6 +340,26 @@ Tap Chat is translation-ready. Contribute a translation on [translate.wordpress.
 4. **Translations** - via translate.wordpress.org
 
 ## 📝 Changelog
+
+### [2.3.0] - 2026-11-04
+More control over where the button appears and what the first message says.
+
+**New:**
+- Hide by content type: every post, product or other post type, plus archives such as the blog, categories and search, with exceptions
+- "Select all" and "Clear" in the page pickers; selected items listed first
+- WooCommerce product message with `{PRODUCT}`, `{PRICE}`, `{SKU}` and `{PRODUCT_URL}`
+- Per-page settings in the post editor: hide, always show, or a custom message
+- Holidays and closed dates under Working Hours, optionally repeating every year
+- Device visibility: all devices, phones only, or tablets and desktops
+- Multiple Agents: the button turns into a × while the picker is open, with a smooth rotating transition
+
+**Improved:**
+- Unread badge clears once the picker has been opened
+- Close cross stays white with any theme hover colour; no tap highlight on touch devices
+
+**Developer:**
+- Filter `tap_chat_meta_box_post_types`; post meta `_tap_chat_visibility` and `_tap_chat_message`
+- Existing settings unchanged; every new option off by default
 
 ### [2.2.0] - 2026-10-08
 A redesigned settings screen: calmer, clearer, and easier to scan.
@@ -376,11 +439,12 @@ A redesigned settings screen: calmer, clearer, and easier to scan.
 ### [1.0.0] - 2025-03-01
 - Initial release
 
-The full changelog is in [readme.txt](readme.txt).
+The full changelog is in [CHANGELOG.md](CHANGELOG.md).
 
 ## 🗺️ Roadmap
 
 ### Completed ✅
+- ✅ Content-type, device and per-page visibility, product message, holidays (v2.3.0)
 - ✅ Redesigned admin with live preview (v2.2.0)
 - ✅ Multiple agents (v2.1.0)
 - ✅ Built-in privacy-first analytics (v2.0.0)

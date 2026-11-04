@@ -61,6 +61,7 @@ class Admin_Icons {
         'arrow-down' => '<path d="M12 5v14M6 13l6 6 6-6"/>',
         'arrow-right' => '<path d="M5 12h14M13 6l6 6-6 6"/>',
         'external'   => '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+        'layers'     => '<path d="M12 3.5 21 8l-9 4.5L3 8z"/><path d="M3 12.5l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5"/>',
         'help'       => '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8M12 17h.01"/>',
     );
 

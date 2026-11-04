@@ -89,7 +89,8 @@
   $(function(){
     // Button impression: only count the real, clickable floating button.
     var cfg = (window.TapChatData && window.TapChatData.collect) || {};
-    if (cfg.trafficEnabled && $('.tapchat-fab').not('.tapchat-fab-offline').length) {
+    // :visible skips a button hidden by the device rule on this screen size.
+    if (cfg.trafficEnabled && $('.tapchat-fab').not('.tapchat-fab-offline').filter(':visible').length) {
       tapchatCollect('view', tapchatIsUniqueToday());
     }
 
@@ -108,9 +109,12 @@
     var $agentsPanel = $('#tapchat-agents-panel');
     var $agentsTrigger = $('.tapchat-fab-trigger');
 
+    // The trigger turns into a close button while the panel is open (see tapchat.css).
+    var triggerLabel = $agentsTrigger.attr('aria-label') || '';
+    var closeLabel = (window.TapChatData && window.TapChatData.closeLabel) || 'Close';
     function tapchatCloseAgents() {
       $agentsPanel.removeClass('open');
-      $agentsTrigger.attr('aria-expanded', 'false');
+      $agentsTrigger.attr({ 'aria-expanded': 'false', 'aria-label': triggerLabel });
     }
     // Focus moves into the panel only for keyboard users. Moving it on a
     // mouse or touch click makes many themes paint their link :focus style
@@ -119,7 +123,8 @@
       // Collapse the welcome bubble so it never overlaps the panel.
       $('.tapchat-welcome-bubble').removeClass('visible').addClass('hidden');
       $agentsPanel.addClass('open');
-      $agentsTrigger.attr('aria-expanded', 'true');
+      // Once the visitor has opened the picker, the unread badge has done its job.
+      $agentsTrigger.attr({ 'aria-expanded': 'true', 'aria-label': closeLabel }).addClass('tapchat-seen');
       if (fromKeyboard) {
         var $first = $agentsPanel.find('.tapchat-agent-link').first();
         if ($first.length) { $first.trigger('focus'); }
@@ -174,6 +179,8 @@
       var bubbleShown = false;
       
       function showBubble(triggerType) {
+        // Nothing to greet with when the button is hidden on this screen size.
+        if ($('.tapchat-fab').length && !$('.tapchat-fab').is(':visible')) { return; }
         if (!bubbleShown) {
           bubbleShown = true;
           $bubble.addClass('visible');

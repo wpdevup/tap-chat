@@ -21,6 +21,7 @@
 		initMedia( $form );
 		initPickers( $form );
 		initDays( $form );
+		initHolidays( $form );
 		initAgents( $form );
 		initPreview( $form );
 
@@ -212,6 +213,57 @@
 
 		$form.on( 'change', '[data-tap-chat-picker-item] input', function () {
 			count( $( this ).closest( '[data-tap-chat-picker]' ) );
+		} );
+
+		// Select all acts on the items the search leaves visible; Clear empties the whole list.
+		$form.on( 'click', '[data-tap-chat-picker-bulk]', function ( event ) {
+			event.preventDefault();
+			var $picker = $( this ).closest( '[data-tap-chat-picker]' );
+			var $items = $picker.find( '[data-tap-chat-picker-item]' );
+			if ( 'all' === $( this ).attr( 'data-tap-chat-picker-bulk' ) ) {
+				$items.not( '[hidden]' ).find( 'input' ).prop( 'checked', true );
+			} else {
+				$items.find( 'input' ).prop( 'checked', false );
+			}
+			count( $picker );
+		} );
+	}
+
+	/* ------------------------------------------------------------------
+	 * Holidays: add and remove closed-date rows.
+	 * ---------------------------------------------------------------- */
+	function initHolidays( $form ) {
+		var $root = $form.find( '[data-tap-chat-holidays]' );
+		if ( ! $root.length ) {
+			return;
+		}
+		var $list = $root.find( '[data-tap-chat-holidays-list]' );
+		var counter = $list.find( '[data-tap-chat-holiday]' ).length;
+
+		function sync() {
+			var rows = $list.find( '[data-tap-chat-holiday]' ).length;
+			$root.find( '[data-tap-chat-holidays-empty]' ).prop( 'hidden', rows > 0 );
+			if ( ! rows ) {
+				$list.empty();
+			} else if ( ! $list.children( '.tap-chat-holiday--head' ).length ) {
+				$list.prepend( $( $root.find( 'template[data-tap-chat-holiday-head]' ).html() ) );
+			}
+		}
+
+		$root.on( 'click', '[data-tap-chat-holiday-add]', function ( event ) {
+			event.preventDefault();
+			var html = String( $root.find( 'template[data-tap-chat-holiday-template]' ).html() || '' );
+			// Unique index so new rows never collide with saved ones.
+			var $row = $( html.split( '__INDEX__' ).join( 'n' + ( counter++ ) + '_' + Date.now() ) );
+			$list.append( $row );
+			sync();
+			$row.find( 'input[type="date"]' ).first().trigger( 'focus' );
+		} );
+
+		$root.on( 'click', '[data-tap-chat-holiday-remove]', function ( event ) {
+			event.preventDefault();
+			$( this ).closest( '[data-tap-chat-holiday]' ).remove();
+			sync();
 		} );
 	}
 
@@ -410,11 +462,13 @@
 				'--tap-chat-fab-size': size + 'px'
 			} );
 			var animation = settingValue( $form, 'button_animation' );
-			$fab.toggleClass( 'is-icon-only', iconOnly )
+			// With the picker open the button is a round close button, as on the site.
+			$fab.toggleClass( 'is-icon-only', iconOnly || showPanel )
+				.toggleClass( 'is-open', showPanel )
 				.toggleClass( 'has-img', '' !== icon )
-				.toggleClass( 'has-badge', 'attention' === animation );
+				.toggleClass( 'has-badge', 'attention' === animation && ! showPanel );
 			$.each( animations, function ( i, name ) {
-				$fab.toggleClass( 'is-anim-' + name, name === animation );
+				$fab.toggleClass( 'is-anim-' + name, name === animation && ! showPanel );
 			} );
 			$img.prop( 'hidden', '' === icon ).attr( 'src', icon );
 			$label.text( text( settingValue( $form, 'label' ), i18n.defaultLabel ) );

@@ -24,10 +24,12 @@ class Admin {
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-fields.php';
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-review.php';
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-dashboard.php';
+        require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-meta-box.php';
 
         $this->settings = new Admin_Settings();
         $this->fields   = new Admin_Fields();
         $this->review   = new Review_Notice();
+        new Meta_Box();
 
         add_action( 'admin_menu', array( $this, 'menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );

@@ -5,6 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class Plugin {
 
+    /** Post meta: 'show' or 'hide' to override the visibility rules on one page. */
+    const META_VISIBILITY = '_tap_chat_visibility';
+
+    /** Post meta: chat message used on one page instead of the configured one. */
+    const META_MESSAGE = '_tap_chat_message';
+
     private static $instance = null;
 
     public static function instance() {
@@ -155,6 +161,14 @@ class Plugin {
             $size,
             $mobile_size
         );
+        // Device rule in CSS, so it keeps working with full-page caching.
+        $device = $this->get_option( 'device_visibility', 'all' );
+        if ( 'mobile' === $device || 'desktop' === $device ) {
+            $inline_css .= sprintf(
+                '@media %s { .tapchat-fab, .tapchat-welcome-bubble, .tapchat-agents-panel { display: none !important; } }',
+                'mobile' === $device ? '(min-width: 768px)' : '(max-width: 767px)'
+            );
+        }
         wp_add_inline_style( 'tap-chat', $inline_css );
         
         $trigger_data = array(
@@ -169,6 +183,7 @@ class Plugin {
         
         wp_localize_script( 'tap-chat', 'TapChatData', array(
             'whatsAppBase' => 'https://wa.me/',
+            'closeLabel'   => __( 'Close', 'tap-chat' ),
             'triggers' => $trigger_data,
             'analytics' => array(
                 'enabled'       => ( 'yes' === $this->get_option( 'enable_analytics', 'no' ) ),
@@ -226,11 +241,62 @@ class Plugin {
         if ( '' === $text ) {
             return $text;
         }
+        $product = $this->current_product_details();
         return str_replace(
-            array( '{TITLE}', '{TAGLINE}', '{URL}' ),
-            array( get_bloginfo( 'name' ), get_bloginfo( 'description' ), home_url( '/' ) ),
+            array( '{TITLE}', '{TAGLINE}', '{URL}', '{PRODUCT}', '{PRICE}', '{SKU}', '{PRODUCT_URL}' ),
+            array( get_bloginfo( 'name' ), get_bloginfo( 'description' ), home_url( '/' ), $product['name'], $product['price'], $product['sku'], $product['url'] ),
             $text
         );
+    }
+
+    /**
+     * Name, price, SKU and link of the WooCommerce product being viewed. Empty strings elsewhere.
+     *
+     * @return array{name: string, price: string, sku: string, url: string}
+     */
+    private function current_product_details() {
+        $empty = array( 'name' => '', 'price' => '', 'sku' => '', 'url' => '' );
+        if ( ! function_exists( 'wc_get_product' ) || ! is_singular( 'product' ) ) {
+            return $empty;
+        }
+        $product = wc_get_product( get_queried_object_id() );
+        if ( ! $product ) {
+            return $empty;
+        }
+        $price = '';
+        if ( '' !== (string) $product->get_price() && function_exists( 'wc_price' ) ) {
+            $amount = function_exists( 'wc_get_price_to_display' ) ? wc_get_price_to_display( $product ) : $product->get_price();
+            $price  = html_entity_decode( wp_strip_all_tags( wc_price( $amount ) ), ENT_QUOTES, get_bloginfo( 'charset' ) );
+            $price  = trim( str_replace( "\xc2\xa0", ' ', $price ) );
+        }
+        return array(
+            'name'  => $product->get_name(),
+            'price' => $price,
+            'sku'   => (string) $product->get_sku(),
+            'url'   => (string) get_permalink( $product->get_id() ),
+        );
+    }
+
+    /**
+     * Message that replaces the configured one on the current page: the page's own message
+     * from the editor, then the product-page message on WooCommerce products. '' when none applies.
+     *
+     * @return string
+     */
+    private function context_message() {
+        if ( is_singular() ) {
+            $own = (string) get_post_meta( get_queried_object_id(), self::META_MESSAGE, true );
+            if ( '' !== trim( $own ) ) {
+                return $own;
+            }
+        }
+        if ( 'yes' === $this->get_option( 'enable_product_message', 'no' ) && function_exists( 'wc_get_product' ) && is_singular( 'product' ) ) {
+            $message = (string) $this->get_option( 'product_message', '' );
+            if ( '' !== trim( $message ) ) {
+                return $message;
+            }
+        }
+        return '';
     }
 
     private function build_button_link() {
@@ -246,10 +312,48 @@ class Plugin {
             return '';
         }
 
-        $message = $this->replace_variables( $this->get_option( 'message', '' ) );
-        return $this->build_whatsapp_url( $full_phone, $message );
+        $message = $this->context_message();
+        if ( '' === $message ) {
+            $message = $this->get_option( 'message', '' );
+        }
+        return $this->build_whatsapp_url( $full_phone, $this->replace_variables( $message ) );
     }
     
+    /**
+     * Whether the given day falls on a closed date from the Holidays list.
+     * Yearly rows repeat on the same month and day every year.
+     *
+     * @param \DateTime $now Current time in the business time zone.
+     * @return bool
+     */
+    private function is_holiday( $now ) {
+        $holidays = $this->get_option( 'holidays', array() );
+        if ( empty( $holidays ) || ! is_array( $holidays ) ) {
+            return false;
+        }
+        $today = $now->format( 'Y-m-d' );
+        $md    = $now->format( 'm-d' );
+        foreach ( $holidays as $row ) {
+            if ( empty( $row['start'] ) ) {
+                continue;
+            }
+            $start = $row['start'];
+            $end   = ! empty( $row['end'] ) ? $row['end'] : $start;
+            if ( isset( $row['yearly'] ) && 'yes' === $row['yearly'] ) {
+                $from = substr( $start, 5 );
+                $to   = substr( $end, 5 );
+                // A yearly range may wrap past the new year (e.g. 12-24 to 01-02).
+                $in = ( $from <= $to ) ? ( $md >= $from && $md <= $to ) : ( $md >= $from || $md <= $to );
+                if ( $in ) {
+                    return true;
+                }
+            } elseif ( $today >= $start && $today <= $end ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function is_within_working_hours() {
         $enable_working_hours = $this->get_option( 'enable_working_hours', 'no' );
         
@@ -266,6 +370,10 @@ class Plugin {
             
             $current_day = strtolower( $now->format( 'l' ) );
             $current_time = $now->format( 'H:i' );
+
+            if ( $this->is_holiday( $now ) ) {
+                return false;
+            }
             
             if ( ! isset( $working_hours[ $current_day ] ) ) {
                 return false;
@@ -287,7 +395,93 @@ class Plugin {
         }
     }
     
+    /**
+     * Visibility chosen for the current page in the post editor: 'show', 'hide' or ''.
+     *
+     * @return string
+     */
+    private function page_override() {
+        $id = 0;
+        if ( is_singular() ) {
+            $id = get_queried_object_id();
+        } elseif ( function_exists( 'is_shop' ) && is_shop() ) {
+            $id = wc_get_page_id( 'shop' );
+        } elseif ( is_home() && ! is_front_page() ) {
+            $id = (int) get_option( 'page_for_posts' );
+        }
+        if ( ! $id ) {
+            return '';
+        }
+        $value = (string) get_post_meta( $id, self::META_VISIBILITY, true );
+        return in_array( $value, array( 'show', 'hide' ), true ) ? $value : '';
+    }
+
+    /**
+     * Whether the current view belongs to a content type or archive hidden under Visibility.
+     * Pages listed as exceptions keep the button.
+     *
+     * @return bool
+     */
+    private function is_hidden_by_type() {
+        if ( 'yes' !== $this->get_option( 'enable_hide_types', 'no' ) ) {
+            return false;
+        }
+
+        $current_id = get_queried_object_id();
+        if ( function_exists( 'is_shop' ) && is_shop() ) {
+            $current_id = wc_get_page_id( 'shop' );
+        }
+        $except = array_map( 'absint', (array) $this->get_option( 'hide_types_except', array() ) );
+        if ( $current_id && in_array( (int) $current_id, $except, true ) ) {
+            return false;
+        }
+
+        $types    = (array) $this->get_option( 'hide_post_types', array() );
+        $archives = (array) $this->get_option( 'hide_archives', array() );
+
+        // The front page is its own choice, so hiding "Pages" never hides the home page by accident.
+        if ( is_front_page() ) {
+            return in_array( 'front', $archives, true );
+        }
+        if ( is_home() ) {
+            return in_array( 'blog', $archives, true );
+        }
+        if ( is_singular() ) {
+            return in_array( get_post_type(), $types, true );
+        }
+
+        $checks = array(
+            'category'          => is_category(),
+            'tag'               => is_tag(),
+            'tax'               => is_tax(),
+            'post_type_archive' => is_post_type_archive(),
+            'author'            => is_author(),
+            'date'              => is_date(),
+            'search'            => is_search(),
+            '404'               => is_404(),
+        );
+        foreach ( $checks as $key => $matches ) {
+            if ( $matches && in_array( $key, $archives, true ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function should_show_button() {
+        // The page's own choice from the editor wins over every visibility rule.
+        $override = $this->page_override();
+        if ( 'hide' === $override ) {
+            return false;
+        }
+        if ( 'show' === $override ) {
+            return true;
+        }
+
+        if ( $this->is_hidden_by_type() ) {
+            return false;
+        }
+
         $enable_show_on = $this->get_option( 'enable_show_on', 'no' );
         $enable_hide_on = $this->get_option( 'enable_hide_on', 'no' );
         
@@ -500,7 +694,11 @@ class Plugin {
         $full = $country . $phone;
         $url  = 'https://wa.me/' . $full;
 
-        $message = $this->replace_variables( isset( $agent['message'] ) ? $agent['message'] : '' );
+        $message = $this->context_message();
+        if ( '' === $message ) {
+            $message = isset( $agent['message'] ) ? $agent['message'] : '';
+        }
+        $message = $this->replace_variables( $message );
         if ( '' !== $message ) {
             $url .= '?text=' . rawurlencode( $message );
         }
@@ -556,6 +754,8 @@ class Plugin {
         if ( 'attention' === $animation ) {
             echo '<span class="tapchat-badge" aria-hidden="true">1</span>';
         }
+        // Shown instead of the icon while the picker is open, so the same button closes it.
+        echo '<span class="tapchat-fab-close" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>';
         echo '</a>';
 
         // Picker panel.

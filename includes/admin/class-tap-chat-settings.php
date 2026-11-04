@@ -43,10 +43,18 @@ class Admin_Settings {
             'hide_label_mobile' => 'yes',
             'hide_label_desktop' => 'yes',
             'append_page_context' => 'no',
+            'enable_product_message' => 'no',
+            'product_message' => __( 'Hi! I have a question about {PRODUCT} ({PRICE}): {PRODUCT_URL}', 'tap-chat' ),
+            'device_visibility' => 'all',
+            'holidays' => array(),
             'enable_show_on' => 'no',
             'enable_hide_on' => 'no',
             'show_on_pages' => array(),
             'hide_on_pages' => array(),
+            'enable_hide_types' => 'no',
+            'hide_post_types' => array(),
+            'hide_archives' => array(),
+            'hide_types_except' => array(),
             'enable_working_hours' => 'no',
             'timezone' => wp_timezone_string(),
             'offline_message' => '',
@@ -99,6 +107,87 @@ class Admin_Settings {
             'saturday' => array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00'),
             'sunday' => array('enabled' => 'no', 'start' => '09:00', 'end' => '17:00'),
         );
+    }
+
+    /**
+     * Public post types the button can be hidden on, keyed by slug.
+     *
+     * @return array<string, string> Slug => plural label.
+     */
+    public static function hideable_post_types() {
+        $types = array();
+        foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $slug => $object ) {
+            if ( 'attachment' === $slug ) {
+                continue;
+            }
+            $types[ $slug ] = $object->labels->name;
+        }
+        return $types;
+    }
+
+    /**
+     * Archive and special views the button can be hidden on.
+     *
+     * @return string[]
+     */
+    public static function archive_keys() {
+        return array( 'front', 'blog', 'category', 'tag', 'tax', 'post_type_archive', 'author', 'date', 'search', '404' );
+    }
+
+    /**
+     * Closed dates: each row has a start date, an optional end date, a label and a yearly flag.
+     *
+     * @param mixed $rows Raw rows from the form.
+     * @return array
+     */
+    private function sanitize_holidays( $rows ) {
+        $out = array();
+        if ( ! is_array( $rows ) ) {
+            return $out;
+        }
+        foreach ( $rows as $row ) {
+            if ( ! is_array( $row ) ) {
+                continue;
+            }
+            $start = isset( $row['start'] ) ? $this->sanitize_date( $row['start'] ) : '';
+            if ( '' === $start ) {
+                continue;
+            }
+            $end = isset( $row['end'] ) ? $this->sanitize_date( $row['end'] ) : '';
+            if ( '' === $end || $end < $start ) {
+                $end = $start;
+            }
+            $out[] = array(
+                'start'  => $start,
+                'end'    => $end,
+                'label'  => isset( $row['label'] ) ? sanitize_text_field( $row['label'] ) : '',
+                'yearly' => ( isset( $row['yearly'] ) && 'yes' === $row['yearly'] ) ? 'yes' : 'no',
+            );
+            if ( count( $out ) >= 60 ) {
+                break;
+            }
+        }
+        usort(
+            $out,
+            function ( $a, $b ) {
+                return strcmp( $a['start'], $b['start'] );
+            }
+        );
+        return $out;
+    }
+
+    /**
+     * A Y-m-d date string, or '' when it is not a real date.
+     *
+     * @param mixed $value Raw value.
+     * @return string
+     */
+    private function sanitize_date( $value ) {
+        $value = is_string( $value ) ? trim( $value ) : '';
+        if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $value, $m ) ) {
+            return '';
+        }
+        return checkdate( (int) $m[2], (int) $m[3], (int) $m[1] ) ? $value : '';
     }
 
     public function sanitize( $input ) {
@@ -184,9 +273,34 @@ class Admin_Settings {
         $out['enable_hide_on'] = ( isset( $input['enable_hide_on'] ) && $input['enable_hide_on'] === 'yes' ) ? 'yes' : 'no';
         $out['show_on_pages'] = isset( $input['show_on_pages'] ) && is_array( $input['show_on_pages'] ) ? array_map( 'absint', $input['show_on_pages'] ) : array();
         $out['hide_on_pages'] = isset( $input['hide_on_pages'] ) && is_array( $input['hide_on_pages'] ) ? array_map( 'absint', $input['hide_on_pages'] ) : array();
+        $allowed_devices = array( 'all', 'mobile', 'desktop' );
+        $out['device_visibility'] = ( isset( $input['device_visibility'] ) && in_array( $input['device_visibility'], $allowed_devices, true ) ) ? $input['device_visibility'] : 'all';
+        $out['enable_hide_types'] = ( isset( $input['enable_hide_types'] ) && $input['enable_hide_types'] === 'yes' ) ? 'yes' : 'no';
+        $allowed_types = array_keys( self::hideable_post_types() );
+        $out['hide_post_types'] = isset( $input['hide_post_types'] ) && is_array( $input['hide_post_types'] )
+            ? array_values( array_intersect( array_map( 'sanitize_key', $input['hide_post_types'] ), $allowed_types ) )
+            : array();
+        $out['hide_archives'] = isset( $input['hide_archives'] ) && is_array( $input['hide_archives'] )
+            ? array_values( array_intersect( array_map( 'sanitize_key', $input['hide_archives'] ), self::archive_keys() ) )
+            : array();
+        $out['hide_types_except'] = isset( $input['hide_types_except'] ) && is_array( $input['hide_types_except'] ) ? array_map( 'absint', $input['hide_types_except'] ) : array();
         
         // Advanced tab
         $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
+
+        // WooCommerce product pages
+        // The card is only rendered while WooCommerce is active; keep the stored values otherwise.
+        $stored = get_option( 'tap_chat_settings', array() );
+        if ( isset( $input['product_message'] ) ) {
+            $out['enable_product_message'] = ( isset( $input['enable_product_message'] ) && $input['enable_product_message'] === 'yes' ) ? 'yes' : 'no';
+            $out['product_message'] = sanitize_textarea_field( $input['product_message'] );
+        } else {
+            $out['enable_product_message'] = ( isset( $stored['enable_product_message'] ) && 'yes' === $stored['enable_product_message'] ) ? 'yes' : 'no';
+            $out['product_message'] = isset( $stored['product_message'] ) ? sanitize_textarea_field( $stored['product_message'] ) : '';
+        }
+
+        // Holidays (Working Hours)
+        $out['holidays'] = $this->sanitize_holidays( isset( $input['holidays'] ) ? $input['holidays'] : array() );
         
         // Analytics tab
         $out['enable_analytics'] = ( isset( $input['enable_analytics'] ) && $input['enable_analytics'] === 'yes' ) ? 'yes' : 'no';

@@ -915,3 +915,85 @@
   .tapchat-agent-link:hover { transform: none; }
   .tapchat-agents-close:hover { transform: none; }
 }
+
+/* Multiple agents: while the picker is open the trigger becomes a round close button.
+ * Icon and cross are stacked; opening turns the icon away and the cross in, closing reverses it. */
+.tapchat-fab-trigger .tapchat-icon,
+.tapchat-fab-close {
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s ease;
+}
+.tapchat-fab-close {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+  pointer-events: none;
+}
+.tapchat-fab-close svg {
+  display: block;
+  width: calc(var(--tapchat-size) * 0.62);
+  height: calc(var(--tapchat-size) * 0.62);
+}
+/* No grey or blue flash on touch devices when the button is tapped. */
+.tapchat-fab,
+.tapchat-agents-close,
+.tapchat-agent-link {
+  -webkit-tap-highlight-color: transparent;
+}
+/* Always white, whatever colour the theme gives links on hover or focus. */
+.tapchat-fab-close svg path,
+.tapchat-fab-trigger:hover .tapchat-fab-close svg path,
+.tapchat-fab-trigger:focus .tapchat-fab-close svg path {
+  stroke: #fff !important;
+}
+.tapchat-fab-trigger[aria-expanded="true"] {
+  padding: 0;
+  width: calc(var(--tapchat-size) + 20px);
+  height: calc(var(--tapchat-size) + 20px);
+  min-width: calc(var(--tapchat-size) + 20px);
+  min-height: calc(var(--tapchat-size) + 20px);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  animation: none;
+}
+.tapchat-fab-trigger[aria-expanded="true"]::after {
+  animation: none;
+  box-shadow: none;
+}
+.tapchat-fab-trigger[aria-expanded="true"] .tapchat-icon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+.tapchat-fab-trigger[aria-expanded="true"] .tapchat-fab-close {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+.tapchat-fab-trigger[aria-expanded="true"] .tapchat-label,
+.tapchat-fab-trigger[aria-expanded="true"] .tapchat-badge,
+.tapchat-fab-trigger.tapchat-seen .tapchat-badge {
+  display: none !important;
+}
+@media (max-width: 480px) {
+  .tapchat-fab-trigger[aria-expanded="true"] {
+    width: calc(var(--tapchat-mobile-size) + 20px);
+    height: calc(var(--tapchat-mobile-size) + 20px);
+    min-width: calc(var(--tapchat-mobile-size) + 20px);
+    min-height: calc(var(--tapchat-mobile-size) + 20px);
+  }
+  .tapchat-fab-close svg {
+    width: calc(var(--tapchat-mobile-size) * 0.62);
+    height: calc(var(--tapchat-mobile-size) * 0.62);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tapchat-fab-trigger .tapchat-icon,
+  .tapchat-fab-close {
+    transition: opacity 0.15s ease;
+  }
+}

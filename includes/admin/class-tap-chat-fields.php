@@ -269,7 +269,43 @@ class Admin_Fields {
         Admin_UI::field_close( __( 'Paste the full link including https:// — no country code needed. Works with Telegram, Messenger, a contact page, or any URL. The pre-filled message below is not sent with a custom link (only WhatsApp supports it), so you may want to upload a matching Custom Icon.', 'tap-chat' ) );
         echo '</div></div>';
 
+        $this->render_product_message();
         $this->render_appearance();
+    }
+
+    /**
+     * WooCommerce: a message for product pages with product details filled in.
+     */
+    private function render_product_message() {
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            return;
+        }
+        $enabled = $this->get( 'enable_product_message', 'no' );
+        $default = __( 'Hi! I have a question about {PRODUCT} ({PRICE}): {PRODUCT_URL}', 'tap-chat' );
+
+        Admin_UI::section_title(
+            __( 'Product pages', 'tap-chat' ),
+            __( 'Visitors on a WooCommerce product page start the chat with the product already named, so you never have to ask which one.', 'tap-chat' )
+        );
+        echo '<div class="tap-chat-card"><div class="tap-chat-toggle-list"><div class="tap-chat-toggle-group">';
+        Admin_UI::toggle_row(
+            'enable_product_message',
+            'tag',
+            __( 'Use a product message on product pages', 'tap-chat' ),
+            __( 'Replaces the default message and the agents\' messages on single product pages', 'tap-chat' ),
+            'yes' === $enabled
+        );
+        echo '<div class="tap-chat-toggle-group__body"' . Admin_UI::show_if( 'enable_product_message', 'yes', $enabled ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_attr().
+        Admin_UI::field_open( __( 'Product message', 'tap-chat' ), 'tap-chat-product-message' );
+        printf(
+            '<textarea class="tap-chat-input tap-chat-textarea" id="tap-chat-product-message" name="%1$s" rows="3" placeholder="%2$s">%3$s</textarea>',
+            esc_attr( Admin_UI::name( 'product_message' ) ),
+            esc_attr( $default ),
+            esc_textarea( $this->get( 'product_message', $default ) )
+        );
+        echo '<p class="tap-chat-field__help">' . wp_kses_post( __( 'Variables: <code>{PRODUCT}</code> = product name, <code>{PRICE}</code> = price, <code>{SKU}</code> = SKU, <code>{PRODUCT_URL}</code> = product link. They also work in the default and agent messages, and stay empty outside product pages.', 'tap-chat' ) ) . '</p>';
+        Admin_UI::field_close();
+        echo '</div></div></div></div>';
     }
 
     private function render_appearance() {
@@ -434,6 +470,7 @@ class Admin_Fields {
         echo Admin_UI::whatsapp_svg( 'tap-chat-preview__glyph' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static SVG.
         printf( '<span class="tap-chat-preview__label">%s</span>', esc_html( '' !== trim( $label ) ? $label : __( 'Chat with us', 'tap-chat' ) ) );
         echo '<span class="tap-chat-preview__badge">1</span>';
+        echo '<span class="tap-chat-preview__close" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>';
         echo '</span></span></div></div>';
 
         echo '<p class="tap-chat-preview__hint" data-tap-chat-preview-hint hidden></p>';
@@ -905,6 +942,8 @@ class Admin_Fields {
         }
         echo '</div></div>';
 
+        $this->render_holidays();
+
         Admin_UI::section_title( __( 'Outside working hours', 'tap-chat' ) );
         echo '<div class="tap-chat-card">';
         Admin_UI::field_open( __( 'Offline Message (Optional)', 'tap-chat' ), 'tap-chat-offline-message' );
@@ -916,6 +955,76 @@ class Admin_Fields {
         );
         Admin_UI::field_close( __( 'This message replaces the button label when outside working hours. Leave empty to hide the button completely.', 'tap-chat' ) );
         echo '</div></div>';
+    }
+
+    /**
+     * Closed dates that override the weekly schedule.
+     */
+    private function render_holidays() {
+        $rows = (array) $this->get( 'holidays', array() );
+
+        Admin_UI::section_title(
+            __( 'Holidays and closed dates', 'tap-chat' ),
+            __( 'On these dates the button behaves as outside working hours, whatever the weekly schedule says.', 'tap-chat' )
+        );
+        echo '<div class="tap-chat-card" data-tap-chat-holidays>';
+        printf( '<p class="tap-chat-holidays__empty" data-tap-chat-holidays-empty%s>%s</p>', empty( $rows ) ? '' : ' hidden', esc_html__( 'No closed dates yet.', 'tap-chat' ) );
+        echo '<div class="tap-chat-holidays" data-tap-chat-holidays-list>';
+        if ( ! empty( $rows ) ) {
+            $this->render_holiday_head();
+        }
+        foreach ( array_values( $rows ) as $i => $row ) {
+            $this->render_holiday_row( (string) $i, is_array( $row ) ? $row : array() );
+        }
+        echo '</div>';
+        echo '<template data-tap-chat-holiday-head>';
+        $this->render_holiday_head();
+        echo '</template><template data-tap-chat-holiday-template>';
+        $this->render_holiday_row( '__INDEX__', array() );
+        echo '</template>';
+        echo '<div class="tap-chat-mt-sm"><button type="button" class="tap-chat-btn tap-chat-btn--ghost tap-chat-btn--sm" data-tap-chat-holiday-add>';
+        Admin_Icons::render( 'plus' );
+        echo esc_html__( 'Add closed date', 'tap-chat' ) . '</button></div>';
+        echo '</div>';
+    }
+
+    private function render_holiday_head() {
+        echo '<div class="tap-chat-holiday tap-chat-holiday--head" aria-hidden="true">';
+        printf( '<span>%s</span>', esc_html__( 'From', 'tap-chat' ) );
+        printf( '<span>%s</span>', esc_html__( 'To (optional)', 'tap-chat' ) );
+        printf( '<span>%s</span>', esc_html__( 'Label (optional)', 'tap-chat' ) );
+        printf( '<span>%s</span>', esc_html__( 'Every year', 'tap-chat' ) );
+        echo '<span></span></div>';
+    }
+
+    /**
+     * @param string $index Row index, or '__INDEX__' for the JS template.
+     * @param array  $row   Saved row.
+     */
+    private function render_holiday_row( $index, $row ) {
+        $base   = Admin_UI::OPTION . '[holidays][' . $index . ']';
+        $start  = isset( $row['start'] ) ? $row['start'] : '';
+        $end    = isset( $row['end'] ) && $row['end'] !== $start ? $row['end'] : '';
+        $yearly = isset( $row['yearly'] ) && 'yes' === $row['yearly'];
+        echo '<div class="tap-chat-holiday" data-tap-chat-holiday>';
+        printf( '<input type="date" class="tap-chat-input tap-chat-input--time" name="%1$s[start]" value="%2$s" aria-label="%3$s">', esc_attr( $base ), esc_attr( $start ), esc_attr__( 'From', 'tap-chat' ) );
+        printf( '<input type="date" class="tap-chat-input tap-chat-input--time" name="%1$s[end]" value="%2$s" aria-label="%3$s">', esc_attr( $base ), esc_attr( $end ), esc_attr__( 'To (optional)', 'tap-chat' ) );
+        printf(
+            '<input type="text" class="tap-chat-input tap-chat-input--time" name="%1$s[label]" value="%2$s" placeholder="%3$s" aria-label="%4$s">',
+            esc_attr( $base ),
+            esc_attr( isset( $row['label'] ) ? $row['label'] : '' ),
+            esc_attr__( 'e.g. New Year', 'tap-chat' ),
+            esc_attr__( 'Label (optional)', 'tap-chat' )
+        );
+        printf(
+            '<span class="tap-chat-holiday__yearly"><input type="hidden" name="%1$s[yearly]" value="no"><input type="checkbox" class="tap-chat-switch tap-chat-switch--sm" role="switch" name="%1$s[yearly]" value="yes" aria-label="%2$s"%3$s></span>',
+            esc_attr( $base ),
+            esc_attr__( 'Repeat every year', 'tap-chat' ),
+            checked( $yearly, true, false )
+        );
+        printf( '<button type="button" class="tap-chat-icon-btn tap-chat-icon-btn--danger" data-tap-chat-holiday-remove aria-label="%s">', esc_attr__( 'Remove', 'tap-chat' ) );
+        Admin_Icons::render( 'trash' );
+        echo '</button></div>';
     }
 
     /* ---------------------------------------------------------------------
@@ -932,7 +1041,20 @@ class Admin_Fields {
             __( 'Control where the WhatsApp button appears on your site.', 'tap-chat' )
         );
 
+        $device = $this->get( 'device_visibility', 'all' );
+        echo '<div class="tap-chat-card">';
+        printf( '<h3 class="tap-chat-card__title">%s</h3>', esc_html__( 'Devices', 'tap-chat' ) );
+        printf( '<p class="tap-chat-card__desc">%s</p>', esc_html__( 'Choose the screens the button appears on. Phones are screens narrower than 768px.', 'tap-chat' ) );
+        echo '<div class="tap-chat-choice-grid tap-chat-choice-grid--3">';
+        Admin_UI::choice( 'device_visibility', 'all', 'globe', __( 'All devices', 'tap-chat' ), __( 'Phones, tablets and desktops', 'tap-chat' ), $device );
+        Admin_UI::choice( 'device_visibility', 'mobile', 'phone', __( 'Phones only', 'tap-chat' ), __( 'Hidden on wider screens', 'tap-chat' ), $device );
+        Admin_UI::choice( 'device_visibility', 'desktop', 'monitor', __( 'Tablets and desktops', 'tap-chat' ), __( 'Hidden on phones', 'tap-chat' ), $device );
+        echo '</div></div>';
+
+        Admin_UI::section_title( __( 'Pages', 'tap-chat' ) );
         echo '<div class="tap-chat-card"><div class="tap-chat-toggle-list">';
+
+        $this->render_hide_by_type( $content );
 
         echo '<div class="tap-chat-toggle-group">';
         Admin_UI::toggle_row( 'enable_show_on', 'eye', __( 'Show only on selected pages', 'tap-chat' ), __( 'When enabled, button will appear only on pages you select below', 'tap-chat' ), 'yes' === $show_on );
@@ -945,6 +1067,71 @@ class Admin_Fields {
         echo '<div class="tap-chat-toggle-group__body"' . Admin_UI::show_if( 'enable_hide_on', 'yes', $hide_on ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_attr().
         $this->render_page_picker( 'hide_on_pages', (array) $this->get( 'hide_on_pages', array() ), $content );
         echo '</div></div>';
+
+        echo '</div></div>';
+    }
+
+    /**
+     * Hide the button on whole content types and archives, e.g. every blog post.
+     *
+     * @param array $content Pages and posts for the exceptions picker.
+     */
+    private function render_hide_by_type( $content ) {
+        $enabled  = $this->get( 'enable_hide_types', 'no' );
+        $types    = (array) $this->get( 'hide_post_types', array() );
+        $archives = (array) $this->get( 'hide_archives', array() );
+        $labels   = array(
+            'front'             => __( 'Front page', 'tap-chat' ),
+            'blog'              => __( 'Blog page (latest posts)', 'tap-chat' ),
+            'category'          => __( 'Category archives', 'tap-chat' ),
+            'tag'               => __( 'Tag archives', 'tap-chat' ),
+            'tax'               => __( 'Other taxonomy archives (e.g. product categories)', 'tap-chat' ),
+            'post_type_archive' => __( 'Post type archives (e.g. Shop page)', 'tap-chat' ),
+            'author'            => __( 'Author archives', 'tap-chat' ),
+            'date'              => __( 'Date archives', 'tap-chat' ),
+            'search'            => __( 'Search results', 'tap-chat' ),
+            '404'               => __( '404 page', 'tap-chat' ),
+        );
+
+        echo '<div class="tap-chat-toggle-group">';
+        Admin_UI::toggle_row(
+            'enable_hide_types',
+            'layers',
+            __( 'Hide by content type', 'tap-chat' ),
+            __( 'Hide the button on every item of a type, such as all blog posts, including ones you publish later', 'tap-chat' ),
+            'yes' === $enabled
+        );
+        echo '<div class="tap-chat-toggle-group__body"' . Admin_UI::show_if( 'enable_hide_types', 'yes', $enabled ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_attr().
+
+        printf( '<p class="tap-chat-field__label">%s</p>', esc_html__( 'Content types', 'tap-chat' ) );
+        printf( '<div class="tap-chat-chips tap-chat-chips--tight" role="group" aria-label="%s">', esc_attr__( 'Content types', 'tap-chat' ) );
+        foreach ( Admin_Settings::hideable_post_types() as $slug => $label ) {
+            printf(
+                '<label class="tap-chat-chip"><input type="checkbox" name="%1$s[]" value="%2$s"%3$s><span>%4$s</span></label>',
+                esc_attr( Admin_UI::name( 'hide_post_types' ) ),
+                esc_attr( $slug ),
+                checked( in_array( $slug, $types, true ), true, false ),
+                esc_html( $label )
+            );
+        }
+        echo '</div>';
+
+        printf( '<p class="tap-chat-field__label tap-chat-mt">%s</p>', esc_html__( 'Archives and special pages', 'tap-chat' ) );
+        printf( '<div class="tap-chat-chips tap-chat-chips--tight" role="group" aria-label="%s">', esc_attr__( 'Archives and special pages', 'tap-chat' ) );
+        foreach ( Admin_Settings::archive_keys() as $key ) {
+            printf(
+                '<label class="tap-chat-chip"><input type="checkbox" name="%1$s[]" value="%2$s"%3$s><span>%4$s</span></label>',
+                esc_attr( Admin_UI::name( 'hide_archives' ) ),
+                esc_attr( $key ),
+                checked( in_array( $key, $archives, true ), true, false ),
+                esc_html( isset( $labels[ $key ] ) ? $labels[ $key ] : $key )
+            );
+        }
+        echo '</div>';
+
+        printf( '<p class="tap-chat-field__label tap-chat-mt">%s</p>', esc_html__( 'Exceptions (optional)', 'tap-chat' ) );
+        printf( '<p class="tap-chat-field__help tap-chat-picker__intro">%s</p>', esc_html__( 'Keep the button on these pages or posts even though their type is hidden above, for example a few high-intent articles.', 'tap-chat' ) );
+        $this->render_page_picker( 'hide_types_except', (array) $this->get( 'hide_types_except', array() ), $content );
 
         echo '</div></div>';
     }
@@ -977,6 +1164,17 @@ class Admin_Fields {
 
     private function render_page_picker( $field, $selected, $content ) {
         $selected = array_map( 'absint', $selected );
+        // Selected items first, so they stay easy to find in long lists.
+        $picked  = array();
+        $others  = array();
+        foreach ( $content as $item ) {
+            if ( in_array( (int) $item->ID, $selected, true ) ) {
+                $picked[] = $item;
+            } else {
+                $others[] = $item;
+            }
+        }
+        $content  = array_merge( $picked, $others );
         $count    = 0;
         foreach ( $content as $item ) {
             if ( in_array( (int) $item->ID, $selected, true ) ) {
@@ -993,7 +1191,13 @@ class Admin_Fields {
             '<span class="screen-reader-text">%1$s</span><input type="search" class="tap-chat-input" placeholder="%1$s" data-tap-chat-picker-search></label>',
             esc_attr__( 'Search pages or posts...', 'tap-chat' )
         );
-        printf( '<span class="tap-chat-picker__count" data-tap-chat-picker-count aria-live="polite">%s</span></div>', esc_html( sprintf( $template, $count ) ) );
+        printf( '<span class="tap-chat-picker__count" data-tap-chat-picker-count aria-live="polite">%s</span>', esc_html( sprintf( $template, $count ) ) );
+        printf(
+            '<span class="tap-chat-picker__bulk"><button type="button" class="tap-chat-btn tap-chat-btn--quiet tap-chat-btn--sm" data-tap-chat-picker-bulk="all" title="%3$s">%1$s</button><button type="button" class="tap-chat-btn tap-chat-btn--quiet tap-chat-btn--sm" data-tap-chat-picker-bulk="none">%2$s</button></span></div>',
+            esc_html__( 'Select all', 'tap-chat' ),
+            esc_html__( 'Clear', 'tap-chat' ),
+            esc_attr__( 'Selects every item shown in the list, so search first to select a group.', 'tap-chat' )
+        );
 
         echo '<div class="tap-chat-picker__list">';
         if ( empty( $content ) ) {

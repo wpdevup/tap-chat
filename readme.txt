@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,10 @@ New in 2.2: a **redesigned settings screen** with a side menu, clear sections an
 * **Welcome Bubble** - Friendly greeting message to encourage conversations with two styles (Modern & Simple)
 * **Smart Triggers** - Show the bubble at the perfect moment based on visitor behavior
 * **Country Selector** - Easy phone number configuration with 150+ country codes and flags
-* **Working Hours** - Display button only during business hours with timezone support
-* **Page Visibility** - Show or hide button on specific pages/posts
+* **Working Hours** - Display button only during business hours with timezone support, plus holidays and closed dates
+* **Page Visibility** - Show or hide the button on specific pages, on whole content types such as every blog post, or only on phones or desktops
+* **WooCommerce Product Message (NEW)** - On product pages the chat starts with the product name, price, SKU and link already filled in
+* **Per-Page Settings (NEW)** - Hide, always show or set a custom message for any page right from the post editor
 * **Fully Customizable** - Colors, sizes, positions, labels - make it yours
 * **Mobile Optimized** - Separate mobile/desktop configurations
 * **Google Analytics 4 / Tag Manager Integration** - Optionally also forward chat clicks and welcome-bubble impressions as GA4 events using the analytics already installed on your site
@@ -103,10 +105,14 @@ The welcome bubble is designed to increase engagement and conversions:
   * Timezone support for accurate scheduling
   * Custom offline message
   * Choose to hide button or show offline state
+  * Holidays and closed dates, one-off or repeating every year
 
 * **Visibility Rules:**
   * Show on specific pages only
   * Hide on specific pages (e.g., checkout, cart)
+  * Hide by content type: all posts, products or any public post type, plus archives such as the blog, categories and search, with optional exceptions
+  * Show on all devices, phones only, or tablets and desktops only
+  * Per-page override from the post editor: hide or always show
   * Combine show/hide rules for precise control
   * Support for all post types and WooCommerce pages
 
@@ -117,6 +123,8 @@ The welcome bubble is designed to increase engagement and conversions:
   * Hide/show label on mobile or desktop
   * Pre-filled message text
   * Page context appending (automatic page info in message)
+  * Product message for WooCommerce product pages with {PRODUCT}, {PRICE}, {SKU} and {PRODUCT_URL}
+  * Custom message per page from the post editor
 
 = Usage =
 
@@ -174,6 +182,7 @@ Go to **Settings → Tap Chat**. The side menu lists every section, and a live p
 5. **Visibility:**
    * Show the button only on selected pages
    * Hide it on selected pages (e.g., cart, checkout)
+   * Hide it on whole content types and archives (e.g., every blog post), with exceptions
 
 6. **Advanced:**
    * Add the page title and URL to the WhatsApp message
@@ -280,6 +289,26 @@ Yes! Use the Visibility tab:
 - "Hide on specific pages" - button hidden where selected
 - Combine both for precise control
 
+= Can I hide the button on all blog posts at once? =
+
+Yes. Under Visibility, turn on "Hide by content type" and select Posts. The button is hidden on every post, including posts you publish later, while your shop and pages keep it. You can also hide it on the blog page, category and tag archives, and search results, and list a few posts as exceptions that should keep the button.
+
+= Can the message mention the product the visitor is looking at? =
+
+Yes, with WooCommerce. Under General → Product pages, turn on "Use a product message on product pages". Use {PRODUCT}, {PRICE}, {SKU} and {PRODUCT_URL} in the message, for example "Hi! I have a question about {PRODUCT} ({PRICE}): {PRODUCT_URL}". It replaces the default message and the agents' messages on single product pages.
+
+= Can I change the button for one page only? =
+
+Yes. Every post, page and product has a "Tap Chat" box in the editor sidebar. Choose "Hide" or "Always show" to override the visibility rules on that page, or enter a message used only on that page.
+
+= Can I close the chat on holidays? =
+
+Yes. Under Working Hours → Holidays and closed dates, add a date or a date range. Turn on "Every year" for holidays that fall on the same date each year. On those dates the button behaves as outside working hours: it shows your offline message, or is hidden when the offline message is empty.
+
+= Can I show the button only on mobile? =
+
+Yes. Under Visibility → Devices, choose "Phones only" or "Tablets and desktops". The rule is applied with CSS, so it keeps working with page caching.
+
 = Does Tap Chat include built-in analytics? =
 
 Yes. As of version 2.0, Tap Chat records chat-button clicks and shows them in a built-in dashboard under Settings → Tap Chat → Analytics. You get Total / Today / This Week / This Month clicks, top pages, device breakdown and, optionally, click-through rate.
@@ -337,6 +366,21 @@ Yes. Enable "Exclude logged-in users" under Settings → Tap Chat → Tracking a
 13. **Dashboard widget** - Today, last 7 days and all-time clicks with a 14-day trend on your WordPress dashboard
 
 == Changelog ==
+
+= 2.3.0 - 2026-11-04 =
+More control over where the button appears and what the first message says.
+
+* **New: Hide by content type** (Settings → Tap Chat → Visibility). Hide the button on every post, product or other public post type in one step, including items published later. Useful for blogs with hundreds of articles that bring off-topic messages.
+* **New:** Hide the button on archives and special pages: front page, blog page, category, tag and other taxonomy archives, post type archives (such as the Shop page), author and date archives, search results and the 404 page.
+* **New:** Exceptions list to keep the button on a few chosen pages or posts even when their type is hidden.
+* **New:** "Select all" and "Clear" buttons in the page pickers. Select all acts on the items shown, so you can search first and select a group.
+* **New: WooCommerce product message.** On single product pages the chat can start with the product already named. Use {PRODUCT}, {PRICE}, {SKU} and {PRODUCT_URL} (General → Product pages). These variables also work in the default and agent messages.
+* **New: Per-page settings in the editor.** A "Tap Chat" box on posts, pages and products lets you hide the button, always show it, or set a message for that page only.
+* **New: Holidays and closed dates** under Working Hours. Add single dates or ranges, optionally repeating every year; on those dates the button shows the offline state.
+* **New: Device visibility.** Show the button on all devices, phones only, or tablets and desktops only. Applied with CSS, so it works with page caching; hidden buttons are not counted as views.
+* **New:** In Multiple Agents mode the button turns into a close (×) button while the agent picker is open, with a smooth rotating transition both ways, so the same button opens and closes it. The cross stays white whatever hover colour the theme uses. The unread badge clears once the picker has been opened.
+* **Developer:** New filter `tap_chat_meta_box_post_types` to choose which post types get the editor box.
+* Existing settings are unchanged and every new option is off by default.
 
 = 2.2.0 - 2026-10-08 =
 A redesigned settings screen: calmer, clearer, and easier to scan.
@@ -468,6 +512,9 @@ Tap Chat 2.0 introduces a complete, privacy-first analytics suite — your data 
 * GDPR compliant
 
 == Upgrade Notice ==
+
+= 2.3.0 =
+Hide the button by content type or device, start chats on product pages with the product named, close on holidays, and override the button per page from the editor. All new options are off by default; your settings are kept.
 
 = 2.2.0 =
 Redesigned settings screen with a live preview of the button, agent picker and welcome bubble, plus right-to-left support. Your settings are kept as they are.

@@ -23,6 +23,7 @@ class Plugin {
     private function __construct() {
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-analytics-store.php';
         require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-rest.php';
+        require_once TAP_CHAT_PLUGIN_DIR . 'includes/class-tap-chat-i18n.php';
 
         // Make sure the stats table exists even after a silent update.
         \Tap_Chat\Analytics_Store::maybe_upgrade();
@@ -33,6 +34,8 @@ class Plugin {
         new \Tap_Chat\Rest_Collector();
 
         if ( is_admin() ) {
+            // Make the texts typed in the settings available to WPML and Polylang.
+            add_action( 'init', array( '\\Tap_Chat\\Strings', 'register' ), 20 );
             require_once TAP_CHAT_PLUGIN_DIR . 'includes/admin/class-tap-chat-admin.php';
             new \Tap_Chat\Admin();
         }
@@ -202,7 +205,11 @@ class Plugin {
 
     private function get_option( $key, $default = '' ) {
         $opts = get_option( 'tap_chat_settings', [] );
-        return isset( $opts[ $key ] ) ? $opts[ $key ] : $default;
+        if ( ! isset( $opts[ $key ] ) ) {
+            return $default;
+        }
+        // Texts the visitor sees come back in the current language (WPML, Polylang).
+        return is_admin() && ! wp_doing_ajax() ? $opts[ $key ] : Strings::setting( $key, $opts[ $key ] );
     }
 
     private function get_full_phone_number() {
@@ -217,6 +224,24 @@ class Plugin {
         }
         
         return $country_code . $phone;
+    }
+
+    /**
+     * The href attribute for a chat link, escaped. With "Protect phone numbers from bots"
+     * the number is left out of the page: the link carries an encoded copy that the
+     * script turns back into the real link when it is clicked.
+     *
+     * @param string $url Chat link.
+     * @return string Attribute string with a leading space.
+     */
+    private function link_attr( $url ) {
+        $url = esc_url( $url );
+        if ( 'yes' !== $this->get_option( 'protect_numbers', 'no' ) || '' === $url ) {
+            return ' href="' . $url . '"';
+        }
+        // Reversed and base64-encoded: no digits, "wa.me" or "tel:" for scrapers to find.
+        $encoded = base64_encode( strrev( html_entity_decode( $url, ENT_QUOTES ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- Hides the number from scrapers, not code.
+        return ' href="#" data-tapchat-href="' . esc_attr( $encoded ) . '"';
     }
 
     private function build_whatsapp_url( $phone, $message = '' ) {
@@ -352,6 +377,90 @@ class Plugin {
             }
         }
         return false;
+    }
+
+    /**
+     * Current time in the business time zone, or null when the zone is invalid.
+     *
+     * @return \DateTime|null
+     */
+    private function business_now() {
+        try {
+            return new \DateTime( 'now', new \DateTimeZone( $this->get_option( 'timezone', wp_timezone_string() ) ) );
+        } catch ( \Exception $e ) {
+            return null;
+        }
+    }
+
+    /**
+     * Whether a weekly schedule is open at the given time. Closed dates always close it.
+     *
+     * @param array     $schedule Schedule keyed by day.
+     * @param \DateTime $now      Time in the business time zone.
+     * @return bool
+     */
+    private function schedule_open( $schedule, $now ) {
+        if ( $this->is_holiday( $now ) ) {
+            return false;
+        }
+        $day = strtolower( $now->format( 'l' ) );
+        if ( empty( $schedule[ $day ] ) || ! isset( $schedule[ $day ]['enabled'] ) || 'yes' !== $schedule[ $day ]['enabled'] ) {
+            return false;
+        }
+        $time  = $now->format( 'H:i' );
+        $start = ! empty( $schedule[ $day ]['start'] ) ? $schedule[ $day ]['start'] : '09:00';
+        $end   = ! empty( $schedule[ $day ]['end'] ) ? $schedule[ $day ]['end'] : '17:00';
+        return $time >= $start && $time <= $end;
+    }
+
+    /**
+     * Next time a weekly schedule opens, looking up to two weeks ahead.
+     *
+     * @param array     $schedule Schedule keyed by day.
+     * @param \DateTime $now      Time in the business time zone.
+     * @return \DateTime|null
+     */
+    private function schedule_next_open( $schedule, $now ) {
+        for ( $i = 0; $i <= 14; $i++ ) {
+            $date = clone $now;
+            if ( $i > 0 ) {
+                $date->modify( '+' . $i . ' day' );
+            }
+            $day = strtolower( $date->format( 'l' ) );
+            if ( empty( $schedule[ $day ] ) || ! isset( $schedule[ $day ]['enabled'] ) || 'yes' !== $schedule[ $day ]['enabled'] ) {
+                continue;
+            }
+            $start = ! empty( $schedule[ $day ]['start'] ) ? $schedule[ $day ]['start'] : '09:00';
+            list( $h, $m ) = array_map( 'intval', explode( ':', $start ) );
+            $date->setTime( $h, $m );
+            if ( $date <= $now || $this->is_holiday( $date ) ) {
+                continue;
+            }
+            return $date;
+        }
+        return null;
+    }
+
+    /**
+     * "Back at 09:00", "Back tomorrow at 09:00" or "Back Monday at 09:00".
+     *
+     * @param \DateTime $next When the agent is back.
+     * @param \DateTime $now  Now, in the same time zone.
+     * @return string
+     */
+    private function back_label( $next, $now ) {
+        $time = wp_date( get_option( 'time_format', 'H:i' ), $next->getTimestamp(), $next->getTimezone() );
+        $days = (int) floor( ( strtotime( $next->format( 'Y-m-d' ) ) - strtotime( $now->format( 'Y-m-d' ) ) ) / DAY_IN_SECONDS );
+        if ( 0 === $days ) {
+            /* translators: %s: time, e.g. 09:00. */
+            return sprintf( __( 'Back at %s', 'tap-chat' ), $time );
+        }
+        if ( 1 === $days ) {
+            /* translators: %s: time, e.g. 09:00. */
+            return sprintf( __( 'Back tomorrow at %s', 'tap-chat' ), $time );
+        }
+        /* translators: 1: day of the week, 2: time, e.g. 09:00. */
+        return sprintf( __( 'Back %1$s at %2$s', 'tap-chat' ), wp_date( 'l', $next->getTimestamp(), $next->getTimezone() ), $time );
     }
 
     private function is_within_working_hours() {
@@ -594,7 +703,7 @@ class Plugin {
             $color ? $color : '#25D366' 
         );
 
-        echo '<a class="' . esc_attr( $classes ) . '" style="' . esc_attr( $style ) . '" href="' . esc_url( $href ) . '" target="_blank" rel="noopener" aria-label="' . esc_attr( $label ) . '"' . ( 'yes' === $append ? ' data-append-page="1"' : '' ) . '>';
+        echo '<a class="' . esc_attr( $classes ) . '" style="' . esc_attr( $style ) . '"' . $this->link_attr( $href ) . ' target="_blank" rel="noopener" aria-label="' . esc_attr( $label ) . '"' . ( 'yes' === $append ? ' data-append-page="1"' : '' ) . '>';
         
         if ( ! empty( $custom_icon ) ) {
             echo '<img src="' . esc_url( $custom_icon ) . '" alt="Chat" class="tapchat-icon" />';
@@ -656,16 +765,47 @@ class Plugin {
                 continue;
             }
 
-            $link = $this->build_agent_link( $agent );
+            $agent = Strings::agent( $agent );
+            $link  = $this->build_agent_link( $agent );
             if ( '' === $link ) {
                 continue;
             }
 
             $agent['link'] = $link;
+
+            // Own hours decide the status; otherwise the manual switch does.
+            if ( isset( $agent['own_hours'] ) && 'yes' === $agent['own_hours'] ) {
+                $now = $this->business_now();
+                if ( $now ) {
+                    $hours = isset( $agent['hours'] ) && is_array( $agent['hours'] ) ? $agent['hours'] : array();
+                    $open  = $this->schedule_open( $hours, $now );
+                    $agent['online'] = $open ? 'yes' : 'no';
+                    if ( ! $open ) {
+                        $next = $this->schedule_next_open( $hours, $now );
+                        $agent['away_label'] = $next ? $this->back_label( $next, $now ) : '';
+                    }
+                }
+            }
+
             $out[] = $agent;
 
             if ( count( $out ) >= 3 ) {
                 break;
+            }
+        }
+
+        // "Hide from the panel": list only available agents, unless nobody is available.
+        if ( 'hide' === $this->get_option( 'agents_offline', 'show' ) ) {
+            $available = array_values(
+                array_filter(
+                    $out,
+                    function ( $agent ) {
+                        return ! ( isset( $agent['online'] ) && 'no' === $agent['online'] );
+                    }
+                )
+            );
+            if ( ! empty( $available ) ) {
+                $out = $available;
             }
         }
 
@@ -798,9 +938,12 @@ class Plugin {
         }
 
         $status_label = $online ? __( 'Online', 'tap-chat' ) : __( 'Offline', 'tap-chat' );
+        if ( ! $online && ! empty( $agent['away_label'] ) ) {
+            $status_label = $agent['away_label'];
+        }
         $row_class    = 'tapchat-agent-link' . ( $online ? '' : ' is-offline' );
 
-        echo '<a class="' . esc_attr( $row_class ) . '" href="' . esc_url( $link ) . '" target="_blank" rel="noopener" data-agent-name="' . esc_attr( $name ) . '">';
+        echo '<a class="' . esc_attr( $row_class ) . '"' . $this->link_attr( $link ) . ' target="_blank" rel="noopener" data-agent-name="' . esc_attr( $name ) . '">';
 
         echo '<span class="tapchat-agent-avatar">';
         if ( '' !== $avatar ) {
@@ -907,8 +1050,8 @@ class Plugin {
             $custom = trim( $this->get_option( 'custom_url', '' ) );
             if ( empty( $custom ) ) { return ''; }
             return sprintf(
-                '<a class="tap-chat-inline" href="%s" target="_blank" rel="noopener">%s</a>',
-                esc_url( $custom ),
+                '<a class="tap-chat-inline"%s target="_blank" rel="noopener">%s</a>',
+                $this->link_attr( $custom ),
                 esc_html( $atts['label'] )
             );
         }
@@ -921,8 +1064,8 @@ class Plugin {
 
         $href = $this->build_whatsapp_url( $atts['phone'], $this->replace_variables( $atts['message'] ) );
         return sprintf(
-            '<a class="tap-chat-inline" href="%s" target="_blank" rel="noopener">%s</a>',
-            esc_url( $href ),
+            '<a class="tap-chat-inline"%s target="_blank" rel="noopener">%s</a>',
+            $this->link_attr( $href ),
             esc_html( $atts['label'] )
         );
     }

@@ -149,7 +149,7 @@
 	 * ---------------------------------------------------------------- */
 	function initMedia( $form ) {
 		function sync( $box ) {
-			var url = $.trim( $box.find( '[data-tap-chat-media-url]' ).val() || '' );
+			var url = String( $box.find( '[data-tap-chat-media-url]' ).val() || '' ).trim();
 			$box.find( '[data-tap-chat-media-img]' ).attr( 'src', url );
 			$box.find( '.tap-chat-media__preview' ).toggleClass( 'has-image', '' !== url );
 		}
@@ -197,7 +197,7 @@
 		}
 
 		$form.on( 'input', '[data-tap-chat-picker-search]', function () {
-			var term = $.trim( this.value ).toLowerCase();
+			var term = String( this.value || '' ).trim().toLowerCase();
 			$( this ).closest( '[data-tap-chat-picker]' ).find( '[data-tap-chat-picker-item]' ).each( function () {
 				var title = $( this ).find( '.tap-chat-picker__title' ).text().toLowerCase();
 				$( this ).prop( 'hidden', '' !== term && -1 === title.indexOf( term ) );
@@ -314,6 +314,13 @@
 			} );
 		} );
 
+		// Own hours replace the manual online switch with a weekly schedule.
+		$root.on( 'change', '[data-tap-chat-agent-own-hours]', function () {
+			var $card = $( this ).closest( '[data-tap-chat-agent]' );
+			$card.find( '[data-tap-chat-agent-hours]' ).prop( 'hidden', ! this.checked );
+			$card.find( '[data-tap-chat-agent-manual]' ).prop( 'hidden', this.checked );
+		} );
+
 		$root.on( 'change', '[data-tap-chat-agent-enabled]', function () {
 			$( this ).closest( '[data-tap-chat-agent]' ).toggleClass( 'is-disabled', ! this.checked );
 		} );
@@ -379,11 +386,40 @@
 		};
 
 		function text( value, fallback ) {
-			value = $.trim( value || '' );
+			value = String( value || '' ).trim();
 			return value || fallback || '';
 		}
 
 		/* Enabled agents, read from the repeater cards in their current order. */
+		// Current weekday and HH:MM in the business time zone (browser time if the zone is not a named one).
+		function businessNow() {
+			var now = new Date();
+			var days = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ];
+			var out = { day: days[ now.getDay() ], time: ( '0' + now.getHours() ).slice( -2 ) + ':' + ( '0' + now.getMinutes() ).slice( -2 ) };
+			try {
+				var parts = new Intl.DateTimeFormat( 'en-US', { timeZone: settingValue( $form, 'timezone' ), weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' } ).formatToParts( now );
+				var map = {};
+				$.each( parts, function ( i, part ) { map[ part.type ] = part.value; } );
+				out = { day: String( map.weekday ).toLowerCase(), time: map.hour + ':' + map.minute };
+			} catch ( e ) {}
+			return out;
+		}
+
+		// Online state as the site will show it: the agent's own schedule, or the manual switch.
+		function agentOnline( $card ) {
+			if ( ! $card.find( '[data-tap-chat-agent-own-hours]' ).is( ':checked' ) ) {
+				return $card.find( 'input[type="checkbox"][name$="[online]"]' ).is( ':checked' );
+			}
+			var now = businessNow();
+			var $open = $card.find( 'input[type="checkbox"][name$="[hours][' + now.day + '][enabled]"]' );
+			if ( ! $open.is( ':checked' ) ) {
+				return false;
+			}
+			var start = $card.find( 'input[name$="[hours][' + now.day + '][start]"]' ).val() || '00:00';
+			var end = $card.find( 'input[name$="[hours][' + now.day + '][end]"]' ).val() || '23:59';
+			return now.time >= start && now.time <= end;
+		}
+
 		function readAgents() {
 			var list = [];
 			$form.find( '[data-tap-chat-agent]' ).each( function ( i ) {
@@ -395,11 +431,19 @@
 					name: text( $card.find( 'input[name$="[name]"]' ).val(), String( i18n.agentName || '%d' ).replace( '%d', i + 1 ) ),
 					role: text( $card.find( 'input[name$="[role]"]' ).val() ),
 					avatar: text( $card.find( 'input[name$="[avatar]"]' ).val() ),
-					online: $card.find( 'input[type="checkbox"][name$="[online]"]' ).is( ':checked' ),
+					online: agentOnline( $card ),
 					custom: 'custom' === $card.find( '[data-tap-chat-agent-channel]:checked' ).val()
 				} );
 			} );
-			return list.slice( 0, AGENT_MAX );
+			list = list.slice( 0, AGENT_MAX );
+			// "Hide from the panel" keeps only available agents, unless nobody is available.
+			if ( 'hide' === settingValue( $form, 'agents_offline' ) ) {
+				var available = $.grep( list, function ( agent ) { return agent.online; } );
+				if ( available.length ) {
+					list = available;
+				}
+			}
+			return list;
 		}
 
 		function renderAgents() {

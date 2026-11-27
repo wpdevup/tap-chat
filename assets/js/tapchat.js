@@ -42,6 +42,44 @@
   }
   // ----------------------------------------------------------------------
 
+  // Adds the page title and address to the WhatsApp text ("Append page context").
+  function tapchatWithPageContext(url) {
+    try {
+      var href = new URL(url);
+      var text = href.searchParams.get('text') || '';
+      var extra = '\n\n' + document.title + '\n' + window.location.href;
+      href.searchParams.set('text', (text ? text + ' ' : '') + extra);
+      return href.toString();
+    } catch (e) {
+      return url;
+    }
+  }
+
+  // "Protect phone numbers from bots": the real link is only built when the visitor clicks.
+  $(document).on('click', 'a[data-tapchat-href]', function(e) {
+    var url = '';
+    try {
+      url = atob(this.getAttribute('data-tapchat-href')).split('').reverse().join('');
+      // Bytes back to text, for links with non-Latin characters.
+      url = decodeURIComponent(escape(url));
+    } catch (err) {
+      return;
+    }
+    if (!url) { return; }
+    e.preventDefault();
+    if (this.getAttribute('data-append-page') === '1') {
+      url = tapchatWithPageContext(url);
+    }
+    if (/^https?:/i.test(url)) {
+      window.open(url, '_blank', 'noopener');
+    } else {
+      window.location.href = url;
+    }
+  });
+
+  // Elements that open the chat when clicked.
+  var TAPCHAT_OPENERS = 'a[href*="#tapchat"], .tapchat-open';
+
   // --- First-party collector (privacy-first, cookieless) ----------------
   function tapchatCollect(type, unique) {
     var c = (window.TapChatData && window.TapChatData.collect) || {};
@@ -95,14 +133,8 @@
     }
 
     var $fab = $('.tapchat-fab[data-append-page="1"]');
-    if ($fab.length) {
-      try {
-        var href = new URL($fab.attr('href'));
-        var text = href.searchParams.get('text') || '';
-        var extra = '\n\n' + document.title + '\n' + window.location.href;
-        href.searchParams.set('text', (text ? text + ' ' : '') + extra);
-        $fab.attr('href', href.toString());
-      } catch(e) {}
+    if ($fab.length && !$fab.attr('data-tapchat-href')) {
+      $fab.attr('href', tapchatWithPageContext($fab.attr('href')));
     }
     
     // --- Multiple agents picker panel ------------------------------------
@@ -154,6 +186,7 @@
         if (!$agentsPanel.hasClass('open')) { return; }
         if ($(e.target).closest('#tapchat-agents-panel').length) { return; }
         if ($(e.target).closest('.tapchat-fab-trigger').length) { return; }
+        if ($(e.target).closest(TAPCHAT_OPENERS).length) { return; }
         tapchatCloseAgents();
       });
 
@@ -165,6 +198,49 @@
         }
       });
     }
+    // ---------------------------------------------------------------------
+
+    // --- Open the chat from any link -------------------------------------
+    // href="#tapchat" or class "tapchat-open" on any element, and #tapchat in the page URL.
+    function tapchatOpenFromLink(fromKeyboard) {
+      if ($agentsPanel.length && $agentsTrigger.length) {
+        if (!$agentsPanel.hasClass('open')) { tapchatOpenAgents(fromKeyboard); }
+        return true;
+      }
+      var fab = $('a.tapchat-fab').get(0);
+      if (fab) {
+        // A native click follows the link in a new tab and runs the click tracking.
+        fab.click();
+        return true;
+      }
+      return false;
+    }
+
+    function tapchatIsSamePageLink(el) {
+      if (!el.hash || el.hash !== '#tapchat') { return false; }
+      return el.host === window.location.host && el.pathname === window.location.pathname;
+    }
+
+    $(document).on('click', TAPCHAT_OPENERS, function(e) {
+      if ($(this).closest('.tapchat-fab, #tapchat-agents-panel').length) { return; }
+      if (this.tagName === 'A' && this.hash && !tapchatIsSamePageLink(this)) { return; }
+      var orig = e.originalEvent;
+      if (tapchatOpenFromLink(!!orig && orig.detail === 0)) {
+        e.preventDefault();
+      }
+    });
+
+    // Opened from another page or a campaign link: show the picker, or the welcome bubble.
+    function tapchatOpenFromUrl() {
+      if (window.location.hash !== '#tapchat') { return; }
+      if ($agentsPanel.length && $agentsTrigger.length) {
+        tapchatOpenAgents(false);
+      } else {
+        $('.tapchat-welcome-bubble').removeClass('hidden').addClass('visible');
+      }
+    }
+    tapchatOpenFromUrl();
+    $(window).on('hashchange', tapchatOpenFromUrl);
     // ---------------------------------------------------------------------
 
     var $bubble = $('.tapchat-welcome-bubble');

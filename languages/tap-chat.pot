@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tap Chat – Floating Contact Button 2.3.0\n"
+"Project-Id-Version: Tap Chat – Floating Contact Button 2.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tap-chat\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-03T23:40:31+00:00\n"
+"POT-Creation-Date: 2026-11-04T00:56:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: tap-chat\n"
@@ -112,12 +112,12 @@ msgstr ""
 #: includes/admin/class-tap-chat-fields.php:314
 #: includes/admin/class-tap-chat-fields.php:324
 #: includes/admin/class-tap-chat-fields.php:471
-#: includes/admin/class-tap-chat-settings.php:36
-#: includes/class-tap-chat.php:564
-#: includes/class-tap-chat.php:567
-#: includes/class-tap-chat.php:722
-#: includes/class-tap-chat.php:724
-#: includes/class-tap-chat.php:903
+#: includes/admin/class-tap-chat-settings.php:37
+#: includes/class-tap-chat.php:673
+#: includes/class-tap-chat.php:676
+#: includes/class-tap-chat.php:862
+#: includes/class-tap-chat.php:864
+#: includes/class-tap-chat.php:1046
 msgid "Chat with us"
 msgstr ""
 
@@ -127,13 +127,13 @@ msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:401
 #: includes/admin/class-tap-chat-fields.php:524
-#: includes/class-tap-chat.php:800
+#: includes/class-tap-chat.php:940
 msgid "Online"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:402
 #: includes/admin/class-tap-chat-fields.php:524
-#: includes/class-tap-chat.php:800
+#: includes/class-tap-chat.php:940
 msgid "Offline"
 msgstr ""
 
@@ -160,24 +160,24 @@ msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:408
 #: includes/admin/class-tap-chat-fields.php:462
-#: includes/admin/class-tap-chat-fields.php:776
-#: includes/admin/class-tap-chat-fields.php:777
-#: includes/admin/class-tap-chat-settings.php:65
-#: includes/admin/class-tap-chat-settings.php:235
-#: includes/class-tap-chat.php:845
-#: includes/class-tap-chat.php:850
+#: includes/admin/class-tap-chat-fields.php:797
+#: includes/admin/class-tap-chat-fields.php:798
+#: includes/admin/class-tap-chat-settings.php:67
+#: includes/admin/class-tap-chat-settings.php:259
+#: includes/class-tap-chat.php:988
+#: includes/class-tap-chat.php:993
 #: tap-chat.php:108
 msgid "Need help? Let's chat! 💬"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:409
 #: includes/admin/class-tap-chat-fields.php:461
-#: includes/admin/class-tap-chat-fields.php:796
-#: includes/admin/class-tap-chat-fields.php:797
-#: includes/admin/class-tap-chat-settings.php:66
-#: includes/admin/class-tap-chat-settings.php:236
-#: includes/class-tap-chat.php:846
-#: includes/class-tap-chat.php:854
+#: includes/admin/class-tap-chat-fields.php:817
+#: includes/admin/class-tap-chat-fields.php:818
+#: includes/admin/class-tap-chat-settings.php:68
+#: includes/admin/class-tap-chat-settings.php:260
+#: includes/class-tap-chat.php:989
+#: includes/class-tap-chat.php:997
 #: tap-chat.php:109
 msgid "Support Team"
 msgstr ""
@@ -194,23 +194,24 @@ msgid "Agents"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:422
-#: includes/admin/class-tap-chat-fields.php:756
+#: includes/admin/class-tap-chat-fields.php:777
 msgid "Welcome Bubble"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:423
-#: includes/admin/class-tap-chat-fields.php:883
-#: includes/admin/class-tap-chat-fields.php:909
+#: includes/admin/class-tap-chat-fields.php:904
+#: includes/admin/class-tap-chat-fields.php:933
+#: includes/admin/class-tap-chat-fields.php:1012
 msgid "Working Hours"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:424
-#: includes/admin/class-tap-chat-fields.php:1040
+#: includes/admin/class-tap-chat-fields.php:1127
 msgid "Visibility"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:425
-#: includes/admin/class-tap-chat-fields.php:1226
+#: includes/admin/class-tap-chat-fields.php:1313
 msgid "Advanced"
 msgstr ""
 
@@ -220,7 +221,7 @@ msgid "Analytics"
 msgstr ""
 
 #: includes/admin/class-tap-chat-admin.php:428
-#: includes/admin/class-tap-chat-fields.php:1248
+#: includes/admin/class-tap-chat-fields.php:1359
 msgid "Tracking"
 msgstr ""
 
@@ -430,12 +431,12 @@ msgid "Any messenger, contact page or URL."
 msgstr ""
 
 #: includes/admin/class-tap-chat-fields.php:238
-#: includes/admin/class-tap-chat-fields.php:689
+#: includes/admin/class-tap-chat-fields.php:699
 msgid "Country"
 msgstr ""
 
 #: includes/admin/class-tap-chat-fields.php:241
-#: includes/admin/class-tap-chat-fields.php:693
+#: includes/admin/class-tap-chat-fields.php:703
 msgid "Phone number"
 msgstr ""
 
@@ -448,7 +449,7 @@ msgid "Default Message"
 msgstr ""
 
 #: includes/admin/class-tap-chat-fields.php:256
-#: includes/admin/class-tap-chat-fields.php:699
+#: includes/admin/class-tap-chat-fields.php:709
 msgid "Hello! I have a question…"
 msgstr ""
 
@@ -461,8 +462,8 @@ msgid "Variables: <code>{TITLE}</code> = site title, <code>{TAGLINE}</code> = ta
 msgstr ""
 
 #: includes/admin/class-tap-chat-fields.php:263
-#: includes/admin/class-tap-chat-fields.php:682
-#: includes/admin/class-tap-chat-fields.php:705
+#: includes/admin/class-tap-chat-fields.php:692
+#: includes/admin/class-tap-chat-fields.php:715
 msgid "Custom link"
 msgstr ""
 
@@ -471,7 +472,7 @@ msgid "Paste the full link including https:// — no country code needed. Works 
 msgstr ""
 
 #: includes/admin/class-tap-chat-fields.php:284
-#: includes/admin/class-tap-chat-settings.php:47
+#: includes/admin/class-tap-chat-settings.php:49
 msgid "Hi! I have a question about {PRODUCT} ({PRICE}): {PRODUCT_URL}"
 msgstr ""
 
@@ -635,8 +636,8 @@ msgstr ""
 #: includes/admin/class-tap-chat-fields.php:563
 #: includes/admin/class-tap-chat-fields.php:564
 #: includes/admin/class-tap-chat-settings.php:28
-#: includes/class-tap-chat.php:86
-#: includes/class-tap-chat.php:719
+#: includes/class-tap-chat.php:89
+#: includes/class-tap-chat.php:859
 #: tap-chat.php:171
 msgid "Start a conversation"
 msgstr ""
@@ -645,7 +646,7 @@ msgstr ""
 #: includes/admin/class-tap-chat-fields.php:571
 #: includes/admin/class-tap-chat-fields.php:572
 #: includes/admin/class-tap-chat-settings.php:29
-#: includes/class-tap-chat.php:89
+#: includes/class-tap-chat.php:92
 #: tap-chat.php:172
 msgid "Choose someone to chat with"
 msgstr ""
@@ -698,643 +699,725 @@ msgstr ""
 msgid "Drag a card by its handle to change the order visitors see."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:603
+#: includes/admin/class-tap-chat-fields.php:581
+msgid "Agents who are away"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:581
+msgid "Agents outside their own hours, or switched to offline."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:583
+msgid "Show as away"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:583
+msgid "Greyed out, with the time they are back when they have their own hours."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:584
+msgid "Hide from the panel"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:584
+msgid "Only available agents are listed. If nobody is available, everyone is shown as away."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:610
 msgid "Add agent"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:604
+#: includes/admin/class-tap-chat-fields.php:611
 msgid "Maximum of 3 agents reached."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:638
+#: includes/admin/class-tap-chat-fields.php:648
 msgid "Drag to reorder"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:640
+#: includes/admin/class-tap-chat-fields.php:650
 msgid "Agent"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:643
+#: includes/admin/class-tap-chat-fields.php:653
 msgid "Enabled"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:647
+#: includes/admin/class-tap-chat-fields.php:657
 msgid "Remove agent"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:659
+#: includes/admin/class-tap-chat-fields.php:669
 msgid "Avatar"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:660
-#: includes/admin/class-tap-chat-fields.php:802
-#: includes/admin/class-tap-chat-fields.php:1025
+#: includes/admin/class-tap-chat-fields.php:670
+#: includes/admin/class-tap-chat-fields.php:823
+#: includes/admin/class-tap-chat-fields.php:1112
 msgid "Remove"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:666
+#: includes/admin/class-tap-chat-fields.php:676
 msgid "Name"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:667
+#: includes/admin/class-tap-chat-fields.php:677
 msgid "e.g. Sarah"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:670
+#: includes/admin/class-tap-chat-fields.php:680
 msgid "Role (optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:671
+#: includes/admin/class-tap-chat-fields.php:681
 msgid "e.g. Sales"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:675
+#: includes/admin/class-tap-chat-fields.php:685
 msgid "Channel"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:678
+#: includes/admin/class-tap-chat-fields.php:688
 msgid "WhatsApp"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:698
+#: includes/admin/class-tap-chat-fields.php:708
 msgid "Pre-filled message (optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:707
+#: includes/admin/class-tap-chat-fields.php:717
 msgid "Telegram, Messenger, tel:, mailto:, or any URL. The pre-filled message is not sent with a custom link."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:714
+#: includes/admin/class-tap-chat-fields.php:725
+msgid "Use own working hours"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:730
 msgid "Show as online (green dot)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:733
+#: includes/admin/class-tap-chat-fields.php:734
+msgid "Online during these hours in your business time zone (Working Hours), away on closed dates. Away agents show when they are back."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:754
 msgid "Select country…"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:757
+#: includes/admin/class-tap-chat-fields.php:778
 msgid "Display a friendly welcome message to encourage visitors to start a conversation. Use smart triggers to show the bubble at the perfect moment."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:761
+#: includes/admin/class-tap-chat-fields.php:782
 msgid "Enable Welcome Bubble"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:761
+#: includes/admin/class-tap-chat-fields.php:782
 msgid "Show a friendly message bubble to encourage visitors to start a conversation"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:766
+#: includes/admin/class-tap-chat-fields.php:787
 msgid "Bubble"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:767
+#: includes/admin/class-tap-chat-fields.php:788
 msgid "Bubble Style"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:768
+#: includes/admin/class-tap-chat-fields.php:789
 msgid "Modern"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:768
+#: includes/admin/class-tap-chat-fields.php:789
 msgid "Rich bubble with avatar, name, and online status"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:769
+#: includes/admin/class-tap-chat-fields.php:790
 msgid "Simple"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:769
+#: includes/admin/class-tap-chat-fields.php:790
 msgid "Clean bubble with message only"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:772
+#: includes/admin/class-tap-chat-fields.php:793
 msgid "Welcome Message"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:779
+#: includes/admin/class-tap-chat-fields.php:800
 msgid "The message to display in the welcome bubble. Emojis are supported!"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:782
+#: includes/admin/class-tap-chat-fields.php:803
 msgid "Bubble Position"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:784
+#: includes/admin/class-tap-chat-fields.php:805
 msgid "Top (Above button)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:785
+#: includes/admin/class-tap-chat-fields.php:806
 msgid "Side (Next to button)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:787
+#: includes/admin/class-tap-chat-fields.php:808
 msgid "Choose where the bubble appears relative to the button (Simple style only)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:792
+#: includes/admin/class-tap-chat-fields.php:813
 msgid "Agent/Team Name"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:799
+#: includes/admin/class-tap-chat-fields.php:820
 msgid "Display name for the agent or team (Modern style only)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:801
+#: includes/admin/class-tap-chat-fields.php:822
 msgid "Avatar URL (Optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:801
+#: includes/admin/class-tap-chat-fields.php:822
 msgid "Upload an avatar image or enter URL. Leave empty to use default WhatsApp icon (Modern style only)."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:802
+#: includes/admin/class-tap-chat-fields.php:823
 msgid "Choose Image"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:816
+#: includes/admin/class-tap-chat-fields.php:837
 msgid "Smart Triggers"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:816
+#: includes/admin/class-tap-chat-fields.php:837
 msgid "Control when the welcome bubble appears. At least one trigger must be enabled."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:820
+#: includes/admin/class-tap-chat-fields.php:841
 msgid "Time on Page"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:820
+#: includes/admin/class-tap-chat-fields.php:841
 msgid "Show bubble after visitor spends specific time on page (recommended)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:822
+#: includes/admin/class-tap-chat-fields.php:843
 msgid "Delay (seconds)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:822
+#: includes/admin/class-tap-chat-fields.php:843
 msgid "Show bubble after this many seconds (0-300). 0 = show immediately."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:826
+#: includes/admin/class-tap-chat-fields.php:847
 msgid "Scroll Depth"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:826
+#: includes/admin/class-tap-chat-fields.php:847
 msgid "Show bubble when visitor scrolls to a specific percentage of the page"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:828
+#: includes/admin/class-tap-chat-fields.php:849
 msgid "Scroll Depth (%)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:828
+#: includes/admin/class-tap-chat-fields.php:849
 msgid "Show bubble after scrolling this percentage (10-100%)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:832
+#: includes/admin/class-tap-chat-fields.php:853
 msgid "Exit Intent"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:832
+#: includes/admin/class-tap-chat-fields.php:853
 msgid "Show bubble when visitor moves mouse towards closing the page/tab"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:836
+#: includes/admin/class-tap-chat-fields.php:857
 msgid "Idle Detection"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:836
+#: includes/admin/class-tap-chat-fields.php:857
 msgid "Show bubble when visitor is inactive (no mouse/keyboard activity)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:838
+#: includes/admin/class-tap-chat-fields.php:859
 msgid "Idle Time (seconds)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:838
+#: includes/admin/class-tap-chat-fields.php:859
 msgid "Show bubble after this many seconds of inactivity (10-300)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:844
+#: includes/admin/class-tap-chat-fields.php:865
 msgid "Tip:"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:844
+#: includes/admin/class-tap-chat-fields.php:865
 msgid "When multiple triggers are enabled, the bubble shows on whichever condition is met first. Time on Page is enabled by default and recommended for most websites."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:873
+#: includes/admin/class-tap-chat-fields.php:894
+#: includes/admin/class-tap-chat-fields.php:994
 msgid "Monday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:874
+#: includes/admin/class-tap-chat-fields.php:895
+#: includes/admin/class-tap-chat-fields.php:995
 msgid "Tuesday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:875
+#: includes/admin/class-tap-chat-fields.php:896
+#: includes/admin/class-tap-chat-fields.php:996
 msgid "Wednesday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:876
+#: includes/admin/class-tap-chat-fields.php:897
+#: includes/admin/class-tap-chat-fields.php:997
 msgid "Thursday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:877
+#: includes/admin/class-tap-chat-fields.php:898
+#: includes/admin/class-tap-chat-fields.php:998
 msgid "Friday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:878
+#: includes/admin/class-tap-chat-fields.php:899
+#: includes/admin/class-tap-chat-fields.php:999
 msgid "Saturday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:879
+#: includes/admin/class-tap-chat-fields.php:900
+#: includes/admin/class-tap-chat-fields.php:1000
 msgid "Sunday"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:884
+#: includes/admin/class-tap-chat-fields.php:905
 msgid "Set your business hours. The button will only show during these hours."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:888
+#: includes/admin/class-tap-chat-fields.php:909
 msgid "Enable Working Hours"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:888
+#: includes/admin/class-tap-chat-fields.php:909
 msgid "Show the button only during your business hours"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:893
-msgid "Schedule"
+#: includes/admin/class-tap-chat-fields.php:913
+msgid "Time zone"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:895
+#: includes/admin/class-tap-chat-fields.php:915
 msgid "Business Timezone"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:906
-msgid "Select your business timezone for accurate scheduling"
+#: includes/admin/class-tap-chat-fields.php:926
+msgid "Used for the working-hours schedule, closed dates and agents with their own hours."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:911
+#: includes/admin/class-tap-chat-fields.php:930
+msgid "Schedule"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:935
 msgid "Day"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:912
+#: includes/admin/class-tap-chat-fields.php:936
 msgid "Open"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:913
-#: includes/admin/class-tap-chat-fields.php:933
+#: includes/admin/class-tap-chat-fields.php:937
+#: includes/admin/class-tap-chat-fields.php:957
+#: includes/admin/class-tap-chat-fields.php:1034
 msgid "Start Time"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:914
-#: includes/admin/class-tap-chat-fields.php:939
+#: includes/admin/class-tap-chat-fields.php:938
+#: includes/admin/class-tap-chat-fields.php:963
+#: includes/admin/class-tap-chat-fields.php:1040
 msgid "End Time"
 msgstr ""
 
 #. translators: %s: day of the week.
-#: includes/admin/class-tap-chat-fields.php:926
+#: includes/admin/class-tap-chat-fields.php:950
+#: includes/admin/class-tap-chat-fields.php:1027
 msgid "Open on %s"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:947
+#: includes/admin/class-tap-chat-fields.php:974
 msgid "Outside working hours"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:949
+#: includes/admin/class-tap-chat-fields.php:976
 msgid "Offline Message (Optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:953
+#: includes/admin/class-tap-chat-fields.php:980
 msgid "We are currently offline. Our business hours are Monday-Friday, 9 AM - 5 PM."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:956
+#: includes/admin/class-tap-chat-fields.php:983
 msgid "This message replaces the button label when outside working hours. Leave empty to hide the button completely."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:967
+#: includes/admin/class-tap-chat-fields.php:1054
 msgid "Holidays and closed dates"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:968
-msgid "On these dates the button behaves as outside working hours, whatever the weekly schedule says."
+#: includes/admin/class-tap-chat-fields.php:1055
+msgid "On these dates the button behaves as outside working hours, whatever the weekly schedule says. Agents with their own hours are away on these dates too."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:971
+#: includes/admin/class-tap-chat-fields.php:1058
 msgid "No closed dates yet."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:987
+#: includes/admin/class-tap-chat-fields.php:1074
 msgid "Add closed date"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:993
-#: includes/admin/class-tap-chat-fields.php:1010
+#: includes/admin/class-tap-chat-fields.php:1080
+#: includes/admin/class-tap-chat-fields.php:1097
 msgid "From"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:994
-#: includes/admin/class-tap-chat-fields.php:1011
+#: includes/admin/class-tap-chat-fields.php:1081
+#: includes/admin/class-tap-chat-fields.php:1098
 msgid "To (optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:995
-#: includes/admin/class-tap-chat-fields.php:1017
+#: includes/admin/class-tap-chat-fields.php:1082
+#: includes/admin/class-tap-chat-fields.php:1104
 msgid "Label (optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:996
+#: includes/admin/class-tap-chat-fields.php:1083
 msgid "Every year"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1016
+#: includes/admin/class-tap-chat-fields.php:1103
 msgid "e.g. New Year"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1022
+#: includes/admin/class-tap-chat-fields.php:1109
 msgid "Repeat every year"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1041
+#: includes/admin/class-tap-chat-fields.php:1128
 msgid "Control where the WhatsApp button appears on your site."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1046
+#: includes/admin/class-tap-chat-fields.php:1133
 msgid "Devices"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1047
+#: includes/admin/class-tap-chat-fields.php:1134
 msgid "Choose the screens the button appears on. Phones are screens narrower than 768px."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1049
+#: includes/admin/class-tap-chat-fields.php:1136
 msgid "All devices"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1049
+#: includes/admin/class-tap-chat-fields.php:1136
 msgid "Phones, tablets and desktops"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1050
+#: includes/admin/class-tap-chat-fields.php:1137
 msgid "Phones only"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1050
+#: includes/admin/class-tap-chat-fields.php:1137
 msgid "Hidden on wider screens"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1051
+#: includes/admin/class-tap-chat-fields.php:1138
 msgid "Tablets and desktops"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1051
+#: includes/admin/class-tap-chat-fields.php:1138
 msgid "Hidden on phones"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1054
+#: includes/admin/class-tap-chat-fields.php:1141
 msgid "Pages"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1060
+#: includes/admin/class-tap-chat-fields.php:1147
 msgid "Show only on selected pages"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1060
+#: includes/admin/class-tap-chat-fields.php:1147
 msgid "When enabled, button will appear only on pages you select below"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1066
+#: includes/admin/class-tap-chat-fields.php:1153
 msgid "Hide on selected pages"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1066
+#: includes/admin/class-tap-chat-fields.php:1153
 msgid "Hide the button on selected pages (e.g., checkout, cart)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1084
+#: includes/admin/class-tap-chat-fields.php:1171
 msgid "Front page"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1085
+#: includes/admin/class-tap-chat-fields.php:1172
 msgid "Blog page (latest posts)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1086
+#: includes/admin/class-tap-chat-fields.php:1173
 msgid "Category archives"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1087
+#: includes/admin/class-tap-chat-fields.php:1174
 msgid "Tag archives"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1088
+#: includes/admin/class-tap-chat-fields.php:1175
 msgid "Other taxonomy archives (e.g. product categories)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1089
+#: includes/admin/class-tap-chat-fields.php:1176
 msgid "Post type archives (e.g. Shop page)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1090
+#: includes/admin/class-tap-chat-fields.php:1177
 msgid "Author archives"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1091
+#: includes/admin/class-tap-chat-fields.php:1178
 msgid "Date archives"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1092
+#: includes/admin/class-tap-chat-fields.php:1179
 msgid "Search results"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1093
+#: includes/admin/class-tap-chat-fields.php:1180
 msgid "404 page"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1100
+#: includes/admin/class-tap-chat-fields.php:1187
 msgid "Hide by content type"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1101
+#: includes/admin/class-tap-chat-fields.php:1188
 msgid "Hide the button on every item of a type, such as all blog posts, including ones you publish later"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1106
-#: includes/admin/class-tap-chat-fields.php:1107
+#: includes/admin/class-tap-chat-fields.php:1193
+#: includes/admin/class-tap-chat-fields.php:1194
 msgid "Content types"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1119
-#: includes/admin/class-tap-chat-fields.php:1120
+#: includes/admin/class-tap-chat-fields.php:1206
+#: includes/admin/class-tap-chat-fields.php:1207
 msgid "Archives and special pages"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1132
+#: includes/admin/class-tap-chat-fields.php:1219
 msgid "Exceptions (optional)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1133
+#: includes/admin/class-tap-chat-fields.php:1220
 msgid "Keep the button on these pages or posts even though their type is hidden above, for example a few high-intent articles."
 msgstr ""
 
 #. translators: %d: number of selected pages.
-#: includes/admin/class-tap-chat-fields.php:1185
+#: includes/admin/class-tap-chat-fields.php:1272
 msgid "%d selected"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1192
+#: includes/admin/class-tap-chat-fields.php:1279
 msgid "Search pages or posts..."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1197
+#: includes/admin/class-tap-chat-fields.php:1284
 msgid "Select all"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1198
+#: includes/admin/class-tap-chat-fields.php:1285
 msgid "Clear"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1199
+#: includes/admin/class-tap-chat-fields.php:1286
 msgid "Selects every item shown in the list, so search first to select a group."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1204
+#: includes/admin/class-tap-chat-fields.php:1291
 msgid "No pages or posts found."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1213
+#: includes/admin/class-tap-chat-fields.php:1300
 msgid "(no title)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1227
+#: includes/admin/class-tap-chat-fields.php:1314
 msgid "Advanced configuration options for power users."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1233
+#: includes/admin/class-tap-chat-fields.php:1320
 msgid "Automatically append page title and URL to the message"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1234
+#: includes/admin/class-tap-chat-fields.php:1321
 msgid "This helps you know which page the visitor is contacting you from"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1249
+#: includes/admin/class-tap-chat-fields.php:1327
+msgid "Protect phone numbers from spam bots"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1328
+msgid "Keeps WhatsApp numbers out of the page source; the chat link is built when a visitor clicks. Recommended if you receive spam."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1334
+msgid "Open the chat from your own links"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1335
+msgid "Any button or link on your site can open the chat: the agent picker in Multiple Agents mode, or WhatsApp in single-button mode."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1338
+msgid "Set the link address to <code>#tapchat</code>, for example on a \"Talk to us\" button."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1339
+msgid "Or add the CSS class <code>tapchat-open</code> to any element, for example in Elementor or the block editor (Advanced → Additional CSS class)."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1340
+msgid "Add <code>#tapchat</code> to a page address, such as <code>/pricing/#tapchat</code> in a newsletter or ad, to open the chat as soon as the page loads."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1344
+msgid "Translations"
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1346
+msgid "Your multilingual plugin can translate every text you entered here, including agent names, roles and messages. In WPML open <strong>WPML → String Translation</strong>, in Polylang open <strong>Languages → Translations</strong>, and filter by <strong>Tap Chat</strong>."
+msgstr ""
+
+#: includes/admin/class-tap-chat-fields.php:1360
 msgid "Choose what Tap Chat records on your site and which events it sends to Google Analytics."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1253
+#: includes/admin/class-tap-chat-fields.php:1364
 msgid "Analytics data has been reset."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1257
+#: includes/admin/class-tap-chat-fields.php:1368
 msgid "Data collection"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1258
+#: includes/admin/class-tap-chat-fields.php:1369
 msgid "Built-in, privacy-first analytics stored on your own site. No cookies, no personal data, no external requests — your data never leaves your server. Click tracking is lightweight; traffic tracking adds one small request per page view to measure CTR."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1261
+#: includes/admin/class-tap-chat-fields.php:1372
 msgid "Click tracking"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1261
+#: includes/admin/class-tap-chat-fields.php:1372
 msgid "Lightweight and recommended. Powers Total / Today / Week / Month clicks, top pages and device breakdown."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1262
+#: includes/admin/class-tap-chat-fields.php:1373
 msgid "Traffic & CTR tracking"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1262
+#: includes/admin/class-tap-chat-fields.php:1373
 msgid "Adds one small, cookieless request per page view where the button is shown. Enables the Visitors / Button Views / Clicks / CTR funnel. Leave off if you only need click counts."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1263
+#: includes/admin/class-tap-chat-fields.php:1374
 msgid "Exclude logged-in users"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1263
+#: includes/admin/class-tap-chat-fields.php:1374
 msgid "Recommended. Keeps your own testing and staff activity out of the numbers."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1265
+#: includes/admin/class-tap-chat-fields.php:1376
 msgid "Keep data for"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1265
+#: includes/admin/class-tap-chat-fields.php:1376
 msgid "Older analytics rows are deleted automatically once per day. Minimum 7, maximum 3650."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1265
+#: includes/admin/class-tap-chat-fields.php:1376
 msgid "days"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1269
+#: includes/admin/class-tap-chat-fields.php:1380
 msgid "Google Analytics 4 / Tag Manager"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1270
+#: includes/admin/class-tap-chat-fields.php:1381
 msgid "Track button clicks and welcome-bubble impressions as GA4 events. This uses the Google Analytics 4 or Google Tag Manager you already have on the site — the plugin never loads its own analytics library and never sends data anywhere else. If no GA4/GTM is present on a page, nothing is sent."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1273
+#: includes/admin/class-tap-chat-fields.php:1384
 msgid "Enable Event Tracking"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1273
+#: includes/admin/class-tap-chat-fields.php:1384
 msgid "Does not install Google Analytics for you — it sends events to the GA4 or GTM already on your site. If neither is present on a page, nothing happens (no errors)."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1278
+#: includes/admin/class-tap-chat-fields.php:1389
 msgid "Auto-detect (recommended)"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1279
+#: includes/admin/class-tap-chat-fields.php:1390
 msgid "GA4 gtag.js only"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1280
+#: includes/admin/class-tap-chat-fields.php:1391
 msgid "Google Tag Manager (dataLayer) only"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1282
+#: includes/admin/class-tap-chat-fields.php:1393
 msgid "Send Events Via"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1288
+#: includes/admin/class-tap-chat-fields.php:1399
 msgid "Auto-detect sends via whichever is present on the page — gtag(), the GTM dataLayer, or both."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1290
+#: includes/admin/class-tap-chat-fields.php:1401
 msgid "Click Event Name"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1296
+#: includes/admin/class-tap-chat-fields.php:1407
 msgid "GA4 event name sent on a button/link click. Lowercase letters, numbers and underscores only; must start with a letter (max 40 characters). In GA4 you can mark this event as a Key Event (Conversion) to measure which campaigns drive the most chats."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1299
+#: includes/admin/class-tap-chat-fields.php:1410
 msgid "Track Bubble Triggers"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1299
+#: includes/admin/class-tap-chat-fields.php:1410
 msgid "Includes a trigger_type parameter (time, scroll, exit, idle) so you can compare in GA4 which Smart Trigger produces the most chats."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1302
-#: includes/admin/class-tap-chat-fields.php:1313
+#: includes/admin/class-tap-chat-fields.php:1413
+#: includes/admin/class-tap-chat-fields.php:1424
 msgid "Reset analytics data"
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1306
+#: includes/admin/class-tap-chat-fields.php:1417
 msgid "Permanently delete all recorded clicks, views and visitors. This cannot be undone. Your settings are kept."
 msgstr ""
 
-#: includes/admin/class-tap-chat-fields.php:1310
+#: includes/admin/class-tap-chat-fields.php:1421
 msgid "Delete all Tap Chat analytics data? This cannot be undone."
 msgstr ""
 
@@ -1414,15 +1497,30 @@ msgstr ""
 msgid "Maybe later"
 msgstr ""
 
-#: includes/class-tap-chat.php:97
+#: includes/class-tap-chat.php:100
 #: tap-chat.php:178
 msgid "Support"
 msgstr ""
 
-#: includes/class-tap-chat.php:186
-#: includes/class-tap-chat.php:773
-#: includes/class-tap-chat.php:890
+#: includes/class-tap-chat.php:189
+#: includes/class-tap-chat.php:913
+#: includes/class-tap-chat.php:1033
 msgid "Close"
+msgstr ""
+
+#. translators: %s: time, e.g. 09:00.
+#: includes/class-tap-chat.php:456
+msgid "Back at %s"
+msgstr ""
+
+#. translators: %s: time, e.g. 09:00.
+#: includes/class-tap-chat.php:460
+msgid "Back tomorrow at %s"
+msgstr ""
+
+#. translators: 1: day of the week, 2: time, e.g. 09:00.
+#: includes/class-tap-chat.php:463
+msgid "Back %1$s at %2$s"
 msgstr ""
 
 #: tap-chat.php:31

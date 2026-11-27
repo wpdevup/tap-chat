@@ -577,6 +577,13 @@ class Admin_Fields {
         Admin_UI::section_title( __( 'Agents', 'tap-chat' ), __( 'Drag a card by its handle to change the order visitors see.', 'tap-chat' ) );
         $this->render_agents_repeater();
 
+        $away = $this->get( 'agents_offline', 'show' );
+        Admin_UI::section_title( __( 'Agents who are away', 'tap-chat' ), __( 'Agents outside their own hours, or switched to offline.', 'tap-chat' ) );
+        echo '<div class="tap-chat-card"><div class="tap-chat-choice-grid">';
+        Admin_UI::choice( 'agents_offline', 'show', 'clock', __( 'Show as away', 'tap-chat' ), __( 'Greyed out, with the time they are back when they have their own hours.', 'tap-chat' ), $away );
+        Admin_UI::choice( 'agents_offline', 'hide', 'eye-off', __( 'Hide from the panel', 'tap-chat' ), __( 'Only available agents are listed. If nobody is available, everyone is shown as away.', 'tap-chat' ), $away );
+        echo '</div></div>';
+
         echo '</div>';
     }
 
@@ -628,6 +635,9 @@ class Admin_Fields {
         $message      = isset( $agent['message'] ) ? $agent['message'] : '';
         $online       = ! ( isset( $agent['online'] ) && 'no' === $agent['online'] );
         $enabled      = ! ( isset( $agent['enabled'] ) && 'no' === $agent['enabled'] );
+        $own_hours    = isset( $agent['own_hours'] ) && 'yes' === $agent['own_hours'];
+        // A new schedule starts from the business hours.
+        $hours        = isset( $agent['hours'] ) && is_array( $agent['hours'] ) ? $agent['hours'] : $this->get( 'working_hours', $this->get_default_working_hours() );
 
         $base = Admin_UI::OPTION . '[agents][' . $index . ']';
         $uid  = 'tap-chat-agent-' . $index;
@@ -708,11 +718,22 @@ class Admin_Fields {
                         </div>
                     </div>
 
-                    <label class="tap-chat-inline-switch">
-                        <input type="hidden" name="<?php echo esc_attr( $base ); ?>[online]" value="no">
-                        <input type="checkbox" class="tap-chat-switch tap-chat-switch--sm" role="switch" name="<?php echo esc_attr( $base ); ?>[online]" value="yes" <?php checked( $online ); ?>>
-                        <span><?php esc_html_e( 'Show as online (green dot)', 'tap-chat' ); ?></span>
-                    </label>
+                    <div class="tap-chat-agent__status">
+                        <label class="tap-chat-inline-switch">
+                            <input type="hidden" name="<?php echo esc_attr( $base ); ?>[own_hours]" value="no">
+                            <input type="checkbox" class="tap-chat-switch tap-chat-switch--sm" role="switch" data-tap-chat-agent-own-hours name="<?php echo esc_attr( $base ); ?>[own_hours]" value="yes" <?php checked( $own_hours ); ?>>
+                            <span><?php esc_html_e( 'Use own working hours', 'tap-chat' ); ?></span>
+                        </label>
+                        <label class="tap-chat-inline-switch" data-tap-chat-agent-manual<?php echo $own_hours ? ' hidden' : ''; ?>>
+                            <input type="hidden" name="<?php echo esc_attr( $base ); ?>[online]" value="no">
+                            <input type="checkbox" class="tap-chat-switch tap-chat-switch--sm" role="switch" name="<?php echo esc_attr( $base ); ?>[online]" value="yes" <?php checked( $online ); ?>>
+                            <span><?php esc_html_e( 'Show as online (green dot)', 'tap-chat' ); ?></span>
+                        </label>
+                    </div>
+                    <div class="tap-chat-agent__hours" data-tap-chat-agent-hours<?php echo $own_hours ? '' : ' hidden'; ?>>
+                        <p class="tap-chat-field__help"><?php esc_html_e( 'Online during these hours in your business time zone (Working Hours), away on closed dates. Away agents show when they are back.', 'tap-chat' ); ?></p>
+                        <?php $this->render_schedule_rows( $base . '[hours]', $hours, true ); ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -888,9 +909,8 @@ class Admin_Fields {
         Admin_UI::toggle_row( 'enable_working_hours', 'clock', __( 'Enable Working Hours', 'tap-chat' ), __( 'Show the button only during your business hours', 'tap-chat' ), 'yes' === $enable );
         echo '</div></div>';
 
-        echo '<div' . Admin_UI::show_if( 'enable_working_hours', 'yes', $enable ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_attr().
-
-        Admin_UI::section_title( __( 'Schedule', 'tap-chat' ) );
+        // The time zone and the closed dates are also used by agents with their own hours, so they stay visible.
+        Admin_UI::section_title( __( 'Time zone', 'tap-chat' ) );
         echo '<div class="tap-chat-card"><div class="tap-chat-grid-2">';
         Admin_UI::field_open( __( 'Business Timezone', 'tap-chat' ), 'tap-chat-timezone' );
         printf( '<select class="tap-chat-select" id="tap-chat-timezone" name="%s">', esc_attr( Admin_UI::name( 'timezone' ) ) );
@@ -903,8 +923,12 @@ class Admin_Fields {
             printf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( $tz ), selected( $timezone, $tz, false ), esc_html( $tz ) );
         }
         echo '</select>';
-        Admin_UI::field_close( __( 'Select your business timezone for accurate scheduling', 'tap-chat' ) );
-        echo '</div><hr class="tap-chat-divider">';
+        Admin_UI::field_close( __( 'Used for the working-hours schedule, closed dates and agents with their own hours.', 'tap-chat' ) );
+        echo '</div></div>';
+
+        echo '<div' . Admin_UI::show_if( 'enable_working_hours', 'yes', $enable ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_attr().
+        Admin_UI::section_title( __( 'Schedule', 'tap-chat' ) );
+        echo '<div class="tap-chat-card">';
 
         echo '<div class="tap-chat-days" role="table" aria-label="' . esc_attr__( 'Working Hours', 'tap-chat' ) . '">';
         echo '<div class="tap-chat-days__row tap-chat-days__row--head" role="row">';
@@ -942,8 +966,11 @@ class Admin_Fields {
         }
         echo '</div></div>';
 
+        echo '</div>';
+
         $this->render_holidays();
 
+        echo '<div' . Admin_UI::show_if( 'enable_working_hours', 'yes', $enable ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_attr().
         Admin_UI::section_title( __( 'Outside working hours', 'tap-chat' ) );
         echo '<div class="tap-chat-card">';
         Admin_UI::field_open( __( 'Offline Message (Optional)', 'tap-chat' ), 'tap-chat-offline-message' );
@@ -958,6 +985,66 @@ class Admin_Fields {
     }
 
     /**
+     * Days of the week, keyed as stored in the schedule.
+     *
+     * @return array<string, string>
+     */
+    private function week_days() {
+        return array(
+            'monday'    => __( 'Monday', 'tap-chat' ),
+            'tuesday'   => __( 'Tuesday', 'tap-chat' ),
+            'wednesday' => __( 'Wednesday', 'tap-chat' ),
+            'thursday'  => __( 'Thursday', 'tap-chat' ),
+            'friday'    => __( 'Friday', 'tap-chat' ),
+            'saturday'  => __( 'Saturday', 'tap-chat' ),
+            'sunday'    => __( 'Sunday', 'tap-chat' ),
+        );
+    }
+
+    /**
+     * A weekly schedule: one row per day with an open switch and start and end times.
+     *
+     * @param string $base    Field name prefix, e.g. tap_chat_settings[agents][0][hours].
+     * @param array  $hours   Saved schedule keyed by day.
+     * @param bool   $compact Smaller rows for use inside an agent card.
+     */
+    private function render_schedule_rows( $base, $hours, $compact = false ) {
+        printf( '<div class="tap-chat-days%s" role="table" aria-label="%s">', $compact ? ' tap-chat-days--compact' : '', esc_attr__( 'Working Hours', 'tap-chat' ) );
+        global $wp_locale;
+        $index = array( 'sunday' => 0, 'monday' => 1, 'tuesday' => 2, 'wednesday' => 3, 'thursday' => 4, 'friday' => 5, 'saturday' => 6 );
+        foreach ( $this->week_days() as $day => $label ) {
+            $data = isset( $hours[ $day ] ) && is_array( $hours[ $day ] ) ? $hours[ $day ] : array( 'enabled' => 'no', 'start' => '09:00', 'end' => '17:00' );
+            $open = isset( $data['enabled'] ) && 'yes' === $data['enabled'];
+            $name = $base . '[' . $day . ']';
+            // Short day names keep the compact rows on one line.
+            $shown = ( $compact && $wp_locale ) ? $wp_locale->get_weekday_abbrev( $wp_locale->get_weekday( $index[ $day ] ) ) : $label;
+            printf( '<div class="tap-chat-days__row%s" role="row" data-tap-chat-day>', $open ? '' : ' is-closed' );
+            printf( '<span class="tap-chat-days__name" role="cell" title="%s">%s</span>', esc_attr( $label ), esc_html( $shown ) );
+            printf(
+                '<span role="cell"><input type="hidden" name="%1$s[enabled]" value="no"><input type="checkbox" class="tap-chat-switch tap-chat-switch--sm" role="switch" name="%1$s[enabled]" value="yes" aria-label="%2$s" data-tap-chat-day-open%3$s></span>',
+                esc_attr( $name ),
+                /* translators: %s: day of the week. */
+                esc_attr( sprintf( __( 'Open on %s', 'tap-chat' ), $label ) ),
+                checked( $open, true, false )
+            );
+            printf(
+                '<span role="cell"><input type="time" class="tap-chat-input tap-chat-input--time" name="%1$s[start]" value="%2$s" aria-label="%3$s"></span>',
+                esc_attr( $name ),
+                esc_attr( isset( $data['start'] ) ? $data['start'] : '09:00' ),
+                esc_attr__( 'Start Time', 'tap-chat' )
+            );
+            printf(
+                '<span role="cell"><input type="time" class="tap-chat-input tap-chat-input--time" name="%1$s[end]" value="%2$s" aria-label="%3$s"></span>',
+                esc_attr( $name ),
+                esc_attr( isset( $data['end'] ) ? $data['end'] : '17:00' ),
+                esc_attr__( 'End Time', 'tap-chat' )
+            );
+            echo '</div>';
+        }
+        echo '</div>';
+    }
+
+    /**
      * Closed dates that override the weekly schedule.
      */
     private function render_holidays() {
@@ -965,7 +1052,7 @@ class Admin_Fields {
 
         Admin_UI::section_title(
             __( 'Holidays and closed dates', 'tap-chat' ),
-            __( 'On these dates the button behaves as outside working hours, whatever the weekly schedule says.', 'tap-chat' )
+            __( 'On these dates the button behaves as outside working hours, whatever the weekly schedule says. Agents with their own hours are away on these dates too.', 'tap-chat' )
         );
         echo '<div class="tap-chat-card" data-tap-chat-holidays>';
         printf( '<p class="tap-chat-holidays__empty" data-tap-chat-holidays-empty%s>%s</p>', empty( $rows ) ? '' : ' hidden', esc_html__( 'No closed dates yet.', 'tap-chat' ) );
@@ -1234,7 +1321,31 @@ class Admin_Fields {
             __( 'This helps you know which page the visitor is contacting you from', 'tap-chat' ),
             'yes' === $this->get( 'append_page_context', 'no' )
         );
+        Admin_UI::toggle_row(
+            'protect_numbers',
+            'shield',
+            __( 'Protect phone numbers from spam bots', 'tap-chat' ),
+            __( 'Keeps WhatsApp numbers out of the page source; the chat link is built when a visitor clicks. Recommended if you receive spam.', 'tap-chat' ),
+            'yes' === $this->get( 'protect_numbers', 'no' )
+        );
         echo '</div></div>';
+
+        Admin_UI::section_title(
+            __( 'Open the chat from your own links', 'tap-chat' ),
+            __( 'Any button or link on your site can open the chat: the agent picker in Multiple Agents mode, or WhatsApp in single-button mode.', 'tap-chat' )
+        );
+        echo '<div class="tap-chat-card"><ul class="tap-chat-howto">';
+        printf( '<li>%s</li>', wp_kses_post( __( 'Set the link address to <code>#tapchat</code>, for example on a "Talk to us" button.', 'tap-chat' ) ) );
+        printf( '<li>%s</li>', wp_kses_post( __( 'Or add the CSS class <code>tapchat-open</code> to any element, for example in Elementor or the block editor (Advanced → Additional CSS class).', 'tap-chat' ) ) );
+        printf( '<li>%s</li>', wp_kses_post( __( 'Add <code>#tapchat</code> to a page address, such as <code>/pricing/#tapchat</code> in a newsletter or ad, to open the chat as soon as the page loads.', 'tap-chat' ) ) );
+        echo '</ul></div>';
+
+        if ( Strings::available() ) {
+            Admin_UI::section_title( __( 'Translations', 'tap-chat' ) );
+            echo '<div class="tap-chat-card">';
+            Admin_UI::alert( 'info', __( 'Your multilingual plugin can translate every text you entered here, including agent names, roles and messages. In WPML open <strong>WPML → String Translation</strong>, in Polylang open <strong>Languages → Translations</strong>, and filter by <strong>Tap Chat</strong>.', 'tap-chat' ) );
+            echo '</div>';
+        }
     }
 
     /* ---------------------------------------------------------------------

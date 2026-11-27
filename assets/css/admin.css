@@ -413,6 +413,19 @@
 .tap-chat-days__row.is-closed .tap-chat-days__name { color: var(--tc-faint); font-weight: 500; }
 .tap-chat-days__row.is-closed .tap-chat-input--time { border-color: var(--tc-hair); background: var(--tc-wash); color: #a7aaad; }
 
+/* How-to list */
+.tap-chat-app .tap-chat-howto { display: grid; gap: 10px; margin: 0; padding-inline-start: 20px; color: var(--tc-text); list-style: disc; }
+.tap-chat-app .tap-chat-howto li { margin: 0; }
+.tap-chat-howto code { padding: 1px 6px; border: 1px solid var(--tc-hair); border-radius: 5px; background: var(--tc-wash); color: var(--tc-ink); font-size: 12px; direction: ltr; unicode-bidi: isolate; }
+
+/* Agent status and own hours */
+.tap-chat-agent__status { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.tap-chat-agent__status .tap-chat-inline-switch[hidden] { display: none; }
+.tap-chat-agent__hours { margin-block-start: 14px; padding: 14px 16px; border: 1px solid var(--tc-hair); border-radius: var(--tc-radius-sm); background: var(--tc-wash); }
+.tap-chat-app .tap-chat-agent__hours .tap-chat-field__help { margin-block-end: 8px; }
+.tap-chat-days--compact .tap-chat-days__row { grid-template-columns: minmax(64px, .7fr) 40px minmax(118px, 1fr) minmax(118px, 1fr); gap: 8px; padding-block: 6px; }
+.tap-chat-app .tap-chat-days--compact .tap-chat-input--time { min-block-size: 34px; padding: 0 6px; font-size: 13px; }
+
 /* Holidays */
 .tap-chat-holidays { display: grid; gap: 10px; }
 .tap-chat-holiday { display: grid; grid-template-columns: minmax(0, 160px) minmax(0, 160px) minmax(0, 1fr) 76px 34px; gap: 12px; align-items: center; }

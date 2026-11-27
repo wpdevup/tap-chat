@@ -28,6 +28,7 @@ class Admin_Settings {
             'agents_panel_title' => __( 'Start a conversation', 'tap-chat' ),
             'agents_panel_subtitle' => __( 'Choose someone to chat with', 'tap-chat' ),
             'agents' => array(),
+            'agents_offline' => 'show',
             'link_type' => 'phone',
             'country_code' => $this->get_default_country_code(),
             'phone' => '',
@@ -43,6 +44,7 @@ class Admin_Settings {
             'hide_label_mobile' => 'yes',
             'hide_label_desktop' => 'yes',
             'append_page_context' => 'no',
+            'protect_numbers' => 'no',
             'enable_product_message' => 'no',
             'product_message' => __( 'Hi! I have a question about {PRODUCT} ({PRICE}): {PRODUCT_URL}', 'tap-chat' ),
             'device_visibility' => 'all',
@@ -135,6 +137,27 @@ class Admin_Settings {
     }
 
     /**
+     * A weekly schedule keyed by day: enabled flag plus HH:MM start and end.
+     *
+     * @param mixed $hours Raw schedule.
+     * @return array
+     */
+    private function sanitize_schedule( $hours ) {
+        $out = array();
+        foreach ( array( 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ) as $day ) {
+            $row   = ( is_array( $hours ) && isset( $hours[ $day ] ) && is_array( $hours[ $day ] ) ) ? $hours[ $day ] : array();
+            $start = isset( $row['start'] ) && preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $row['start'] ) ? $row['start'] : '09:00';
+            $end   = isset( $row['end'] ) && preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $row['end'] ) ? $row['end'] : '17:00';
+            $out[ $day ] = array(
+                'enabled' => ( isset( $row['enabled'] ) && 'yes' === $row['enabled'] ) ? 'yes' : 'no',
+                'start'   => $start,
+                'end'     => $end,
+            );
+        }
+        return $out;
+    }
+
+    /**
      * Closed dates: each row has a start date, an optional end date, a label and a yearly flag.
      *
      * @param mixed $rows Raw rows from the form.
@@ -201,6 +224,7 @@ class Admin_Settings {
         $out['agents_panel_title'] = isset( $input['agents_panel_title'] ) ? sanitize_text_field( $input['agents_panel_title'] ) : '';
         $out['agents_panel_subtitle'] = isset( $input['agents_panel_subtitle'] ) ? sanitize_text_field( $input['agents_panel_subtitle'] ) : '';
         $out['agents'] = $this->sanitize_agents( isset( $input['agents'] ) ? $input['agents'] : array() );
+        $out['agents_offline'] = ( isset( $input['agents_offline'] ) && 'hide' === $input['agents_offline'] ) ? 'hide' : 'show';
 
         $out['link_type'] = ( isset( $input['link_type'] ) && $input['link_type'] === 'custom' ) ? 'custom' : 'phone';
         $out['country_code'] = isset( $input['country_code'] ) ? sanitize_text_field( $input['country_code'] ) : $this->get_default_country_code();
@@ -287,6 +311,7 @@ class Admin_Settings {
         
         // Advanced tab
         $out['append_page_context'] = ( isset( $input['append_page_context'] ) && $input['append_page_context'] === 'yes' ) ? 'yes' : 'no';
+        $out['protect_numbers'] = ( isset( $input['protect_numbers'] ) && $input['protect_numbers'] === 'yes' ) ? 'yes' : 'no';
 
         // WooCommerce product pages
         // The card is only rendered while WooCommerce is active; keep the stored values otherwise.
@@ -365,6 +390,8 @@ class Admin_Settings {
                 'custom_url'   => $custom_url,
                 'message'      => isset( $agent['message'] ) ? sanitize_textarea_field( $agent['message'] ) : '',
                 'online'       => ( isset( $agent['online'] ) && $agent['online'] === 'yes' ) ? 'yes' : 'no',
+                'own_hours'    => ( isset( $agent['own_hours'] ) && 'yes' === $agent['own_hours'] ) ? 'yes' : 'no',
+                'hours'        => $this->sanitize_schedule( isset( $agent['hours'] ) ? $agent['hours'] : array() ),
                 'enabled'      => ( isset( $agent['enabled'] ) && $agent['enabled'] === 'no' ) ? 'no' : 'yes',
             );
 

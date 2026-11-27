@@ -4,7 +4,7 @@ Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.3.0
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,10 @@ New in 2.2: a **redesigned settings screen** with a side menu, clear sections an
 = Key Features =
 
 * **Live Preview (NEW)** - See the button, the agent picker and the welcome bubble change as you edit, on desktop and mobile, in a redesigned settings screen that follows your admin colour scheme.
+* **Per-Agent Working Hours (NEW)** - Each agent can have their own schedule; away agents show when they are back, or are hidden
+* **Open Chat from Any Link (NEW)** - Turn any button or link into a chat opener with `#tapchat`, or open the chat from a campaign URL
+* **Spam Protection (NEW)** - Keep WhatsApp numbers out of the page source, away from scraping bots
+* **WPML & Polylang (NEW)** - Translate every text you enter, including agent names, roles and messages
 * **Multiple Agents** - Route visitors to the right person: turn the floating button into a compact picker panel with up to 3 team members, each with their own WhatsApp number or custom link, avatar, role and manual online/offline status. Drag to reorder in the admin; the chosen agent's name is also sent to GA4 / Tag Manager.
 * **Built-in Privacy-First Analytics Dashboard** - See Total / Today / This Week / This Month chat clicks, percentage change vs the previous period, Top Pages by clicks, and Clicks by Device — right inside wp-admin. Optionally measure button views, unique visitors and click-through rate (CTR). 100% first-party: no cookies, no personal data, no external requests, and your data never leaves your server.
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
@@ -301,6 +305,22 @@ Yes, with WooCommerce. Under General → Product pages, turn on "Use a product m
 
 Yes. Every post, page and product has a "Tap Chat" box in the editor sidebar. Choose "Hide" or "Always show" to override the visibility rules on that page, or enter a message used only on that page.
 
+= Can each agent have their own working hours? =
+
+Yes. In Agents, turn on "Use own working hours" in an agent's card and set their weekly schedule. The agent is online during those hours (in your business time zone) and away on your closed dates. Under "Agents who are away" choose to show away agents greyed out with the time they are back ("Back tomorrow at 9:00"), or to hide them from the panel.
+
+= Can I open the chat from my own button or link? =
+
+Yes. Set any link's address to #tapchat, or add the CSS class tapchat-open to any element (for example in Elementor or the block editor). Clicking it opens the agent picker, or WhatsApp in single-button mode. Adding #tapchat to a page address, such as yoursite.com/pricing/#tapchat in a newsletter, opens the chat as soon as the page loads.
+
+= How do I stop spam bots from finding my WhatsApp number? =
+
+Under Advanced, turn on "Protect phone numbers from spam bots". The number is no longer written in the page source; the chat link is built only when a visitor clicks.
+
+= Does Tap Chat work with WPML or Polylang? =
+
+Yes. Every text you enter (button label, messages, welcome bubble, panel title and subtitle, offline message, product message, and each agent's name, role, message and custom link) appears in WPML → String Translation or Polylang → Languages → Translations under "Tap Chat".
+
 = Can I close the chat on holidays? =
 
 Yes. Under Working Hours → Holidays and closed dates, add a date or a date range. Turn on "Every year" for holidays that fall on the same date each year. On those dates the button behaves as outside working hours: it shows your offline message, or is hidden when the offline message is empty.
@@ -366,6 +386,18 @@ Yes. Enable "Exclude logged-in users" under Settings → Tap Chat → Tracking a
 13. **Dashboard widget** - Today, last 7 days and all-time clicks with a 14-day trend on your WordPress dashboard
 
 == Changelog ==
+
+= 2.4.0 - 2026-11-27 =
+Agents with their own hours, chat links anywhere, translations and spam protection.
+
+* **New: Working hours per agent.** Turn on "Use own working hours" in an agent's card. Agents are online during their schedule and away on closed dates; away agents show when they are back ("Back tomorrow at 9:00").
+* **New: Agents who are away** (Agents section): show them greyed out, or hide them from the panel. If nobody is available, everyone is shown as away.
+* **New: Open the chat from any link.** Use `#tapchat` as a link address or the `tapchat-open` CSS class on any element; add `#tapchat` to a page address to open the chat on load.
+* **New: WPML and Polylang.** Every text you enter can be translated, including agent names, roles, messages and custom links.
+* **New: Protect phone numbers from spam bots** (Advanced). Numbers stay out of the page source; the link is built on click.
+* **Improved:** The time zone and closed dates under Working Hours are always available, since agents with their own hours use them too.
+* **Compatibility:** Ready for jQuery 4, which ships with WordPress 7.2: the settings screen no longer uses `jQuery.trim()`, which jQuery 4 removes.
+* Existing settings are unchanged; every new option is off by default.
 
 = 2.3.0 - 2026-11-04 =
 More control over where the button appears and what the first message says.
@@ -512,6 +544,9 @@ Tap Chat 2.0 introduces a complete, privacy-first analytics suite — your data 
 * GDPR compliant
 
 == Upgrade Notice ==
+
+= 2.4.0 =
+Working hours per agent, open the chat from any link with #tapchat, WPML and Polylang translations, and protection of phone numbers from spam bots. All new options are off by default; your settings are kept.
 
 = 2.3.0 =
 Hide the button by content type or device, start chats on product pages with the product named, close on holidays, and override the button per page from the editor. All new options are off by default; your settings are kept.

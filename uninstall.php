@@ -14,6 +14,7 @@ delete_post_meta_by_key( '_tap_chat_visibility' );
 delete_post_meta_by_key( '_tap_chat_message' );
 
 // Remove review-nudge bookkeeping
+delete_option( 'tap_chat_wpml_strings_hash' );
 delete_option( 'tap_chat_installed_at' );
 delete_option( 'tap_chat_review_variant' );
 delete_option( 'tap_chat_review_done' );

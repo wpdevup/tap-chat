@@ -1,6 +1,6 @@
 # Tap Chat – Floating Contact Button
 
-**Version:** 2.3.0 | **Requires:** WordPress 5.8+ | **Tested up to:** 7.1 | **PHP:** 7.4+
+**Version:** 2.4.0 | **Requires:** WordPress 5.8+ | **Tested up to:** 7.1 | **PHP:** 7.4+
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/tap-chat.svg)](https://wordpress.org/plugins/tap-chat/)
@@ -10,7 +10,9 @@
 
 WhatsApp chat button for WordPress with multiple agents, a welcome bubble, working hours, page rules and privacy-first click analytics. No cookies, no third parties.
 
-**New in 2.3:** hide the button on whole content types (every blog post at once) or by device, start chats on WooCommerce product pages with the product already named, close on holidays, and override the button per page right from the post editor.
+**New in 2.4:** working hours for each agent, open the chat from any button or link with `#tapchat`, translate every text with WPML or Polylang, and keep phone numbers away from spam bots.
+
+**Since 2.3:** hide the button on whole content types (every blog post at once) or by device, start chats on WooCommerce product pages with the product already named, close on holidays, and override the button per page right from the post editor.
 
 **Since 2.2:** a redesigned settings screen with a side menu and a **live preview** of the button, the agent picker and the welcome bubble on desktop and mobile.
 
@@ -30,7 +32,8 @@ WhatsApp chat button for WordPress with multiple agents, a welcome bubble, worki
 
 ### Core Features
 - 👀 **Live Preview** - See the button, the agent picker and the welcome bubble change as you edit, on desktop and mobile
-- 👥 **Multiple Agents** - Up to 3 team members in a compact picker panel, each with their own WhatsApp number or link, avatar, role and online status
+- 👥 **Multiple Agents** - Up to 3 team members in a compact picker panel, each with their own WhatsApp number or link, avatar, role and working hours
+- 🔗 **Open From Any Link** - Any button or link with `#tapchat` or the `tapchat-open` class opens the chat
 - 📊 **Built-in Analytics** - First-party chat-click report inside wp-admin: no cookies, no personal data, no external requests
 - ✨ **Floating Chat Button** - Customizable button that stays in the corner of your site, icon-only or with a label
 - 🔗 **Custom Link** - Use Telegram, Messenger, a contact page, `tel:`, `mailto:` or any URL instead of WhatsApp
@@ -45,10 +48,12 @@ WhatsApp chat button for WordPress with multiple agents, a welcome bubble, worki
 - 📱 **Device Visibility** - All devices, phones only, or tablets and desktops only
 - 🛒 **WooCommerce Product Message** - Chats from a product page start with the product name, price, SKU and link
 - 📝 **Per-Page Settings** - Hide, always show, or set a custom message for any page from the post editor
+- 🛡️ **Spam Bot Protection** - Phone numbers stay out of the page source; the link is built on click
 - 📈 **GA4 / Tag Manager** - Optionally forward chat clicks and bubble impressions to the analytics you already use
 - 📱 **Mobile Optimized** - Separate desktop and mobile sizes and label settings
 - ↔️ **RTL Ready** - Admin and front end lay out correctly in right-to-left languages
 - 🌐 **Translation Ready** - Fully translatable with the included `.pot` file
+- 🗣️ **WPML & Polylang** - Translate your own texts: button label, messages, bubble, panel, agent names, roles and links
 
 ### Multiple Agents
 
@@ -57,7 +62,9 @@ Let visitors pick who to talk to instead of guessing.
 - **Up to 3 agents**, each opening their own chat in a new tab
 - **WhatsApp number or custom link per agent** (Telegram, Messenger, `tel:`, `mailto:`, any URL)
 - **Per-agent details**: name, role, avatar and a pre-filled WhatsApp message
-- **Manual online / offline** status with a green dot
+- **Working hours per agent**: online during their own schedule, away on closed dates, with "Back tomorrow at 9:00" shown while away
+- **Manual online / offline** status with a green dot for agents without their own hours
+- **Agents who are away**: show them greyed out, or hide them from the panel
 - **Custom panel title and subtitle**
 - **Drag to reorder** in the admin
 - **One button to open and close**: while the picker is open the button turns into a × with a smooth rotating transition
@@ -123,12 +130,13 @@ All settings live on one screen, **Settings → Tap Chat**, with a side menu. Ea
    - Appearance: label, colour, position, animation, custom icon, separate desktop and mobile sizes
 2. **Agents**
    - Single button or multiple agents
-   - Panel title and subtitle, up to 3 agents with their own channel, avatar, role and status
+   - Panel title and subtitle, up to 3 agents with their own channel, avatar, role, status and working hours
+   - Agents who are away: show greyed out, or hide
 3. **Welcome Bubble**
    - Modern or Simple style, message, name and avatar
    - Smart Triggers
 4. **Working Hours**
-   - Schedule per day, time zone, optional offline message
+   - Time zone, schedule per day, optional offline message
    - Holidays and closed dates (single days or ranges, optionally every year)
 5. **Visibility**
    - Devices: all, phones only, or tablets and desktops
@@ -136,6 +144,8 @@ All settings live on one screen, **Settings → Tap Chat**, with a side menu. Ea
    - Show only on selected pages, or hide on selected pages
 6. **Advanced**
    - Append the page title and URL to every message
+   - Protect phone numbers from spam bots
+   - How to open the chat from your own links
 7. **Analytics**
    - The built-in report with a 7 / 30 / 90-day range
 8. **Tracking**
@@ -162,6 +172,18 @@ Every post, page and product has a **Tap Chat** box in the editor sidebar:
 | `{PRODUCT_URL}` | Product link |
 
 Product variables are empty outside single product pages. Message priority on a page: the page's own message, then the product message on product pages, then the default or agent message.
+
+## 🔗 Open the Chat From Your Own Links
+
+Any button or link on your site can open the chat: the agent picker in Multiple Agents mode, or WhatsApp in single-button mode.
+
+- Set the link address to `#tapchat`, for example on a "Talk to us" button
+- Or add the CSS class `tapchat-open` to any element (Elementor, the block editor, your theme)
+- Add `#tapchat` to a page address, such as `/pricing/#tapchat`, to open the chat as soon as the page loads
+
+## 🌍 WPML & Polylang
+
+Every text you enter is registered as a string in the **Tap Chat** group: button label, messages, offline message, welcome bubble, panel title and subtitle, product message, and each agent's name, role, message and custom link. Translate them in **WPML → String Translation** or **Languages → Translations** (Polylang). The settings screen itself is translated through translate.wordpress.org.
 
 ## 🧩 Shortcode
 
@@ -260,6 +282,7 @@ tap-chat/
 ├── includes/
 │   ├── class-tap-chat.php                    # Main plugin class (front end)
 │   ├── class-tap-chat-analytics-store.php    # Analytics table and queries
+│   ├── class-tap-chat-i18n.php               # WPML and Polylang string translation
 │   ├── class-tap-chat-rest.php               # Click and view collector endpoint
 │   └── admin/
 │       ├── class-tap-chat-admin.php          # Settings screen shell, notices, dashboard widget
@@ -340,6 +363,20 @@ Tap Chat is translation-ready. Contribute a translation on [translate.wordpress.
 4. **Translations** - via translate.wordpress.org
 
 ## 📝 Changelog
+
+### [2.4.0] - 2026-11-27
+Agents with their own hours, chat links anywhere, translations and spam protection.
+
+**New:**
+- Working hours per agent: online during their schedule, away on closed dates, with "Back tomorrow at 9:00" while away
+- Agents who are away: show them greyed out, or hide them from the panel
+- Open the chat from any link with `#tapchat` or the `tapchat-open` class; `#tapchat` in a page address opens it on load
+- WPML and Polylang: every text you enter can be translated, including agent names, roles, messages and links
+- Protect phone numbers from spam bots: numbers stay out of the page source
+
+**Improved:**
+- Time zone and closed dates under Working Hours are always available
+- Ready for jQuery 4 (WordPress 7.2): `jQuery.trim()` no longer used
 
 ### [2.3.0] - 2026-11-04
 More control over where the button appears and what the first message says.
@@ -444,6 +481,7 @@ The full changelog is in [CHANGELOG.md](CHANGELOG.md).
 ## 🗺️ Roadmap
 
 ### Completed ✅
+- ✅ Working hours per agent, `#tapchat` links, WPML & Polylang, spam bot protection (v2.4.0)
 - ✅ Content-type, device and per-page visibility, product message, holidays (v2.3.0)
 - ✅ Redesigned admin with live preview (v2.2.0)
 - ✅ Multiple agents (v2.1.0)
@@ -456,10 +494,12 @@ The full changelog is in [CHANGELOG.md](CHANGELOG.md).
 - ✅ Welcome bubble (v1.3.0)
 - ✅ Working hours (v1.2.0)
 
-### Ideas 🚀
-- [ ] More bubble styles
-- [ ] Pre-chat form
-- [ ] Quick reply templates
+### Next 🔜
+- [ ] **2.5.0 – WooCommerce:** product page button, out-of-stock message, variations in the message, hide by product category
+- [ ] **2.6.0 – Analytics:** clicks per agent, click source, traffic source
+- [ ] **2.7.0 – Spreading chats across the team:** random agent order, number rotation
+
+The full plan, principles and later ideas are in [ROADMAP.md](ROADMAP.md).
 
 ## 📜 License
 

@@ -1,5 +1,5 @@
 === Tap Chat – Floating Contact Button ===
-Contributors: iruserwp9, wpdevup
+Contributors: iruserwp9, wpdevup, saeedfard, man4toman
 Tags: whatsapp, chat, click to chat, whatsapp chat, chat button
 Requires at least: 5.8
 Tested up to: 7.1
@@ -14,7 +14,9 @@ WhatsApp chat button with multiple agents, welcome bubble, working hours, page r
 
 **Tap Chat** adds a beautiful floating WhatsApp button with advanced features — and now a **built-in, privacy-first analytics dashboard** so you can see exactly how many visitors tap to chat, from which pages and on which devices, without sending a single byte to Google or anyone else. Set business hours, show welcome messages with multiple styles, control visibility, and customize appearance — all while keeping your site fast and privacy-friendly.
 
-New in 2.2: a **redesigned settings screen** with a side menu, clear sections and a **live preview** that shows the button, the agent picker and the welcome bubble on desktop and mobile as you edit. It follows your WordPress admin colour scheme and works in right-to-left languages.
+New in 2.4: **working hours for each agent** (away agents show when they are back), **open the chat from any link or button** with `#tapchat`, **WPML and Polylang** translation of every text you enter, and **protection of your phone numbers from spam bots**.
+
+Also recent: hide the button on whole content types such as every blog post, phones-only or desktop-only display, a WooCommerce product message, per-page settings in the editor, holidays, and a redesigned settings screen with a **live preview**.
 
 **Multiple Agents** turns the single button into a small picker panel with up to three team members, each with their own WhatsApp number or custom link, avatar, role and online status, so visitors always reach the right person.
 
@@ -24,12 +26,12 @@ New in 2.2: a **redesigned settings screen** with a side menu, clear sections an
 
 = Key Features =
 
-* **Live Preview (NEW)** - See the button, the agent picker and the welcome bubble change as you edit, on desktop and mobile, in a redesigned settings screen that follows your admin colour scheme.
+* **Live Preview** - See the button, the agent picker and the welcome bubble change as you edit, on desktop and mobile, in a redesigned settings screen that follows your admin colour scheme.
 * **Per-Agent Working Hours (NEW)** - Each agent can have their own schedule; away agents show when they are back, or are hidden
 * **Open Chat from Any Link (NEW)** - Turn any button or link into a chat opener with `#tapchat`, or open the chat from a campaign URL
 * **Spam Protection (NEW)** - Keep WhatsApp numbers out of the page source, away from scraping bots
 * **WPML & Polylang (NEW)** - Translate every text you enter, including agent names, roles and messages
-* **Multiple Agents** - Route visitors to the right person: turn the floating button into a compact picker panel with up to 3 team members, each with their own WhatsApp number or custom link, avatar, role and manual online/offline status. Drag to reorder in the admin; the chosen agent's name is also sent to GA4 / Tag Manager.
+* **Multiple Agents** - Route visitors to the right person: turn the floating button into a compact picker panel with up to 3 team members, each with their own WhatsApp number or custom link, avatar, role and online status, set by hand or by the agent's own working hours. Drag to reorder in the admin; the chosen agent's name is also sent to GA4 / Tag Manager.
 * **Built-in Privacy-First Analytics Dashboard** - See Total / Today / This Week / This Month chat clicks, percentage change vs the previous period, Top Pages by clicks, and Clicks by Device — right inside wp-admin. Optionally measure button views, unique visitors and click-through rate (CTR). 100% first-party: no cookies, no personal data, no external requests, and your data never leaves your server.
 * **Floating Chat Button** - Beautiful, customizable button that sticks to your site
 * **Custom Icon Upload** - Replace WhatsApp icon with your own brand logo or custom image
@@ -39,8 +41,8 @@ New in 2.2: a **redesigned settings screen** with a side menu, clear sections an
 * **Country Selector** - Easy phone number configuration with 150+ country codes and flags
 * **Working Hours** - Display button only during business hours with timezone support, plus holidays and closed dates
 * **Page Visibility** - Show or hide the button on specific pages, on whole content types such as every blog post, or only on phones or desktops
-* **WooCommerce Product Message (NEW)** - On product pages the chat starts with the product name, price, SKU and link already filled in
-* **Per-Page Settings (NEW)** - Hide, always show or set a custom message for any page right from the post editor
+* **WooCommerce Product Message** - On product pages the chat starts with the product name, price, SKU and link already filled in
+* **Per-Page Settings** - Hide, always show or set a custom message for any page right from the post editor
 * **Fully Customizable** - Colors, sizes, positions, labels - make it yours
 * **Mobile Optimized** - Separate mobile/desktop configurations
 * **Google Analytics 4 / Tag Manager Integration** - Optionally also forward chat clicks and welcome-bubble impressions as GA4 events using the analytics already installed on your site
@@ -54,7 +56,8 @@ Let visitors pick who to talk to instead of guessing. Turn the floating button i
 * **Up to 3 agents** - each opens their own chat in a new tab.
 * **WhatsApp or custom link per agent** - use a WhatsApp number, or any URL (Telegram, Messenger, tel:, mailto:, a contact page).
 * **Per-agent details** - name, role/label, avatar image, and a pre-filled WhatsApp message.
-* **Manual online / offline** - show a green "online" dot per agent, or mark them offline.
+* **Online status** - set by hand (green "online" dot or offline), or by the agent's own working hours.
+* **Working hours per agent** - agents who are away show when they are back ("Back tomorrow at 9:00"), or are hidden from the panel.
 * **Custom panel title and subtitle** - set the heading visitors see when the panel opens.
 * **Drag-to-reorder** - arrange agents in the admin with a simple drag handle.
 * **Non-destructive** - existing single-button setups keep working; switch modes any time from Settings -> Tap Chat -> Agents.
@@ -168,7 +171,8 @@ Go to **Settings → Tap Chat**. The side menu lists every section, and a live p
 2. **Agents:**
    * Set **Button Mode** to "Multiple agents"
    * Add up to 3 agents; for each, choose WhatsApp or a custom link
-   * Set name, role, avatar, and a manual online / offline status
+   * Set name, role, avatar, and an online status, or turn on "Use own working hours" for a weekly schedule
+   * Choose whether agents who are away are shown greyed out or hidden
    * Optionally edit the panel title and subtitle
 
 3. **Welcome Bubble:**

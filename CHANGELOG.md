@@ -2,6 +2,28 @@
 
 All notable changes to Tap Chat will be documented in this file.
 
+## [2.4.0] - 2026-11-27
+
+Agents with their own hours, chat links anywhere, translations and spam protection.
+
+### Added
+- **Working hours per agent**: turn on "Use own working hours" in an agent's card. Agents are online during their schedule and away on closed dates; away agents show when they are back ("Back tomorrow at 9:00")
+- **Agents who are away** (Agents section): show them greyed out, or hide them from the panel. If nobody is available, everyone is shown as away
+- **Open the chat from any link**: use `#tapchat` as a link address or the `tapchat-open` CSS class on any element; add `#tapchat` to a page address to open the chat on load
+- **WPML and Polylang**: every text you enter can be translated, including agent names, roles, messages and custom links (string group "Tap Chat")
+- **Protect phone numbers from spam bots** (Advanced): numbers stay out of the page source; the chat link is built on click
+
+### Improved
+- The time zone and closed dates under Working Hours are always available, since agents with their own hours use them too
+
+### Compatibility
+- Ready for jQuery 4, which ships with WordPress 7.2: the settings screen no longer uses `jQuery.trim()`
+
+### Developer
+- New `Tap_Chat\Strings` class registers and translates user-entered strings
+- The `tap_chat_wpml_strings_hash` option is removed on uninstall
+- Existing settings are unchanged; every new option is off by default
+
 ## [2.3.0] - 2026-11-04
 
 More control over where the button appears and what the first message says.
@@ -266,6 +288,7 @@ A redesigned settings screen: calmer, clearer, and easier to scan.
 
 ---
 
+[2.4.0]: https://github.com/wpdevup/tap-chat/releases/tag/2.4.0
 [2.3.0]: https://github.com/wpdevup/tap-chat/releases/tag/2.3.0
 [2.2.0]: https://github.com/wpdevup/tap-chat/releases/tag/2.2.0
 [1.9.0]: https://github.com/wpdevup/tap-chat/releases/tag/1.9.0

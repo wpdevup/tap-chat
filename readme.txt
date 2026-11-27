@@ -379,12 +379,12 @@ Yes. Enable "Exclude logged-in users" under Settings → Tap Chat → Tracking a
 2. **General: Destination** - Send chats to a WhatsApp number or any link, with a pre-filled message and a live preview
 3. **General: Appearance** - Label, color, position, animation, custom icon and separate desktop and mobile sizes
 4. **Agents: Button mode** - Switch to multiple agents and set the panel title, with the picker shown in the live preview
-5. **Agents: Your team** - Up to 3 agents with their own WhatsApp number or link, avatar, role and online status
+5. **Agents: Your team** - Each agent with their own WhatsApp number or link, avatar, role and working hours, and a choice to show or hide agents who are away
 6. **Welcome Bubble: Message** - Modern or Simple style, with your own message, name and avatar
 7. **Welcome Bubble: Smart Triggers** - Show the bubble after a delay, at a scroll depth, on exit intent or when the visitor is idle
-8. **Working Hours** - Show the button only during business hours, in your own time zone, with an optional offline message
-9. **Visibility** - Show the button only on selected pages, or hide it where it gets in the way
-10. **Advanced** - Add the page title and URL to every WhatsApp message
+8. **Working Hours** - Business hours in your own time zone, holidays and closed dates, and an optional offline message
+9. **Visibility** - Show the button on phones, desktops or both, and hide it on whole content types such as blog posts
+10. **Advanced** - Page context in every message, phone numbers protected from spam bots, and opening the chat from your own links
 11. **Analytics** - First-party report with totals, the visitor-to-chat funnel, a daily trend, top pages and devices
 12. **Tracking** - Privacy-first tracking options and the optional Google Analytics 4 / Tag Manager integration
 13. **Dashboard widget** - Today, last 7 days and all-time clicks with a 14-day trend on your WordPress dashboard
